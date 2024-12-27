@@ -1,0 +1,150 @@
+2024-12-22 11:00:20,446 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-22 11:00:20,446 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-22 11:00:20,447 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-22 11:00:22,148 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-22 11:00:22,162 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-22 11:23:45,685 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-22 11:23:45,686 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-22 11:23:45,686 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-22 11:23:47,364 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-22 11:23:47,377 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-24 08:15:08,097 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-24 08:15:08,099 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-24 08:15:08,102 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-24 08:15:10,118 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-24 08:15:10,131 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 09:18:54,983 ERROR root Thread-2 (process_request_thread) : ApiException: Invalid email or password
+2024-12-25 09:18:55,106 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 09:18:55] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 09:19:48,097 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 09:19:48] "POST /api/signup HTTP/1.1" 200 -
+2024-12-25 09:45:01,711 ERROR werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 09:45:01] code 400, message Bad request version ('À\x13À')
+2024-12-25 09:45:01,717 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 09:45:01] "[31m[1m\x16\x03\x01\x00÷\x01\x00\x00ó\x03\x03\x19èÁÂ\x0f¸Xq\x16R\x13\x9a¾Ù\x9bkü\x90y\x91\x82½ü\x02\x00O\x97ö¬p5  \x9c Úb\x99µ<\x9f\x9d{ª\x07ïèºQÆ&\x11\x16á\x0dñ\x1b,lY°ÛâÀñ\x00$\x13\x01\x13\x02\x13\x03À/À+À0À,À'Ì©Ì¨À\x09À\x13À[0m" 400 -
+2024-12-25 09:45:12,585 ERROR root Thread-5 (process_request_thread) : ApiException: Invalid email or password
+2024-12-25 09:45:12,708 INFO werkzeug Thread-5 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 09:45:12] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 09:45:22,037 INFO werkzeug Thread-6 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 09:45:22] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 09:49:11,156 INFO werkzeug Thread-7 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 09:49:11] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 09:56:44,533 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/controllers/auth_controller.py', reloading
+2024-12-25 09:56:44,747 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 09:56:47,164 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 09:56:47,175 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 10:08:32,712 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/controllers/auth_controller.py', reloading
+2024-12-25 10:08:32,822 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 10:08:35,074 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 10:08:35,111 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 10:08:47,393 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/controllers/auth_controller.py', reloading
+2024-12-25 10:08:47,493 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 10:08:49,588 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 10:08:49,612 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 10:09:34,527 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/controllers/auth_controller.py', reloading
+2024-12-25 10:09:34,621 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 10:09:36,519 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 10:09:36,528 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 10:09:55,914 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/controllers/auth_controller.py', reloading
+2024-12-25 10:09:56,002 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 10:09:58,320 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 10:09:58,328 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 10:09:58,486 ERROR root Thread-2 (process_request_thread) : Exception: cannot access local variable 'user_info' where it is not associated with a value
+2024-12-25 10:09:58,486 ERROR root Thread-3 (process_request_thread) : Exception: cannot access local variable 'user_info' where it is not associated with a value
+2024-12-25 10:09:58,608 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 10:09:58] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 10:09:58,608 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 10:09:58] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 10:10:02,771 ERROR root Thread-4 (process_request_thread) : Exception: cannot access local variable 'user_info' where it is not associated with a value
+2024-12-25 10:10:02,890 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 10:10:02] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 10:11:25,960 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/controllers/auth_controller.py', reloading
+2024-12-25 10:11:26,076 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 10:11:28,116 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 10:11:28,125 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 10:11:28,396 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 10:11:28] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 10:11:29,711 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 10:11:29] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 10:11:33,958 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 10:11:33] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 10:11:43,948 INFO werkzeug Thread-5 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 10:11:43] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 10:19:49,843 INFO werkzeug Thread-6 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 10:19:49] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 13:02:55,761 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-25 13:02:55,762 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-25 13:02:55,764 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:02:57,749 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:02:57,774 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:11:25,410 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/models/user_settings.py', reloading
+2024-12-25 13:11:25,540 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:11:27,868 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:11:27,877 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:11:31,964 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/models/users.py', reloading
+2024-12-25 13:11:32,037 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:11:34,089 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:11:34,096 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:12:42,073 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/controllers/auth_controller.py', reloading
+2024-12-25 13:12:42,148 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:12:44,170 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:12:44,178 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:13:00,394 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/controllers/auth_controller.py', reloading
+2024-12-25 13:13:00,481 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:13:02,395 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:13:02,402 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:13:18,660 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/models/users.py', reloading
+2024-12-25 13:13:18,732 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:13:20,738 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:13:20,745 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:13:44,103 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/controllers/auth_controller.py', reloading
+2024-12-25 13:13:44,193 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:13:46,198 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:13:46,205 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:14:26,819 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/controllers/auth_controller.py', reloading
+2024-12-25 13:14:26,901 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:14:28,924 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:14:28,933 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:14:34,025 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/models/users.py', reloading
+2024-12-25 13:14:34,113 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:14:36,143 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:14:36,153 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:20:39,531 ERROR root Thread-2 (process_request_thread) : Exception: When initializing mapper Mapper[Users(users)], expression 'UserSettings' failed to locate a name ('UserSettings'). If this is a class name, consider adding this relationship() to the <class 'models.users.Users'> class after both dependent classes have been defined.
+2024-12-25 13:20:39,547 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 13:20:39] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 13:21:48,999 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-25 13:21:49,000 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-25 13:21:49,001 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:21:50,769 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:21:50,788 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:22:05,059 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/models/user_settings.py', reloading
+2024-12-25 13:22:05,145 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:22:07,513 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:22:07,527 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:23:02,566 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/run.py', reloading
+2024-12-25 13:23:02,675 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-25 13:23:04,703 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-25 13:23:04,715 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-25 13:23:17,559 ERROR root Thread-2 (process_request_thread) : Exception: When initializing mapper Mapper[Users(users)], expression 'UserSettings' failed to locate a name ('UserSettings'). If this is a class name, consider adding this relationship() to the <class 'models.users.Users'> class after both dependent classes have been defined.
+2024-12-25 13:23:17,576 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 13:23:17] "POST /api/login HTTP/1.1" 200 -
+2024-12-25 13:23:17,812 ERROR root Thread-3 (process_request_thread) : Exception: One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[Users(users)]'. Original exception was: When initializing mapper Mapper[Users(users)], expression 'UserSettings' failed to locate a name ('UserSettings'). If this is a class name, consider adding this relationship() to the <class 'models.users.Users'> class after both dependent classes have been defined.
+2024-12-25 13:23:17,818 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [25/Dec/2024 13:23:17] "POST /api/login HTTP/1.1" 200 -
+2024-12-26 19:21:52,756 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/models/users.py', reloading
+2024-12-26 19:21:52,930 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 19:21:55,242 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-26 19:21:55,253 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-26 19:21:58,375 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/models/users.py', reloading
+2024-12-26 19:21:58,461 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 19:22:00,426 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-26 19:22:00,440 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-26 21:18:23,015 ERROR root Thread-2 (process_request_thread) : Exception: When initializing mapper Mapper[Users(users)], expression 'UserSettings' failed to locate a name ('UserSettings'). If this is a class name, consider adding this relationship() to the <class 'models.users.Users'> class after both dependent classes have been defined.
+2024-12-26 21:18:23,039 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [26/Dec/2024 21:18:23] "POST /api/login HTTP/1.1" 200 -
+2024-12-26 21:38:01,055 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-26 21:38:01,057 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-26 21:38:01,058 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 21:38:02,844 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-26 21:38:02,857 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-26 21:38:06,104 ERROR root Thread-2 (process_request_thread) : Exception: When initializing mapper Mapper[Users(users)], expression 'UserSettings' failed to locate a name ('UserSettings'). If this is a class name, consider adding this relationship() to the <class 'models.users.Users'> class after both dependent classes have been defined.
+2024-12-26 21:38:06,116 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [26/Dec/2024 21:38:06] "POST /api/login HTTP/1.1" 200 -
