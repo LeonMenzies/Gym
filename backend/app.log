@@ -317,3 +317,25 @@ WHERE users.email = %(email_1)s
 2024-12-27 20:49:10,099 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:49:10] "POST /api/login HTTP/1.1" 200 -
 2024-12-27 20:49:44,018 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:49:44] "POST /api/login HTTP/1.1" 200 -
 2024-12-27 20:49:44,305 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:49:44] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 21:14:59,893 INFO werkzeug Thread-5 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 21:14:59] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 21:52:46,382 INFO werkzeug Thread-6 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 21:52:46] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 21:54:57,180 INFO werkzeug Thread-7 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 21:54:57] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 21:55:45,219 INFO werkzeug Thread-8 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 21:55:45] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 21:58:11,778 INFO werkzeug Thread-9 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 21:58:11] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 21:58:22,279 INFO werkzeug Thread-10 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 21:58:22] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 21:58:23,248 INFO werkzeug Thread-11 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 21:58:23] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:02:10,191 INFO werkzeug Thread-12 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 22:02:10] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:03:10,521 INFO werkzeug Thread-13 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 22:03:10] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:06:12,490 INFO werkzeug Thread-14 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 22:06:12] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:15:33,125 INFO werkzeug Thread-15 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 22:15:33] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:16:05,903 INFO werkzeug Thread-16 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 22:16:05] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:30:17,808 INFO werkzeug Thread-17 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 22:30:17] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:30:18,647 INFO werkzeug Thread-18 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 22:30:18] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:31:37,284 INFO werkzeug Thread-19 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 22:31:37] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:32:04,180 INFO werkzeug Thread-20 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 22:32:04] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:32:17,723 INFO werkzeug Thread-21 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 22:32:17] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:34:46,759 INFO werkzeug Thread-22 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 22:34:46] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 22:37:35,009 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_info.py', reloading
+2024-12-27 22:37:35,206 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-27 22:37:36,774 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-27 22:37:36,792 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097

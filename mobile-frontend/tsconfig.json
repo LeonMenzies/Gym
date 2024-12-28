@@ -5,7 +5,8 @@
     "paths": {
       "~assets/*": ["assets/*"],
       "~components/*": ["components/*"],
-      "~pages/*": ["pages/*"],
+      "~screens/*": ["screens/*"],
+      "~navigation/*": ["navigation/*"],
       "~recoil/*": ["recoil/*"],
       "~types/*": ["types/*"],
       "~utils/*": ["utils/*"]

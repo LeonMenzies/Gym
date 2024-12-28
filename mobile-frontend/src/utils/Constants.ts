@@ -4,3 +4,8 @@ export const TODAY_PLAN = "today-plan";
 export const TOMORROW_PLAN = "tomorrow-plan";
 export const SETTINGS = "settings";
 export const ACTION_KEY = "action-list";
+
+export const ACCOUNT_ONBOARDING_STATUS = "ONBOARDING";
+export const ACCOUNT_ACTIVE_STATUS = "ACTIVE";
+export const ACCOUNT_DEACTIVATED_STATUS = "DEACTIVATED";
+

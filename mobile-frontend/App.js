@@ -1,10 +1,10 @@
 import { RecoilRoot } from "recoil";
-import { Navigator } from "~components/navigator/Navigator";
+import { AppNavigator } from "~navigation/AppNavigator";
 
-const App = () => {
+export const App = () => {
     return (
         <RecoilRoot>
-            <Navigator />
+            <AppNavigator />
         </RecoilRoot>
     );
 };

@@ -13,7 +13,6 @@ export const usePostApi = <D, T>(endpoint: string): [ApiResponse<T>, boolean, (d
     async (data: D) => {
       try {
         setLoading(true);
-        console.log(process.env.REACT_APP_URL_BASE + endpoint);
 
         const response = await axios.request<ApiResponse<T>>({
           data: data,
