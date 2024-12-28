@@ -339,3 +339,189 @@ WHERE users.email = %(email_1)s
 2024-12-27 22:37:35,206 INFO werkzeug MainThread :  * Restarting with stat
 2024-12-27 22:37:36,774 WARNING werkzeug MainThread :  * Debugger is active!
 2024-12-27 22:37:36,792 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 09:47:09,566 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 09:47:09] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 09:47:09,622 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 09:47:09] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 09:49:35,957 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 09:49:35,958 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 09:49:35,959 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 09:49:37,442 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 09:49:37,458 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:33:11,024 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 10:33:11,025 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 10:33:11,027 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:33:12,723 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:33:12,735 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:33:14,445 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:33:14] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 10:33:27,049 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:33:27] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 10:33:44,004 ERROR root Thread-4 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 10:33:44,012 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:33:44] "POST /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:34:00,444 ERROR root Thread-5 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 10:34:00,451 INFO werkzeug Thread-5 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:34:00] "POST /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:35:25,513 ERROR root Thread-6 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 10:35:25,519 INFO werkzeug Thread-6 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:35:25] "POST /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:36:12,721 ERROR root Thread-7 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 10:36:12,730 INFO werkzeug Thread-7 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:36:12] "POST /api/user/settings HTTP/1.1" 200 -
+2024-12-28 10:36:39,406 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/user_controller.py', reloading
+2024-12-28 10:36:39,515 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:36:47,972 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-12-28 10:36:47,974 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 10:37:04,213 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 10:37:04,213 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 10:37:04,214 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:37:05,827 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:37:05,842 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:37:05,858 ERROR root Thread-2 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 10:37:05,861 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:37:05] "POST /api/user/settings HTTP/1.1" 200 -
+2024-12-28 10:37:11,095 ERROR root Thread-3 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 10:37:11,097 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:37:11] "POST /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:37:22,378 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:37:22] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 10:37:45,697 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 10:37:45,795 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:37:47,712 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:37:47,720 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:37:52,141 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 10:37:52,141 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 10:37:52,142 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:37:53,815 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:37:53,823 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:37:54,594 ERROR root Thread-2 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 10:37:54,600 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:37:54] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 10:37:59,040 ERROR root Thread-3 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 10:37:59,042 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:37:59] "POST /api/lwuth/ogin HTTP/1.1" 200 -
+2024-12-28 10:38:02,565 ERROR root Thread-4 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 10:38:02,573 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:38:02] "POST /api/auth/ogin HTTP/1.1" 200 -
+2024-12-28 10:38:04,710 ERROR root Thread-5 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 10:38:04,711 INFO werkzeug Thread-5 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:38:04] "POST /api/auth/ogin HTTP/1.1" 200 -
+2024-12-28 10:39:31,915 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/__init__.py', reloading
+2024-12-28 10:39:32,034 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:39:34,168 ERROR sqlalchemy.pool.impl.QueuePool MainThread : Exception during reset or similar
+Traceback (most recent call last):
+  File "/Users/leonmenzies/Documents/Coding/FullStack/MacroDash/backend/venv/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 986, in _finalize_fairy
+    fairy._reset(
+  File "/Users/leonmenzies/Documents/Coding/FullStack/MacroDash/backend/venv/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1432, in _reset
+    pool._dialect.do_rollback(self)
+  File "/Users/leonmenzies/Documents/Coding/FullStack/MacroDash/backend/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 699, in do_rollback
+    dbapi_connection.rollback()
+  File "/Users/leonmenzies/Documents/Coding/FullStack/MacroDash/backend/venv/lib/python3.12/site-packages/pymysql/connections.py", line 493, in rollback
+    self._read_ok_packet()
+  File "/Users/leonmenzies/Documents/Coding/FullStack/MacroDash/backend/venv/lib/python3.12/site-packages/pymysql/connections.py", line 453, in _read_ok_packet
+    pkt = self._read_packet()
+          ^^^^^^^^^^^^^^^^^^^
+  File "/Users/leonmenzies/Documents/Coding/FullStack/MacroDash/backend/venv/lib/python3.12/site-packages/pymysql/connections.py", line 744, in _read_packet
+    packet_header = self._read_bytes(4)
+                    ^^^^^^^^^^^^^^^^^^^
+  File "/Users/leonmenzies/Documents/Coding/FullStack/MacroDash/backend/venv/lib/python3.12/site-packages/pymysql/connections.py", line 782, in _read_bytes
+    data = self._rfile.read(num_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/socket.py", line 720, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+2024-12-28 10:39:37,261 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 10:39:37,262 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 10:39:37,263 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:39:38,959 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:39:38,972 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:39:43,996 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:39:43] "POST /api/auth/login HTTP/1.1" 200 -
+2024-12-28 10:39:46,788 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:39:46] "POST /api/auth/login HTTP/1.1" 200 -
+2024-12-28 10:39:48,287 ERROR root Thread-4 (process_request_thread) : Exception: 405 Method Not Allowed: The method is not allowed for the requested URL.
+2024-12-28 10:39:48,293 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:39:48] "POST /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:40:16,317 ERROR root Thread-5 (process_request_thread) : Exception: 'APIHelpers' object has no attribute 'has_parameters'
+2024-12-28 10:40:16,438 INFO werkzeug Thread-5 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:40:16] "POST /api/user/settings HTTP/1.1" 200 -
+2024-12-28 10:41:19,069 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/user_controller.py', reloading
+2024-12-28 10:41:19,191 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:41:21,040 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:41:21,050 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:41:23,556 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:41:23] "POST /api/auth/login HTTP/1.1" 200 -
+2024-12-28 10:41:25,510 ERROR root Thread-3 (process_request_thread) : Exception: 405 Method Not Allowed: The method is not allowed for the requested URL.
+2024-12-28 10:41:25,516 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:41:25] "POST /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:41:35,404 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/user_controller.py', reloading
+2024-12-28 10:41:35,520 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:41:37,293 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:41:37,300 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:42:01,803 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/user_controller.py', reloading
+2024-12-28 10:42:01,919 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:42:03,813 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:42:03,823 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:42:03,839 ERROR root Thread-2 (process_request_thread) : Exception: 405 Method Not Allowed: The method is not allowed for the requested URL.
+2024-12-28 10:42:03,843 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:42:03] "POST /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:43:29,162 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/user_controller.py', reloading
+2024-12-28 10:43:29,269 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:43:31,164 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:43:31,178 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:43:38,432 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 10:43:38,433 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 10:43:38,434 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:43:40,061 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:43:40,072 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:43:54,002 ERROR root Thread-2 (process_request_thread) : Exception: 405 Method Not Allowed: The method is not allowed for the requested URL.
+2024-12-28 10:43:54,009 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:43:54] "POST /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:44:35,772 ERROR root Thread-3 (process_request_thread) : Exception: 'UserInfo' object has no attribute 'first_name'
+2024-12-28 10:44:35,908 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:44:35] "GET /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:44:44,450 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/user_controller.py', reloading
+2024-12-28 10:44:44,571 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:44:46,457 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:44:46,467 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:44:48,442 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:44:48] "GET /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:54:21,363 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_info.py', reloading
+2024-12-28 10:54:21,499 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:54:23,415 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:54:23,425 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:54:36,753 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/user_controller.py', reloading
+2024-12-28 10:54:36,844 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:54:38,679 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:54:38,686 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:54:50,020 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/user_controller.py', reloading
+2024-12-28 10:54:50,121 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:55:10,069 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 10:55:10,072 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 10:55:10,073 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:55:11,752 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:55:11,763 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:55:40,551 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 10:55:40,553 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 10:55:40,554 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:55:42,403 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:55:42,414 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:55:43,654 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:55:43] "GET /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:56:06,906 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/user_controller.py', reloading
+2024-12-28 10:56:06,993 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:56:08,789 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:56:08,798 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:56:15,965 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 10:56:16,052 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:56:17,781 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:56:17,790 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:56:18,836 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 10:56:18,989 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:56:21,099 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:56:21,108 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:56:32,611 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/handlers/error_handlers.py', reloading
+2024-12-28 10:56:32,708 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 10:56:35,003 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 10:56:35,012 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097

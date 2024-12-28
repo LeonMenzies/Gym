@@ -8,12 +8,13 @@ import { SettingsSelectItem } from "./SettingsSelectItem";
 import { settingsAtom } from "~recoil/settingsAtom";
 import { getSettings, saveSettings } from "~utils/SettingsHandler";
 import { SettingsButtonItem } from "screens/settings/SettingsButtonItem";
-import { defaultUser, userAtom } from "~recoil/userAtom";
+import { defaultUser } from "~recoil/userAtom";
+import { usePersistentUser } from "~hooks/usePersistentUser";
 
 export const Settings: FC<any> = () => {
-    const setUser = useSetRecoilState(userAtom);
     const [settings, setSettings] = useRecoilState(settingsAtom);
     const setTheme = useSetRecoilState(themeAtom);
+    const { updateUser } = usePersistentUser();
 
     const colors = useRecoilValue(themeAtom);
     const styles = styling(colors);
@@ -48,7 +49,7 @@ export const Settings: FC<any> = () => {
     };
 
     const handleLogout = () => {
-        setUser(defaultUser);
+        updateUser(defaultUser);
     };
 
     return (

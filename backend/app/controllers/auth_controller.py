@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash
 from app.helpers.api_exception import ApiException
 from datetime import timedelta
 
-bp = Blueprint('auth', __name__, url_prefix='/api')
+bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 @bp.route('/login', methods=['POST'])
 def post_login():
@@ -41,7 +41,7 @@ def post_login():
 
         response = make_response(jsonify({
             'success': True,
-            'errorMessage': '',
+            'message': '',
             'data': user_info
         }))
         
@@ -108,7 +108,7 @@ def apple_login():
         access_token = create_access_token(identity={'id': user.id, 'email': user.email}, expires_delta=timedelta(days=30))
         response = make_response(jsonify({
             'success': True,
-            'errorMessage': '',
+            'message': '',
             'data': {'access_token': access_token}
         }))
         

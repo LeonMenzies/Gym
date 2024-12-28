@@ -9,7 +9,7 @@ def register_error_handlers(app):
         logging.error(f"ApiException: {error.message}")
         response = jsonify({
             'success': False,
-            'errorMessage': str(error.message),
+            'message': str(error.message),
         })
         return response
 
@@ -20,6 +20,6 @@ def register_error_handlers(app):
         traceback.print_exc()
         response = jsonify({
             'success': False,
-            'errorMessage': 'An unexpected error occurred. Please try again later.',
+            'message': 'An unexpected error occurred. Please try again later.',
         })
         return response

@@ -1,5 +1,10 @@
 ## Deployment
 
+### Database Migration
+
+flask db migrate -m "Message"
+flask db upgrade
+
 ### Frontend Deployment
 
 1. **Build the frontend**:

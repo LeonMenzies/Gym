@@ -38,7 +38,7 @@ class APIHelpers:
     def success_response(self, data=None):
         response = {
             'success': True,
-            'errorMessage': ''
+            'message': '',
         }
         if data is not None:
             response['data'] = data

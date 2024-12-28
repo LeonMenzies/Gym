@@ -1,11 +1,10 @@
 import { useEffect, FC, useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, TextInput, Button, StyleSheet } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { EmailLoginT, UserT } from "~types/Types";
 import usePostApi from "hooks/usePostApi";
-import { useSetRecoilState } from "recoil";
-import { userAtom } from "~recoil/userAtom";
 import { ACCOUNT_DEACTIVATED_STATUS } from "~utils/Constants";
+import { usePersistentUser } from "~hooks/usePersistentUser";
 
 type LoginContainerT = {
     showLoginPage: boolean;
@@ -17,7 +16,7 @@ export const LoginContainer: FC<LoginContainerT> = (props) => {
     const [email, setEmail] = useState("leon.menzies@hotmail.com");
     const [password, setPassword] = useState("Testing123!");
     const [postLoginResponse, postLoginLoading, postLogin] = usePostApi<EmailLoginT, UserT>("/login");
-    const setUser = useSetRecoilState(userAtom);
+    const { updateUser } = usePersistentUser();
 
     const handleEmailSignIn = () => {
         postLogin({ email, password });
@@ -26,7 +25,7 @@ export const LoginContainer: FC<LoginContainerT> = (props) => {
     useEffect(() => {
         if (postLoginResponse.success && postLoginResponse.data) {
             if (postLoginResponse.data.accountStatus != ACCOUNT_DEACTIVATED_STATUS) {
-                setUser(postLoginResponse.data);
+                updateUser(postLoginResponse.data);
             }
         }
 

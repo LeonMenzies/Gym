@@ -9,7 +9,8 @@
       "~navigation/*": ["navigation/*"],
       "~recoil/*": ["recoil/*"],
       "~types/*": ["types/*"],
-      "~utils/*": ["utils/*"]
+      "~utils/*": ["utils/*"],
+      "~hooks/*": ["hooks/*"]
     }
   },
   "extends": "expo/tsconfig.base",

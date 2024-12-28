@@ -6,7 +6,7 @@ import { ApiResponse } from "~types/Types";
 export const useFetchApi = <T>(endpoint: string, initialParams: Record<string, unknown> = {}): [ApiResponse<T>, boolean, (params?: Record<string, unknown>) => Promise<void>] => {
   const [results, setResults] = useState<ApiResponse<T>>({
     success: false,
-    errorMessage: "",
+    message: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -24,14 +24,14 @@ export const useFetchApi = <T>(endpoint: string, initialParams: Record<string, u
         });
 
         if (!response.data.success) {
-          throw new Error(response.data.errorMessage || "Failed to fetch");
+          throw new Error(response.data.message || "Failed to fetch");
         } else {
           setResults(response.data);
         }
       } catch (error: any) {
         setResults({
           success: false,
-          errorMessage: error.message,
+          message: error.message,
         });
       } finally {        
         setLoading(false);

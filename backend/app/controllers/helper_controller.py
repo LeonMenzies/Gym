@@ -11,7 +11,7 @@ def test_route(job_id):
 
         response = make_response(jsonify({
             'success': True,
-            'errorMessage': '',
+            'message': '',
         }))
     
         return response

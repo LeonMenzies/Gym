@@ -5,7 +5,7 @@ import { ApiResponse } from "~types/Types";
 export const usePostApi = <D, T>(endpoint: string): [ApiResponse<T>, boolean, (data: D) => Promise<void>] => {
   const [results, setResults] = useState<ApiResponse<T>>({
     success: false,
-    errorMessage: "",
+    message: "",
   });
   const [loading, setLoading] = useState(false);
   
@@ -24,7 +24,7 @@ export const usePostApi = <D, T>(endpoint: string): [ApiResponse<T>, boolean, (d
         
 
         if (!response.data.success) {
-          throw new Error(response.data.errorMessage || "Failed to fetch");
+          throw new Error(response.data.message || "Failed to fetch");
         } else {
           setResults(response.data);
         }
@@ -32,7 +32,7 @@ export const usePostApi = <D, T>(endpoint: string): [ApiResponse<T>, boolean, (d
 
         setResults({
           success: false,
-          errorMessage: error.message,
+          message: error.message,
         });
       } finally {
         setLoading(false);

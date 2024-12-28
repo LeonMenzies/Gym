@@ -27,6 +27,7 @@ module.exports = function (api) {
                         "~recoil": "./src/recoil",
                         "~types": "./src/types",
                         "~utils": "./src/utils",
+                        "~hooks": "./src/hooks",
                     },
                 },
             ],
