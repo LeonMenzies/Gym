@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useOnboardingData } from "~hooks/useOnboardingData";
 
 export type OnboardingData = {
     name?: string;
@@ -21,35 +22,43 @@ export const OnboardingContext = createContext<OnboardingContextType | undefined
 
 export const OnboardingProvider = ({ children }) => {
     const [data, setData] = useState<OnboardingData>({});
+    const [loading, setLoading] = useState(true);
+    const { fetchData, updateData } = useOnboardingData();
 
-    const updateData = (key: keyof OnboardingData, value: any) => {
+    useEffect(() => {
+        const loadInitialData = async () => {
+            await fetchData();
+            setLoading(false);
+        };
+        loadInitialData();
+    }, []);
+
+    const updateOnboardingData = async (key: keyof OnboardingData, value: any) => {
         setData((prev) => ({ ...prev, [key]: value }));
+        await updateData({ [key]: value });
     };
 
     const calculateProgress = () => {
-        const totalFields = Object.keys(data).length;
+        const totalFields = 8; // Total number of required fields
         const filledFields = Object.values(data).filter(Boolean).length;
         return (filledFields / totalFields) * 100;
     };
 
-    const canProceed = (stage: string): boolean => {
-        switch (stage) {
-            case "Name":
-                return !!data.name;
-            case "Age":
-                return !!data.age;
-            // ...other validations
-            default:
-                return true;
-        }
+    const canProceed = (stage: string) => {
+        // Implement your logic to determine if the user can proceed to the next stage
+        return true; // Placeholder implementation
     };
+
+    if (loading) {
+        return null; // Or loading spinner
+    }
 
     return (
         <OnboardingContext.Provider
             value={{
                 data,
                 progress: calculateProgress(),
-                updateData,
+                updateData: updateOnboardingData,
                 canProceed,
             }}
         >

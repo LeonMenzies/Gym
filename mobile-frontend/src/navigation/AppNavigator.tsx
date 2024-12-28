@@ -16,9 +16,6 @@ export const AppNavigator = () => {
     const user = useRecoilValue(userAtom);
 
     const fetchStack = () => {
-        console.log(user.accountStatus);
-        console.log(ACCOUNT_ACTIVE_STATUS);
-
         if (user.jwt && user.accountStatus == ACCOUNT_ACTIVE_STATUS) {
             return <Stack.Screen name="Main" component={TabNavigator} />;
         } else if (user.accountStatus == ACCOUNT_ONBOARDING_STATUS) {

@@ -525,3 +525,10 @@ KeyboardInterrupt
 2024-12-28 10:56:32,708 INFO werkzeug MainThread :  * Restarting with stat
 2024-12-28 10:56:35,003 WARNING werkzeug MainThread :  * Debugger is active!
 2024-12-28 10:56:35,012 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 10:57:58,965 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:57:58] "GET /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:58:00,174 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:58:00] "GET /api/user/info HTTP/1.1" 200 -
+2024-12-28 10:58:01,131 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 10:58:01] "GET /api/user/info HTTP/1.1" 200 -
+2024-12-28 11:11:04,478 ERROR root Thread-5 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:11:04,503 INFO werkzeug Thread-5 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:11:04] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:11:10,062 ERROR root Thread-6 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:11:10,064 INFO werkzeug Thread-6 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:11:10] "POST /api/api/user/info HTTP/1.1" 200 -
