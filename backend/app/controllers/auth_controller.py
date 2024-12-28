@@ -1,11 +1,11 @@
 from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import create_access_token, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import check_password_hash
-from models.users import Users
-from helpers.database import db
-from helpers.api_helpers import APIHelpers
+from app.models.users import Users
+from app.helpers.database import db
+from app.helpers.api_helpers import APIHelpers
 from werkzeug.security import generate_password_hash
-from helpers.api_exception import ApiException
+from app.helpers.api_exception import ApiException
 from datetime import timedelta
 
 bp = Blueprint('auth', __name__, url_prefix='/api')
@@ -30,7 +30,7 @@ def post_login():
             "firstName": user.firstName,
             "lastName": user.lastName,
             "email": user.email,
-            "accountStatus": user.accountStatus,
+            "accountStatus": user.accountStatus.value,
         }
 
         # Create a long-lived access token (e.g., 30 days)

@@ -1,14 +1,15 @@
-import os
-import logging
+from dotenv import load_dotenv
 from flask import Flask
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from .helpers.database import db
-from dotenv import load_dotenv
-from .cron.scheduler import create_scheduler
-from .helpers.apple_oauth import create_oauth
-from .handlers.error_handlers import register_error_handlers
+
+import os
+import logging
+from app.helpers.database import db
+from app.helpers.apple_oauth import create_oauth
+from app.handlers.error_handlers import register_error_handlers
+from .controllers import register_controllers
 
 migrate = Migrate()
 
@@ -40,11 +41,9 @@ def create_app():
     migrate.init_app(app, db)
 
     with app.app_context():
-        scheduler = create_scheduler(app, db)
         db.create_all()
 
-    # Register blueprints and handlers
-    from .controllers import register_controllers
+
     register_controllers(app)
     register_error_handlers(app)
     

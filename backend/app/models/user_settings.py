@@ -1,4 +1,4 @@
-from helpers.database import db
+from app.helpers.database import db
 
 class UserSettings(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

@@ -148,3 +148,172 @@
 2024-12-26 21:38:02,857 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
 2024-12-26 21:38:06,104 ERROR root Thread-2 (process_request_thread) : Exception: When initializing mapper Mapper[Users(users)], expression 'UserSettings' failed to locate a name ('UserSettings'). If this is a class name, consider adding this relationship() to the <class 'models.users.Users'> class after both dependent classes have been defined.
 2024-12-26 21:38:06,116 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [26/Dec/2024 21:38:06] "POST /api/login HTTP/1.1" 200 -
+2024-12-26 22:11:53,013 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-26 22:11:53,014 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-26 22:11:53,014 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 22:11:54,236 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-26 22:11:54,250 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-26 22:11:57,036 ERROR root Thread-2 (process_request_thread) : Exception: When initializing mapper Mapper[Users(users)], expression 'UserSettings' failed to locate a name ('UserSettings'). If this is a class name, consider adding this relationship() to the <class 'app.models.users.Users'> class after both dependent classes have been defined.
+2024-12-26 22:11:57,050 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [26/Dec/2024 22:11:57] "POST /api/login HTTP/1.1" 200 -
+2024-12-26 22:14:34,393 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_settings.py', reloading
+2024-12-26 22:14:34,528 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 22:14:41,259 ERROR flask_migrate MainThread : Error: Path doesn't exist: '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/migrations'.  Please use the 'init' command to create a new scripts folder.
+2024-12-26 22:14:47,885 ERROR flask_migrate MainThread : Error: Path doesn't exist: '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/migrations'.  Please use the 'init' command to create a new scripts folder.
+2024-12-26 22:15:52,883 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-26 22:15:52,884 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-26 22:15:52,885 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 22:15:54,264 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-26 22:15:54,275 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-26 22:16:33,238 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_settings.py', reloading
+2024-12-26 22:16:33,383 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 22:16:41,882 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-26 22:16:41,882 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-26 22:16:41,883 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 22:16:43,274 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-26 22:16:43,281 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-26 22:16:44,476 ERROR root Thread-2 (process_request_thread) : Exception: (pymysql.err.OperationalError) (1054, "Unknown column 'users.accounttatus' in 'field list'")
+[SQL: SELECT users.id AS users_id, users.`firstName` AS `users_firstName`, users.`lastName` AS `users_lastName`, users.email AS users_email, users.`passwordHash` AS `users_passwordHash`, users.accounttatus AS users_accounttatus 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'email_1': 'leon.menzies@hotmail.com', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2024-12-26 22:16:44,606 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [26/Dec/2024 22:16:44] "POST /api/login HTTP/1.1" 200 -
+2024-12-26 22:17:35,407 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-26 22:17:35,534 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 22:17:37,186 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-26 22:17:37,199 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-26 22:17:40,285 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-26 22:17:40,389 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 22:17:42,070 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-26 22:17:42,080 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-26 22:17:50,306 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-26 22:17:50,306 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-26 22:17:50,307 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 22:17:51,800 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-26 22:17:51,809 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-26 22:17:56,113 ERROR root Thread-2 (process_request_thread) : Exception: (pymysql.err.OperationalError) (1054, "Unknown column 'users.accountStatus' in 'field list'")
+[SQL: SELECT users.id AS users_id, users.`firstName` AS `users_firstName`, users.`lastName` AS `users_lastName`, users.email AS users_email, users.`passwordHash` AS `users_passwordHash`, users.`accountStatus` AS `users_accountStatus` 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'email_1': 'leon.menzies@hotmail.com', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2024-12-26 22:17:56,246 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [26/Dec/2024 22:17:56] "POST /api/login HTTP/1.1" 200 -
+2024-12-26 22:18:08,959 ERROR flask_migrate MainThread : Error: Path doesn't exist: '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/migrations'.  Please use the 'init' command to create a new scripts folder.
+2024-12-26 22:18:13,106 ERROR flask_migrate MainThread : Error: Path doesn't exist: '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/migrations'.  Please use the 'init' command to create a new scripts folder.
+2024-12-26 22:18:47,580 ERROR flask_migrate MainThread : Error: Directory migrations already exists and is not empty
+2024-12-26 22:19:09,396 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-26 22:19:09,397 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-26 22:19:09,399 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-26 22:19:10,760 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-26 22:19:10,773 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-26 22:19:16,197 ERROR root Thread-2 (process_request_thread) : Exception: (pymysql.err.OperationalError) (1054, "Unknown column 'users.accountStatus' in 'field list'")
+[SQL: SELECT users.id AS users_id, users.`firstName` AS `users_firstName`, users.`lastName` AS `users_lastName`, users.email AS users_email, users.`passwordHash` AS `users_passwordHash`, users.`accountStatus` AS `users_accountStatus` 
+FROM users 
+WHERE users.email = %(email_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'email_1': 'leon.menzies@hotmail.com', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2024-12-26 22:19:16,345 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [26/Dec/2024 22:19:16] "POST /api/login HTTP/1.1" 200 -
+2024-12-26 22:21:57,822 ERROR root Thread-3 (process_request_thread) : Exception: 'onboarding' is not among the defined enum values. Enum name: accountstatus. Possible values: ACTIVE, DEACTIVATED, ONBOARDING
+2024-12-26 22:21:57,950 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [26/Dec/2024 22:21:57] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 08:27:42,196 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-27 08:27:42,197 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-27 08:27:42,197 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-27 08:27:43,554 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-27 08:27:43,569 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-27 08:27:53,261 ERROR root Thread-2 (process_request_thread) : Exception: 'onboarding' is not among the defined enum values. Enum name: accountstatus. Possible values: ACTIVE, DEACTIVATED, ONBOARDING
+2024-12-27 08:27:53,393 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 08:27:53] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 20:32:36,112 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-27 20:32:36,115 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-27 20:32:36,116 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-27 20:32:37,425 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-27 20:32:37,437 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-27 20:34:22,924 ERROR root Thread-2 (process_request_thread) : Exception: 'onboarding' is not among the defined enum values. Enum name: accountstatus. Possible values: ACTIVE, DEACTIVATED, ONBOARDING
+2024-12-27 20:34:23,046 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:34:23] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 20:34:34,268 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-27 20:34:34,369 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-27 20:34:50,672 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-27 20:34:50,673 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-27 20:34:50,674 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-27 20:34:52,094 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-27 20:34:52,107 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-27 20:35:18,403 ERROR root Thread-2 (process_request_thread) : Exception: Object of type AccountStatus is not JSON serializable
+2024-12-27 20:35:18,523 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:35:18] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 20:39:44,854 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-27 20:39:44,975 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-27 20:39:46,528 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-27 20:39:46,539 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-27 20:44:03,095 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-27 20:44:03,096 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-27 20:44:03,098 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-27 20:44:04,468 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-27 20:44:04,481 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-27 20:44:21,527 ERROR root Thread-2 (process_request_thread) : Exception: 'onboarding' is not among the defined enum values. Enum name: accountstatus. Possible values: ACTIVE, DEACTIVATED, ONBOARDING
+2024-12-27 20:44:21,683 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:44:21] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 20:45:35,839 ERROR root Thread-3 (process_request_thread) : Exception: Object of type AccountStatus is not JSON serializable
+2024-12-27 20:45:35,955 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:45:35] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 20:46:30,873 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-27 20:46:30,995 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-27 20:46:32,600 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-27 20:46:32,613 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-27 20:46:45,582 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-27 20:46:45,582 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-27 20:46:45,583 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-27 20:46:46,872 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-27 20:46:46,881 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-27 20:46:47,772 ERROR root Thread-2 (process_request_thread) : Exception: Object of type AccountStatus is not JSON serializable
+2024-12-27 20:46:47,890 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:46:47] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 20:47:14,224 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-27 20:47:14,224 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-27 20:47:14,225 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-27 20:47:15,678 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-27 20:47:15,691 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-27 20:47:17,588 ERROR root Thread-2 (process_request_thread) : Exception: Object of type AccountStatus is not JSON serializable
+2024-12-27 20:47:17,711 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:47:17] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 20:48:49,935 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-27 20:49:08,284 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-27 20:49:08,285 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-27 20:49:08,285 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-27 20:49:09,606 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-27 20:49:09,617 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-27 20:49:10,099 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:49:10] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 20:49:44,018 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:49:44] "POST /api/login HTTP/1.1" 200 -
+2024-12-27 20:49:44,305 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [27/Dec/2024 20:49:44] "POST /api/login HTTP/1.1" 200 -

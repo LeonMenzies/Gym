@@ -1,11 +1,4 @@
-import os
-import sys
-
-# Add backend directory to path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_dir)
-
-from __init__ import create_app
+from app import create_app
 
 app = create_app()
 
