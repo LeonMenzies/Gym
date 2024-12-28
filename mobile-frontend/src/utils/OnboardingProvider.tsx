@@ -9,6 +9,10 @@ export type OnboardingData = {
     weight?: number;
     activityLevel?: string;
     weightGoal?: string;
+    fitnessLevel?: string;
+    goals?: string[];
+    focusAreas?: string[];
+    healthIssues?: string[];
 };
 
 type OnboardingContextType = {

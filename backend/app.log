@@ -532,3 +532,39 @@ KeyboardInterrupt
 2024-12-28 11:11:04,503 INFO werkzeug Thread-5 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:11:04] "GET /api/api/user/info HTTP/1.1" 200 -
 2024-12-28 11:11:10,062 ERROR root Thread-6 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
 2024-12-28 11:11:10,064 INFO werkzeug Thread-6 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:11:10] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:21,788 ERROR root Thread-7 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:21,795 INFO werkzeug Thread-7 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:21] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:24,034 ERROR root Thread-8 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:24,036 INFO werkzeug Thread-8 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:24] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:28,669 ERROR root Thread-9 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:28,674 INFO werkzeug Thread-9 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:28] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:29,933 ERROR root Thread-10 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:29,934 INFO werkzeug Thread-10 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:29] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:36,311 ERROR root Thread-11 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:36,315 INFO werkzeug Thread-11 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:36] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:36,360 ERROR root Thread-12 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:36,360 INFO werkzeug Thread-12 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:36] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:37,476 ERROR root Thread-13 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:37,477 INFO werkzeug Thread-13 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:37] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:37,639 ERROR root Thread-14 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:37,641 INFO werkzeug Thread-14 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:37] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:37,790 ERROR root Thread-15 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:37,791 INFO werkzeug Thread-15 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:37] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:37,942 ERROR root Thread-16 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:37,943 INFO werkzeug Thread-16 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:37] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:38,075 ERROR root Thread-17 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:38,076 INFO werkzeug Thread-17 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:38] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:38,226 ERROR root Thread-18 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:38,226 INFO werkzeug Thread-18 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:38] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:38,382 ERROR root Thread-19 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:38,384 INFO werkzeug Thread-19 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:38] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:38,415 ERROR root Thread-20 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:38,416 INFO werkzeug Thread-20 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:38] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:38,638 ERROR root Thread-21 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:38,640 INFO werkzeug Thread-21 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:38] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:38,663 ERROR root Thread-22 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:38,664 INFO werkzeug Thread-22 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:38] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:38,864 ERROR root Thread-23 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:38,865 INFO werkzeug Thread-23 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:38] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 11:22:38,958 ERROR root Thread-24 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 11:22:38,959 INFO werkzeug Thread-24 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:38] "POST /api/api/user/info HTTP/1.1" 200 -
