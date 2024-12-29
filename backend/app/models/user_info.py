@@ -17,11 +17,6 @@ class Gender(str, Enum):
     FEMALE = 'FEMALE'
     OTHER = 'OTHER'
 
-class WeightGoal(str, Enum):
-    LOSE = 'LOSE'
-    MAINTAIN = 'MAINTAIN'
-    GAIN = 'GAIN'
-
 user_info_focus_areas = db.Table('user_info_focus_areas',
     db.Column('user_info_id', db.Integer, db.ForeignKey('user_info.id'), primary_key=True),
     db.Column('focus_area_id', db.Integer, db.ForeignKey('focus_areas.id'), primary_key=True)
@@ -32,6 +27,11 @@ user_info_goals = db.Table('user_info_goals',
     db.Column('goal_id', db.Integer, db.ForeignKey('goals.id'), primary_key=True)
 )
 
+user_info_health_issues = db.Table('user_info_health_issues',
+    db.Column('user_info_id', db.Integer, db.ForeignKey('user_info.id'), primary_key=True),
+    db.Column('health_issue_id', db.Integer, db.ForeignKey('health_issues.id'), primary_key=True)
+)
+
 class FocusArea(db.Model):
     __tablename__ = 'focus_areas'
     id = db.Column(db.Integer, primary_key=True)
@@ -39,6 +39,11 @@ class FocusArea(db.Model):
 
 class Goal(db.Model):
     __tablename__ = 'goals'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+
+class HealthIssue(db.Model):
+    __tablename__ = 'health_issues'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
 
@@ -60,11 +65,13 @@ class UserInfo(db.Model):
     # Fitness Profile
     activity_level = db.Column(db.Enum(ActivityLevel), nullable=True)
     fitness_level = db.Column(db.Enum(FitnessLevel), nullable=True)
-    weight_goal = db.Column(db.Enum(WeightGoal), nullable=True)
+    weekly_frequency = db.Column(db.Integer, nullable=True)
+    weight_goal = db.Column(db.Float, nullable=True)
     
     # Relationships
     focus_areas = db.relationship('FocusArea', secondary=user_info_focus_areas, lazy='subquery')
     goals = db.relationship('Goal', secondary=user_info_goals, lazy='subquery')
-
+    health_issues = db.relationship('HealthIssue', secondary=user_info_health_issues, lazy='subquery')
+    
     def __repr__(self):
         return f'<UserInfo {self.first_name} {self.last_name}>'

@@ -27,7 +27,7 @@ export const GoalsStage = ({ navigation, route }) => {
 
     return (
         <OnboardingContainer
-            complete={!!data.fitnessLevel}
+            complete={data.goals.length > 0}
             navigation={navigation}
             route={route}
             stage={
@@ -44,7 +44,7 @@ export const GoalsStage = ({ navigation, route }) => {
                                         styles.goalChip,
                                         {
                                             backgroundColor: isSelected ? colors.primary : colors.background,
-                                            borderColor: isSelected ? colors.primary : colors.backgroundSecondary,
+                                            borderColor: isSelected ? colors.primary : colors.primary,
                                         },
                                     ]}
                                     onPress={() => toggleGoal(goal.id)}

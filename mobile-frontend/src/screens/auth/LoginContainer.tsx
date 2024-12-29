@@ -15,7 +15,7 @@ export const LoginContainer: FC<LoginContainerT> = (props) => {
     const { showLoginPage, setShowLoginPage } = props;
     const [email, setEmail] = useState("leon.menzies@hotmail.com");
     const [password, setPassword] = useState("Testing123!");
-    const [postLoginResponse, postLoginLoading, postLogin] = usePostApi<EmailLoginT, UserT>("/login");
+    const [postLoginResponse, postLoginLoading, postLogin] = usePostApi<EmailLoginT, UserT>("/auth/login");
     const { updateUser } = usePersistentUser();
 
     const handleEmailSignIn = () => {

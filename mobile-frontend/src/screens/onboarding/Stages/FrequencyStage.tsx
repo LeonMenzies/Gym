@@ -19,7 +19,7 @@ export const FrequencyStage = ({ navigation, route }) => {
 
     return (
         <OnboardingContainer
-            complete={!!data.frequency}
+            complete={!!data.weekly_frequency}
             navigation={navigation}
             route={route}
             stage={
@@ -33,10 +33,10 @@ export const FrequencyStage = ({ navigation, route }) => {
                             style={[
                                 styles.option,
                                 {
-                                    borderColor: data?.frequency === option.id ? colors.primary : colors.backgroundSecondary,
+                                    borderColor: data?.weekly_frequency === option.id ? colors.primary : colors.primary,
                                 },
                             ]}
-                            onPress={() => updateData("frequency", option.id)}
+                            onPress={() => updateData("weekly_frequency", option.id)}
                         >
                             <Text style={[styles.optionTitle, { color: colors.textPrimary }]}>{option.label}</Text>
                             <Text style={[styles.optionDescription, { color: colors.textSecondary }]}>{option.description}</Text>

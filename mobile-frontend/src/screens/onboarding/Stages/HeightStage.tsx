@@ -32,7 +32,7 @@ export const HeightStage = ({ navigation, route }) => {
 
                     {isMetric ? (
                         <TextInput
-                            style={[styles.input, { color: colors.textPrimary, borderColor: colors.backgroundSecondary }]}
+                            style={[styles.input, { color: colors.textPrimary, borderColor: colors.primary }]}
                             value={data.height?.toString()}
                             onChangeText={(value) => updateData("height", Number(value))}
                             keyboardType="numeric"
@@ -42,7 +42,7 @@ export const HeightStage = ({ navigation, route }) => {
                     ) : (
                         <View style={styles.imperialInputs}>
                             <TextInput
-                                style={[styles.input, styles.imperialInput, { color: colors.textPrimary, borderColor: colors.backgroundSecondary }]}
+                                style={[styles.input, styles.imperialInput, { color: colors.textPrimary, borderColor: colors.primary }]}
                                 value={feet}
                                 onChangeText={setFeet}
                                 keyboardType="numeric"
@@ -50,7 +50,7 @@ export const HeightStage = ({ navigation, route }) => {
                                 placeholderTextColor={colors.textSecondary}
                             />
                             <TextInput
-                                style={[styles.input, styles.imperialInput, { color: colors.textPrimary, borderColor: colors.backgroundSecondary }]}
+                                style={[styles.input, styles.imperialInput, { color: colors.textPrimary, borderColor: colors.primary }]}
                                 value={inches}
                                 onChangeText={setInches}
                                 keyboardType="numeric"

@@ -6,24 +6,10 @@ import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
 import { useContext } from "react";
 
-const convertLbsToKg = (lbs: number) => {
-    return lbs * 0.453592;
-};
-
 export const WeightStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
-    const [weight, setWeight] = useState(data?.weight?.toString() || "");
     const [isMetric, setIsMetric] = useState(true);
-
-    const handleNext = async () => {
-        if (weight) {
-            const weightValue = Number(weight);
-            const weightInKg = isMetric ? weightValue : convertLbsToKg(weightValue);
-            await updateData("weight", weightInKg);
-            navigation.navigate("CurrentFitnessStage");
-        }
-    };
 
     return (
         <OnboardingContainer
@@ -44,9 +30,9 @@ export const WeightStage = ({ navigation, route }) => {
                     </View>
 
                     <TextInput
-                        style={[styles.input, { color: colors.textPrimary, borderColor: colors.backgroundSecondary }]}
-                        value={weight}
-                        onChangeText={setWeight}
+                        style={[styles.input, { color: colors.textPrimary, borderColor: colors.primary }]}
+                        value={data?.weight?.toString()}
+                        onChangeText={(v) => updateData("weight", v)}
                         keyboardType="numeric"
                         placeholder={`Weight in ${isMetric ? "kg" : "lbs"}`}
                         placeholderTextColor={colors.textSecondary}

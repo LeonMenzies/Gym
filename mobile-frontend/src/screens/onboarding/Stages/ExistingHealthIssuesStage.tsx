@@ -22,19 +22,19 @@ export const ExistingHealthIssuesStage = ({ navigation, route }) => {
 
     const toggleCondition = (conditionId: string) => {
         if (conditionId === "NONE") {
-            updateData("healthIssues", ["NONE"]);
+            updateData("health_issues", ["NONE"]);
             return;
         }
 
-        const currentConditions = data.healthIssues || [];
+        const currentConditions = data.health_issues || [];
         let updatedConditions = currentConditions.includes(conditionId) ? currentConditions.filter((id) => id !== conditionId) : [...currentConditions.filter((id) => id !== "NONE"), conditionId];
 
-        updateData("healthIssues", updatedConditions);
+        updateData("health_issues", updatedConditions);
     };
 
     return (
         <OnboardingContainer
-            complete={data.healthIssues.length > 0}
+            complete={data.health_issues.length > 0}
             navigation={navigation}
             route={route}
             stage={
@@ -44,7 +44,7 @@ export const ExistingHealthIssuesStage = ({ navigation, route }) => {
 
                     <View style={styles.conditionsContainer}>
                         {HEALTH_CONDITIONS.map((condition) => {
-                            const isSelected = data.healthIssues?.includes(condition.id);
+                            const isSelected = data.health_issues?.includes(condition.id);
                             const isNone = condition.id === "NONE";
 
                             return (
@@ -54,7 +54,7 @@ export const ExistingHealthIssuesStage = ({ navigation, route }) => {
                                         styles.condition,
                                         {
                                             backgroundColor: isSelected ? colors.primary : colors.background,
-                                            borderColor: isSelected ? colors.primary : colors.backgroundSecondary,
+                                            borderColor: isSelected ? colors.primary : colors.primary,
                                         },
                                     ]}
                                     onPress={() => toggleCondition(condition.id)}

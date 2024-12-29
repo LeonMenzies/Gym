@@ -8,7 +8,7 @@ export const NameStage = ({ navigation, route }) => {
 
     return (
         <OnboardingContainer
-            complete={!!data.fitnessLevel}
+            complete={!!data.fitness_level}
             navigation={navigation}
             route={route}
             stage={<TextInput value={data.name} onChangeText={(text) => updateData("name", text)} placeholder="Enter your name" title={""} maxLength={0} keyboardType={undefined} />}

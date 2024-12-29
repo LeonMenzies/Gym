@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { useOnboardingData } from "~hooks/useOnboardingData";
+import { createContext, useEffect, useState } from "react";
+import useFetchApi from "~hooks/useFetchApi";
+import usePostApi from "~hooks/usePostApi";
 
 export type OnboardingData = {
     name?: string;
@@ -7,20 +8,19 @@ export type OnboardingData = {
     gender?: string;
     height?: number;
     weight?: number;
-    activityLevel?: string;
-    weightGoal?: string;
-    fitnessLevel?: string;
-    frequency?: string;
+    activity_level?: string;
+    weight_goal?: string;
+    fitness_level?: string;
+    weekly_frequency?: string;
     goals?: string[];
-    focusAreas?: string[];
-    healthIssues?: string[];
+    focus_areas?: string[];
+    health_issues?: string[];
 };
 
 type OnboardingContextType = {
     data: OnboardingData;
-    progress: number;
-    updateData: (key: keyof OnboardingData, value: any) => void;
-    canProceed: (stage: string) => boolean;
+    updateData: (key: keyof OnboardingData, value: any) => Promise<void>;
+    submitData: () => Promise<void>;
 };
 
 export const OnboardingContext = createContext<OnboardingContextType | undefined>(undefined);
@@ -28,43 +28,47 @@ export const OnboardingContext = createContext<OnboardingContextType | undefined
 export const OnboardingProvider = ({ children }) => {
     const [data, setData] = useState<OnboardingData>({});
     const [loading, setLoading] = useState(true);
-    const { fetchData, updateData } = useOnboardingData();
+    const [fetchUserInfoResponse, , fetchUserInfoData] = useFetchApi<OnboardingData>("/user/info");
+    const [postUserInfoResponse, , postUserInfoData] = usePostApi<Partial<OnboardingData>, OnboardingData>("/user/info");
 
     useEffect(() => {
         const loadInitialData = async () => {
-            await fetchData();
+            await fetchUserInfoData();
             setLoading(false);
         };
         loadInitialData();
     }, []);
 
+    useEffect(() => {
+        if (fetchUserInfoResponse) {
+            setData(fetchUserInfoResponse.data);
+        }
+    }, [fetchUserInfoResponse]);
+
+    useEffect(() => {
+        if (postUserInfoResponse) {
+            setData(postUserInfoResponse.data);
+        }
+    }, [postUserInfoResponse]);
+
     const updateOnboardingData = async (key: keyof OnboardingData, value: any) => {
         setData((prev) => ({ ...prev, [key]: value }));
-        await updateData({ [key]: value });
     };
 
-    const calculateProgress = () => {
-        const totalFields = 8; // Total number of required fields
-        const filledFields = Object.values(data).filter(Boolean).length;
-        return (filledFields / totalFields) * 100;
+    const submitOnboardingData = async () => {
+        postUserInfoData(data);
     };
 
-    const canProceed = (stage: string) => {
-        // Implement your logic to determine if the user can proceed to the next stage
-        return true; // Placeholder implementation
-    };
-
-    if (loading) {
-        return null; // Or loading spinner
+    if (loading || !data) {
+        return null;
     }
 
     return (
         <OnboardingContext.Provider
             value={{
                 data,
-                progress: calculateProgress(),
                 updateData: updateOnboardingData,
-                canProceed,
+                submitData: submitOnboardingData,
             }}
         >
             {children}

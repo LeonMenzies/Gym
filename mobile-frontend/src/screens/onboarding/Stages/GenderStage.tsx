@@ -26,7 +26,7 @@ export const GenderStage = ({ navigation, route }) => {
                     {GENDERS.map((gender) => (
                         <Pressable
                             key={gender.id}
-                            style={[styles.option, { borderColor: data?.gender === gender.id ? colors.primary : colors.backgroundSecondary }]}
+                            style={[styles.option, { borderColor: data?.gender === gender.id ? colors.primary : colors.primary }]}
                             onPress={() => updateData("gender", gender.id)}
                         >
                             <Text style={[styles.optionText, { color: colors.textPrimary }]}>{gender.label}</Text>

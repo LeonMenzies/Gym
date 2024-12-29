@@ -25,14 +25,14 @@ export const ActivityLevelStage = ({ navigation, route }) => {
 
     return (
         <OnboardingContainer
-            complete={!!data?.activityLevel}
+            complete={!!data?.activity_level}
             navigation={navigation}
             route={route}
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>What's your activity level?</Text>
                     {ACTIVITY_LEVELS.map((level) => (
-                        <ActivityLevelOption key={level.id} level={level} isSelected={data?.activityLevel === level.id} onSelect={() => updateData("activityLevel", level.id)} />
+                        <ActivityLevelOption key={level.id} level={level} isSelected={data?.activity_level === level.id} onSelect={() => updateData("activity_level", level.id)} />
                     ))}
                 </View>
             }

@@ -44,7 +44,7 @@ export const OnboardingNavigator = () => {
                 screenOptions={{
                     headerShown: false,
                     contentStyle: { backgroundColor: colors.background },
-                    animation: "slide_from_right",
+                    animation: "fade",
                 }}
             >
                 {ONBOARDING_FLOW.map(({ name, component }, index) => (

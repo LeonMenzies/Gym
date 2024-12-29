@@ -17,7 +17,7 @@ export const WeightGoalStage = ({ navigation, route }) => {
 
     return (
         <OnboardingContainer
-            complete={!!data.fitnessLevel}
+            complete={!!data.weight_goal}
             navigation={navigation}
             route={route}
             stage={
@@ -26,8 +26,8 @@ export const WeightGoalStage = ({ navigation, route }) => {
                     {WEIGHT_GOALS.map((goal) => (
                         <Pressable
                             key={goal.id}
-                            style={[styles.option, { borderColor: data?.weightGoal === goal.id ? colors.primary : colors.backgroundSecondary }]}
-                            onPress={() => updateData("weightGoal", goal.id)}
+                            style={[styles.option, { borderColor: data?.weight_goal === goal.id ? colors.primary : colors.primary }]}
+                            onPress={() => updateData("weight_goal", goal.id)}
                         >
                             <Text style={[styles.optionTitle, { color: colors.textPrimary }]}>{goal.label}</Text>
                             <Text style={[styles.optionDescription, { color: colors.textSecondary }]}>{goal.description}</Text>

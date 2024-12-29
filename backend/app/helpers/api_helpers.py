@@ -25,6 +25,15 @@ class APIHelpers:
         else:
             parameters = self.request.form.get(param, default)
         return parameters
+    
+    def has_parameters(self, param):
+        """Check if parameter exists in request"""
+        if self.request.method == 'GET':
+            return param in self.request.args
+        elif self.request.is_json:
+            return param in self.request.json
+        else:
+            return param in self.request.form
 
     def validate_required_parameters(self, required_params):
         missing_params = []

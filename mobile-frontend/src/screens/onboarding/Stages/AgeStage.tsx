@@ -8,7 +8,6 @@ import { themeAtom } from "~recoil/themeAtom";
 export const AgeStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
-    const [age, setAge] = useState(data?.age?.toString() || "");
 
     return (
         <OnboardingContainer
@@ -19,9 +18,9 @@ export const AgeStage = ({ navigation, route }) => {
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>How old are you?</Text>
                     <TextInput
-                        style={[styles.input, { color: colors.textPrimary, borderColor: colors.backgroundSecondary }]}
-                        value={age}
-                        onChangeText={setAge}
+                        style={[styles.input, { color: colors.textPrimary, borderColor: colors.primary }]}
+                        value={data?.age.toString() || ""}
+                        onChangeText={(v) => updateData("age", v)}
                         keyboardType="numeric"
                         placeholder="Enter your age"
                         placeholderTextColor={colors.textSecondary}

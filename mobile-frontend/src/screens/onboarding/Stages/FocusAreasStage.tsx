@@ -20,14 +20,14 @@ export const FocusAreasStage = ({ navigation, route }) => {
     const colors = useRecoilValue(themeAtom);
 
     const toggleArea = (areaId: string) => {
-        const currentAreas = data.focusAreas || [];
+        const currentAreas = data.focus_areas || [];
         const updatedAreas = currentAreas.includes(areaId) ? currentAreas.filter((id) => id !== areaId) : [...currentAreas, areaId];
-        updateData("focusAreas", updatedAreas);
+        updateData("focus_areas", updatedAreas);
     };
 
     return (
         <OnboardingContainer
-            complete={data.focusAreas.length > 0}
+            complete={data.focus_areas.length > 0}
             navigation={navigation}
             route={route}
             stage={
@@ -36,7 +36,7 @@ export const FocusAreasStage = ({ navigation, route }) => {
                     <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Select all that apply</Text>
                     <View style={styles.grid}>
                         {FOCUS_AREAS.map((area) => {
-                            const isSelected = data.focusAreas?.includes(area.id);
+                            const isSelected = data.focus_areas?.includes(area.id);
                             return (
                                 <Pressable
                                     key={area.id}
@@ -44,7 +44,7 @@ export const FocusAreasStage = ({ navigation, route }) => {
                                         styles.areaCard,
                                         {
                                             backgroundColor: isSelected ? colors.primary : colors.background,
-                                            borderColor: isSelected ? colors.primary : colors.backgroundSecondary,
+                                            borderColor: isSelected ? colors.primary : colors.primary,
                                         },
                                     ]}
                                     onPress={() => toggleArea(area.id)}
