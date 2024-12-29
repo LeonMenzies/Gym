@@ -14,28 +14,11 @@ export const OnboardingProgress: FC<Props> = ({ progress, total }) => {
 
     useEffect(() => {
         Animated.timing(progressAnim, {
-            toValue: progress,
+            toValue: (progress / total) * 100,
             duration: 300,
             useNativeDriver: false,
         }).start();
-    }, [progress]);
-
-    const renderDots = () => {
-        return Array(total)
-            .fill(0)
-            .map((_, i) => (
-                <View
-                    key={i}
-                    style={[
-                        styles.dot,
-                        {
-                            backgroundColor: i < progress ? colors.primary : colors.backgroundSecondary,
-                            transform: [{ scale: i < progress ? 1.2 : 1 }],
-                        },
-                    ]}
-                />
-            ));
-    };
+    }, [progress, total]);
 
     return (
         <View style={styles.wrapper}>
@@ -46,14 +29,29 @@ export const OnboardingProgress: FC<Props> = ({ progress, total }) => {
                         {
                             backgroundColor: colors.primary,
                             width: progressAnim.interpolate({
-                                inputRange: [0, total],
+                                inputRange: [0, 100],
                                 outputRange: ["0%", "100%"],
                             }),
                         },
                     ]}
                 />
             </View>
-            <View style={styles.dotsContainer}>{renderDots()}</View>
+            <View style={styles.dotsContainer}>
+                {Array(total)
+                    .fill(0)
+                    .map((_, i) => (
+                        <View
+                            key={i}
+                            style={[
+                                styles.dot,
+                                {
+                                    backgroundColor: i < progress ? colors.primary : colors.backgroundSecondary,
+                                    transform: [{ scale: i < progress ? 1.2 : 1 }],
+                                },
+                            ]}
+                        />
+                    ))}
+            </View>
         </View>
     );
 };
