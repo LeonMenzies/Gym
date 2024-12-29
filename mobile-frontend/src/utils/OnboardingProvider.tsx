@@ -40,6 +40,8 @@ export const OnboardingProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
+        console.log(fetchUserInfoResponse);
+
         if (fetchUserInfoResponse) {
             setData(fetchUserInfoResponse.data);
         }
