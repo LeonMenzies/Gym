@@ -12,15 +12,9 @@ const ACTIVITY_LEVELS = [
     { id: "VERY_ACTIVE", label: "Very Active", description: "6-7 days/week" },
 ];
 
-export const ActivityLevelStage = ({ navigation }) => {
+export const ActivityLevelStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
-
-    const handleNext = async () => {
-        if (data.activityLevel) {
-            navigation.navigate("AgeStage");
-        }
-    };
 
     const ActivityLevelOption = ({ level, isSelected, onSelect }) => (
         <Pressable style={[styles.option, isSelected && { borderColor: colors.primary }]} onPress={onSelect}>
@@ -31,10 +25,9 @@ export const ActivityLevelStage = ({ navigation }) => {
 
     return (
         <OnboardingContainer
-            currentStep={1}
-            totalSteps={8}
-            onPressBack={() => navigation.goBack()}
-            onPressNext={handleNext}
+            complete={!!data?.activityLevel}
+            navigation={navigation}
+            route={route}
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>What's your activity level?</Text>

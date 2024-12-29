@@ -568,3 +568,341 @@ KeyboardInterrupt
 2024-12-28 11:22:38,865 INFO werkzeug Thread-23 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:38] "POST /api/api/user/info HTTP/1.1" 200 -
 2024-12-28 11:22:38,958 ERROR root Thread-24 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
 2024-12-28 11:22:38,959 INFO werkzeug Thread-24 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 11:22:38] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:41:14,086 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 20:41:14,086 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 20:41:14,087 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 20:41:15,905 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 20:41:15,919 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 20:41:26,294 ERROR root Thread-2 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:41:26,306 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:41:26] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:43:35,336 ERROR root Thread-3 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:43:35,343 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:43:35] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:44:18,557 ERROR root Thread-4 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:44:18,566 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:44:18] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:52:10,410 ERROR root Thread-5 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:52:10,416 INFO werkzeug Thread-5 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:52:10] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:52:45,259 ERROR root Thread-6 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:52:45,265 INFO werkzeug Thread-6 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:52:45] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:53:04,028 ERROR root Thread-7 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:53:04,032 INFO werkzeug Thread-7 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:53:04] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:53:19,676 ERROR root Thread-8 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:53:19,681 INFO werkzeug Thread-8 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:53:19] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:55:09,410 ERROR root Thread-9 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:55:09,416 INFO werkzeug Thread-9 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:55:09] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:55:42,418 ERROR root Thread-10 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:55:42,426 INFO werkzeug Thread-10 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:55:42] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:55:49,280 ERROR root Thread-11 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:55:49,284 INFO werkzeug Thread-11 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:55:49] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:55:50,328 ERROR root Thread-12 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:55:50,329 INFO werkzeug Thread-12 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:55:50] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:55:53,371 ERROR root Thread-13 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:55:53,373 INFO werkzeug Thread-13 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:55:53] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 20:55:54,122 ERROR root Thread-14 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 20:55:54,124 INFO werkzeug Thread-14 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 20:55:54] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:04:47,959 ERROR root Thread-15 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:04:48,080 INFO werkzeug Thread-15 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:04:48] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:04:51,954 ERROR root Thread-16 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:04:51,958 INFO werkzeug Thread-16 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:04:51] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:06:22,157 ERROR root Thread-17 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:06:22,165 INFO werkzeug Thread-17 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:06:22] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:10:26,775 ERROR root Thread-18 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:10:26,779 INFO werkzeug Thread-18 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:10:26] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:13:22,644 ERROR root Thread-19 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:13:22,652 INFO werkzeug Thread-19 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:13:22] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:13:25,860 ERROR root Thread-20 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:13:25,861 INFO werkzeug Thread-20 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:13:25] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:13:43,056 ERROR root Thread-21 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:13:43,066 INFO werkzeug Thread-21 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:13:43] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:13:44,112 ERROR root Thread-22 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:13:44,113 INFO werkzeug Thread-22 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:13:44] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:15:08,445 ERROR root Thread-23 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:15:08,449 INFO werkzeug Thread-23 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:15:08] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:15:13,825 ERROR root Thread-24 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:15:13,827 INFO werkzeug Thread-24 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:15:13] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:15:38,551 ERROR root Thread-25 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:15:38,556 INFO werkzeug Thread-25 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:15:38] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:15:39,226 ERROR root Thread-26 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:15:39,228 INFO werkzeug Thread-26 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:15:39] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:21:27,421 ERROR root Thread-27 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:21:27,430 INFO werkzeug Thread-27 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:21:27] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:23:17,138 ERROR root Thread-28 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:23:17,145 INFO werkzeug Thread-28 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:23:17] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:23:21,628 ERROR root Thread-29 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:23:21,633 INFO werkzeug Thread-29 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:23:21] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:23:21,722 ERROR root Thread-30 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:23:21,724 INFO werkzeug Thread-30 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:23:21] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:23:21,765 ERROR root Thread-31 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:23:21,768 INFO werkzeug Thread-31 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:23:21] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:23:21,906 ERROR root Thread-32 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:23:21,908 INFO werkzeug Thread-32 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:23:21] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:24:46,054 ERROR root Thread-33 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:24:46,060 INFO werkzeug Thread-33 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:24:46] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:25:02,856 ERROR root Thread-34 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:25:02,861 INFO werkzeug Thread-34 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:25:02] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:25:20,865 ERROR root Thread-35 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:25:20,877 INFO werkzeug Thread-35 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:25:20] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:25:29,992 ERROR root Thread-36 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:25:29,993 INFO werkzeug Thread-36 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:25:29] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:25:31,129 ERROR root Thread-37 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:25:31,133 INFO werkzeug Thread-37 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:25:31] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:25:31,578 ERROR root Thread-38 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:25:31,580 INFO werkzeug Thread-38 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:25:31] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:26:48,017 ERROR root Thread-39 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:26:48,020 INFO werkzeug Thread-39 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:26:48] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:26:58,546 ERROR root Thread-40 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:26:58,548 INFO werkzeug Thread-40 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:26:58] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:29:31,065 ERROR root Thread-41 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:29:31,072 INFO werkzeug Thread-41 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:29:31] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:29:53,125 ERROR root Thread-42 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:29:53,131 INFO werkzeug Thread-42 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:29:53] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:30:49,673 ERROR root Thread-43 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:30:49,680 INFO werkzeug Thread-43 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:30:49] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:32:10,746 ERROR root Thread-44 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:32:10,749 INFO werkzeug Thread-44 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:32:10] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:32:30,936 ERROR root Thread-45 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:32:30,938 INFO werkzeug Thread-45 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:32:30] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:32:32,649 ERROR root Thread-46 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:32:32,650 INFO werkzeug Thread-46 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:32:32] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:33:05,486 ERROR root Thread-47 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:33:05,489 INFO werkzeug Thread-47 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:33:05] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:35:03,258 ERROR root Thread-48 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:35:03,267 INFO werkzeug Thread-48 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:35:03] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:35:08,842 ERROR root Thread-49 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:35:08,845 INFO werkzeug Thread-49 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:35:08] "POST /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:39:23,353 ERROR root Thread-50 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:39:23,366 INFO werkzeug Thread-50 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:39:23] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:40:33,303 ERROR root Thread-51 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:40:33,312 INFO werkzeug Thread-51 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:40:33] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:42:08,585 ERROR root Thread-52 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:42:08,590 INFO werkzeug Thread-52 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:42:08] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:44:04,536 ERROR root Thread-53 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 21:44:04,540 INFO werkzeug Thread-53 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:44:04] "GET /api/api/user/info HTTP/1.1" 200 -
+2024-12-28 21:53:52,959 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/user_controller.py', reloading
+2024-12-28 21:53:53,148 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 21:53:55,189 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 21:53:55,209 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 21:54:57,607 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-28 21:54:57,721 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 21:54:59,578 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 21:54:59,586 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 21:55:40,451 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-28 21:55:40,567 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 21:55:42,456 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 21:55:42,463 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 21:55:44,532 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-28 21:55:44,611 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 21:55:46,327 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 21:55:46,336 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 21:55:47,378 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-28 21:55:47,460 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 21:55:49,110 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 21:55:49,117 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 21:55:59,321 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-28 21:55:59,417 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 21:56:01,187 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 21:56:01,198 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 21:56:08,362 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_info.py', reloading
+2024-12-28 21:56:08,442 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 21:59:10,879 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 21:59:10,883 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 21:59:10,884 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 21:59:12,694 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 21:59:12,706 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 21:59:14,632 ERROR root Thread-2 (process_request_thread) : Exception: (pymysql.err.OperationalError) (1054, "Unknown column 'user_info.firstName' in 'field list'")
+[SQL: SELECT user_info.id AS user_info_id, user_info.user_id AS user_info_user_id, user_info.`firstName` AS `user_info_firstName`, user_info.`lastName` AS `user_info_lastName`, user_info.age AS user_info_age, user_info.gender AS user_info_gender, user_info.height AS user_info_height, user_info.weight AS user_info_weight, user_info.activity_level AS user_info_activity_level, user_info.fitness_level AS user_info_fitness_level, user_info.weight_goal AS user_info_weight_goal 
+FROM user_info 
+WHERE user_info.user_id = %(user_id_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': 1, 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2024-12-28 21:59:14,763 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 21:59:14] "POST /api/user/info HTTP/1.1" 200 -
+2024-12-28 22:01:39,846 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_info.py', reloading
+2024-12-28 22:01:39,960 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:01:41,945 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:01:41,964 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:01:44,020 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_info.py', reloading
+2024-12-28 22:01:44,104 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:01:45,985 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:01:45,992 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:01:56,198 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-28 22:01:56,286 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:01:58,163 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:01:58,174 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:02:09,467 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:02:09,559 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:02:11,715 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:02:11,729 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:02:17,869 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:02:17,955 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:02:19,723 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:02:19,733 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:02:21,791 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:02:21,873 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:02:23,674 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:02:23,685 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:02:27,807 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:02:27,877 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:02:29,484 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:02:29,493 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:02:39,715 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/user_controller.py', reloading
+2024-12-28 22:02:39,821 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:02:41,810 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:02:41,820 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:03:09,387 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:03:09,483 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:03:11,262 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:03:11,270 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:03:44,906 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:03:44,999 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:03:46,823 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:03:46,831 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:04:18,408 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:04:18,490 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:04:20,481 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:04:20,489 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:04:49,055 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:04:49,175 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:04:51,014 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:04:51,023 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:06:46,154 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 22:06:46,156 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 22:06:46,157 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:06:48,099 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:06:48,110 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:06:51,267 ERROR root Thread-2 (process_request_thread) : ApiException: Invalid email or password
+2024-12-28 22:06:51,580 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:06:51] "POST /api/auth/login HTTP/1.1" 200 -
+2024-12-28 22:07:26,924 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:07:27,041 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:07:28,914 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:07:28,922 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:07:30,863 ERROR root Thread-2 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 22:07:30,868 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:07:30] "POST /api/signup HTTP/1.1" 200 -
+2024-12-28 22:07:49,867 ERROR root Thread-3 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 22:07:49,870 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:07:49] "POST /api/signup HTTP/1.1" 200 -
+2024-12-28 22:07:57,427 ERROR root Thread-4 (process_request_thread) : ApiException: Missing or empty required parameters: firstName, lastName
+2024-12-28 22:07:57,429 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:07:57] "POST /api/auth/signup HTTP/1.1" 200 -
+2024-12-28 22:08:15,926 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:08:16,039 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:08:17,942 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:08:17,954 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:08:18,040 ERROR root Thread-2 (process_request_thread) : ApiException: A user with this email already exists
+2024-12-28 22:08:18,155 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:08:18] "POST /api/auth/signup HTTP/1.1" 200 -
+2024-12-28 22:11:38,857 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:11:38] "POST /api/auth/signup HTTP/1.1" 200 -
+2024-12-28 22:12:57,694 ERROR root Thread-4 (process_request_thread) : Exception: 'Users' object has no attribute 'user_info'
+2024-12-28 22:12:57,820 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:12:57] "POST /api/auth/login HTTP/1.1" 200 -
+2024-12-28 22:16:03,142 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/helpers/user_helper.py', reloading
+2024-12-28 22:16:03,253 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:16:05,126 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:16:05,136 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:17:14,504 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/helpers/user_helper.py', reloading
+2024-12-28 22:17:14,628 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:17:16,621 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:17:16,629 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:19:39,682 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:19:39,804 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:19:42,168 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:19:42,178 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:19:56,528 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:19:56,625 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:20:32,861 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 22:20:32,864 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 22:20:32,866 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:20:34,525 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:20:34,536 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:20:36,601 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:20:36,701 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:20:38,384 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:20:38,394 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:20:52,096 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:20:52] "POST /api/auth/signup HTTP/1.1" 200 -
+2024-12-28 22:21:33,423 ERROR root Thread-3 (process_request_thread) : Exception: 'Users' object has no attribute 'user_info'
+2024-12-28 22:21:33,547 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:21:33] "POST /api/auth/login HTTP/1.1" 200 -
+2024-12-28 22:21:56,304 ERROR root Thread-4 (process_request_thread) : ApiException: Email already exists
+2024-12-28 22:21:56,419 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:21:56] "POST /api/auth/signup HTTP/1.1" 200 -
+2024-12-28 22:22:20,795 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/controllers/auth_controller.py', reloading
+2024-12-28 22:22:20,930 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:22:22,829 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:22:22,841 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:22:23,053 ERROR root Thread-2 (process_request_thread) : ApiException: A account with this email already exists
+2024-12-28 22:22:23,171 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:22:23] "POST /api/auth/signup HTTP/1.1" 200 -
+2024-12-28 22:22:46,300 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/users.py', reloading
+2024-12-28 22:22:46,406 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:22:48,191 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:22:48,203 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:23:15,252 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 22:23:15,253 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 22:23:15,254 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:23:16,849 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:23:16,859 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:23:26,179 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:23:26] "POST /api/auth/login HTTP/1.1" 200 -
+2024-12-28 22:23:43,706 ERROR root Thread-3 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 22:23:43,710 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:23:43] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 22:23:43,986 ERROR root Thread-4 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 22:23:43,988 INFO werkzeug Thread-4 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:23:43] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 22:23:45,220 ERROR root Thread-5 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 22:23:45,221 INFO werkzeug Thread-5 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:23:45] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 22:23:45,921 ERROR root Thread-6 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 22:23:45,922 INFO werkzeug Thread-6 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:23:45] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 22:23:46,522 ERROR root Thread-7 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 22:23:46,523 INFO werkzeug Thread-7 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:23:46] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 22:23:46,720 ERROR root Thread-8 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 22:23:46,722 INFO werkzeug Thread-8 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:23:46] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 22:23:46,885 ERROR root Thread-9 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 22:23:46,887 INFO werkzeug Thread-9 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:23:46] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 22:23:55,616 ERROR root Thread-10 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 22:23:55,622 INFO werkzeug Thread-10 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:23:55] "POST /api/login HTTP/1.1" 200 -
+2024-12-28 22:24:36,543 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_settings.py', reloading
+2024-12-28 22:24:36,667 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:24:38,524 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:24:38,530 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:25:24,445 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_settings.py', reloading
+2024-12-28 22:25:24,554 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:27:13,663 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 22:27:13,664 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 22:27:13,666 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:27:15,281 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:27:15,292 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:27:15,597 ERROR root Thread-2 (process_request_thread) : Exception: Object of type Theme is not JSON serializable
+2024-12-28 22:27:15,734 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:27:15] "POST /api/auth/login HTTP/1.1" 200 -
+2024-12-28 22:27:18,777 ERROR root Thread-3 (process_request_thread) : Exception: Object of type Theme is not JSON serializable
+2024-12-28 22:27:18,900 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:27:18] "POST /api/auth/login HTTP/1.1" 200 -
+2024-12-28 22:28:29,869 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_settings.py', reloading
+2024-12-28 22:28:29,983 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:28:31,842 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:28:31,852 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:28:39,102 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_settings.py', reloading
+2024-12-28 22:28:39,221 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:28:41,037 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:28:41,045 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:28:49,214 INFO werkzeug MainThread :  * Detected change in '/Users/leonmenzies/Documents/Coding/ReactNative/Gym/backend/app/models/user_settings.py', reloading
+2024-12-28 22:28:49,339 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:28:51,096 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:28:51,114 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:29:14,259 INFO werkzeug MainThread : [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4001
+ * Running on http://192.168.1.248:4001
+2024-12-28 22:29:14,260 INFO werkzeug MainThread : [33mPress CTRL+C to quit[0m
+2024-12-28 22:29:14,261 INFO werkzeug MainThread :  * Restarting with stat
+2024-12-28 22:29:15,902 WARNING werkzeug MainThread :  * Debugger is active!
+2024-12-28 22:29:15,913 INFO werkzeug MainThread :  * Debugger PIN: 556-879-097
+2024-12-28 22:29:22,650 INFO werkzeug Thread-2 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:29:22] "POST /api/auth/login HTTP/1.1" 200 -
+2024-12-28 22:29:34,579 ERROR root Thread-3 (process_request_thread) : Exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2024-12-28 22:29:34,585 INFO werkzeug Thread-3 (process_request_thread) : 127.0.0.1 - - [28/Dec/2024 22:29:34] "POST /api/login HTTP/1.1" 200 -

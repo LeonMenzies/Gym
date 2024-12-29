@@ -48,6 +48,8 @@ class UserInfo(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, unique=True)
     
     # Personal Info
+    first_name = db.Column(db.String(100), nullable=True)
+    last_name = db.Column(db.String(100), nullable=True)
     age = db.Column(db.Integer, nullable=True)
     gender = db.Column(db.Enum(Gender), nullable=True)
     

@@ -15,7 +15,7 @@ const FOCUS_AREAS = [
     { id: "CORE", label: "Core", icon: "human-pregnant" },
 ];
 
-export const FocusAreasStage = ({ navigation }) => {
+export const FocusAreasStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
 
@@ -25,18 +25,11 @@ export const FocusAreasStage = ({ navigation }) => {
         updateData("focusAreas", updatedAreas);
     };
 
-    const handleNext = async () => {
-        if (data.focusAreas?.length > 0) {
-            navigation.navigate("ExistingHealthIssuesStage");
-        }
-    };
-
     return (
         <OnboardingContainer
-            currentStep={9}
-            totalSteps={10}
-            onPressBack={() => navigation.goBack()}
-            onPressNext={handleNext}
+            complete={data.focusAreas.length > 0}
+            navigation={navigation}
+            route={route}
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>Which areas would you like to focus on?</Text>

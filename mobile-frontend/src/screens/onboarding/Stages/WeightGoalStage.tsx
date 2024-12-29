@@ -11,22 +11,15 @@ const WEIGHT_GOALS = [
     { id: "GAIN", label: "Gain Weight", description: "Build muscle and increase strength" },
 ];
 
-export const WeightGoalStage = ({ navigation }) => {
+export const WeightGoalStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
 
-    const handleNext = async () => {
-        if (data.weightGoal) {
-            navigation.navigate("GoalsStage");
-        }
-    };
-
     return (
         <OnboardingContainer
-            currentStep={7}
-            totalSteps={10}
-            onPressBack={() => navigation.goBack()}
-            onPressNext={handleNext}
+            complete={!!data.fitnessLevel}
+            navigation={navigation}
+            route={route}
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>What's your weight goal?</Text>

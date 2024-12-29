@@ -1,30 +1,47 @@
 import { OnboardingProgress } from "~screens/onboarding/OnboardingProgress";
-import { FC, useContext } from "react";
-import { OnboardingContext } from "~utils/OnboardingProvider";
+import { FC } from "react";
 import { Button } from "~components/Button";
 import { View, StyleSheet } from "react-native";
-import { useRecoilValue } from "recoil";
-import { themeAtom } from "~recoil/themeAtom";
 
 type OnboardingContainerT = {
-    onPressBack: () => void;
-    onPressNext: () => void;
+    complete: boolean;
+    navigation: any;
+    route: any;
     stage: any;
-    currentStep: number;
-    totalSteps: number;
 };
 
-export const OnboardingContainer: FC<OnboardingContainerT> = ({ onPressBack, onPressNext, stage, currentStep, totalSteps }) => {
-    const { progress } = useContext(OnboardingContext);
-    const colors = useRecoilValue(themeAtom);
+export const OnboardingContainer: FC<OnboardingContainerT> = (props) => {
+    const { complete, navigation, route, stage } = props;
+
+    const params = route?.params ?? {
+        nextStage: undefined,
+        prevStage: undefined,
+        step: 1,
+        totalSteps: 1,
+    };
+
+    const { nextStage, prevStage, step, totalSteps } = params;
+
+    const handleNext = async () => {
+        if (complete && nextStage) {
+            // await updateData("age", parseInt(age));
+            navigation.navigate(nextStage);
+        }
+    };
+
+    const handleBack = () => {
+        if (prevStage) {
+            navigation.navigate(prevStage);
+        }
+    };
 
     return (
         <View style={styles.container}>
-            <OnboardingProgress progress={currentStep} total={totalSteps} />
+            <OnboardingProgress progress={step} total={totalSteps} />
             {stage}
             <View style={styles.buttonContainer}>
-                {currentStep > 0 && <Button title="Back" onPress={onPressBack} />}
-                <Button title={currentStep === totalSteps - 1 ? "Complete" : "Next"} onPress={onPressNext} />
+                {prevStage ? <Button title="Back" onPress={handleBack} /> : <View />}
+                <Button title={!nextStage ? "Complete" : "Next"} onPress={handleNext} />
             </View>
         </View>
     );
@@ -32,14 +49,13 @@ export const OnboardingContainer: FC<OnboardingContainerT> = ({ onPressBack, onP
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: "center",
         alignItems: "center",
+        height: "100%",
     },
     buttonContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        width: "100%",
+        width: "80%",
         padding: 16,
     },
 });

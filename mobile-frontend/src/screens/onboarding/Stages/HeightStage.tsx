@@ -5,33 +5,18 @@ import { OnboardingContext } from "~utils/OnboardingProvider";
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
 
-const convertFeetInchesToCm = (feet: number, inches: number) => {
-    return feet * 30.48 + inches * 2.54;
-};
-
-export const HeightStage = ({ navigation }) => {
+export const HeightStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
     const [feet, setFeet] = useState("");
     const [inches, setInches] = useState("");
     const [isMetric, setIsMetric] = useState(true);
 
-    const handleNext = async () => {
-        if (isMetric && data.height) {
-            navigation.navigate("WeightStage");
-        } else if (!isMetric && feet && inches) {
-            const heightInCm = convertFeetInchesToCm(Number(feet), Number(inches));
-            await updateData("height", heightInCm);
-            navigation.navigate("WeightStage");
-        }
-    };
-
     return (
         <OnboardingContainer
-            currentStep={4}
-            totalSteps={8}
-            onPressBack={() => navigation.goBack()}
-            onPressNext={handleNext}
+            complete={!!data.height}
+            navigation={navigation}
+            route={route}
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>What's your height?</Text>

@@ -5,24 +5,16 @@ import { OnboardingContext } from "~utils/OnboardingProvider";
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
 
-export const AgeStage = ({ navigation }) => {
+export const AgeStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
     const [age, setAge] = useState(data?.age?.toString() || "");
 
-    const handleNext = async () => {
-        if (age) {
-            await updateData("age", parseInt(age));
-            navigation.navigate("GenderStage");
-        }
-    };
-
     return (
         <OnboardingContainer
-            currentStep={2}
-            totalSteps={8}
-            onPressBack={() => navigation.goBack()}
-            onPressNext={handleNext}
+            complete={!!data.age}
+            navigation={navigation}
+            route={route}
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>How old are you?</Text>

@@ -13,15 +13,14 @@ class AccountStatus(Enum):
         return self.value
 
 class Users(db.Model):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    firstName = db.Column(db.String(100), nullable=False)
-    lastName = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
-    passwordHash = db.Column(db.String(255), nullable=False)
-    accountStatus = db.Column(db.Enum(AccountStatus), nullable=False, default=AccountStatus.ONBOARDING)
+    password_hash = db.Column(db.String(255), nullable=False)
+    account_status = db.Column(db.Enum(AccountStatus), nullable=False, default=AccountStatus.ONBOARDING)
     
-    # Relationship to UserSettings
-    settings = db.relationship('UserSettings', backref='user', uselist=False)
+    user_info = db.relationship('UserInfo', backref='user', uselist=False, lazy=True)
+    user_settings = db.relationship('UserSettings', backref='user', uselist=False, lazy=True)
 
     def __repr__(self):
         return '<User %r>' % self.email

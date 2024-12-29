@@ -16,7 +16,7 @@ const HEALTH_CONDITIONS = [
     { id: "NONE", label: "No Health Issues", icon: "check-circle" },
 ];
 
-export const ExistingHealthIssuesStage = ({ navigation }) => {
+export const ExistingHealthIssuesStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
 
@@ -32,18 +32,11 @@ export const ExistingHealthIssuesStage = ({ navigation }) => {
         updateData("healthIssues", updatedConditions);
     };
 
-    const handleNext = async () => {
-        if (data.healthIssues?.length > 0) {
-            navigation.navigate("CompleteStage");
-        }
-    };
-
     return (
         <OnboardingContainer
-            currentStep={10}
-            totalSteps={10}
-            onPressBack={() => navigation.goBack()}
-            onPressNext={handleNext}
+            complete={data.healthIssues.length > 0}
+            navigation={navigation}
+            route={route}
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>Do you have any health conditions?</Text>

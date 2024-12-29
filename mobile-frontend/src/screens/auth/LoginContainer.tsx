@@ -24,7 +24,7 @@ export const LoginContainer: FC<LoginContainerT> = (props) => {
 
     useEffect(() => {
         if (postLoginResponse.success && postLoginResponse.data) {
-            if (postLoginResponse.data.accountStatus != ACCOUNT_DEACTIVATED_STATUS) {
+            if (postLoginResponse.data.account_status != ACCOUNT_DEACTIVATED_STATUS) {
                 updateUser(postLoginResponse.data);
             }
         }

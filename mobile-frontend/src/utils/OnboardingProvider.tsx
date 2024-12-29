@@ -10,6 +10,7 @@ export type OnboardingData = {
     activityLevel?: string;
     weightGoal?: string;
     fitnessLevel?: string;
+    frequency?: string;
     goals?: string[];
     focusAreas?: string[];
     healthIssues?: string[];

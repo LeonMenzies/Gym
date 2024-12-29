@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
-import { OnboardingNavigatorListT } from "~types/Types";
+import { OnboardingNavigatorListT, OnboardingStageT } from "~types/Types";
 
 import { NameStage } from "~screens/onboarding/Stages/NameStage";
 import { ActivityLevelStage } from "~screens/onboarding/Stages/ActivityLevelStage";
@@ -15,8 +15,24 @@ import { WeightGoalStage } from "~screens/onboarding/Stages/WeightGoalStage";
 import { GoalsStage } from "~screens/onboarding/Stages/GoalsStage";
 import { FocusAreasStage } from "~screens/onboarding/Stages/FocusAreasStage";
 import { ExistingHealthIssuesStage } from "~screens/onboarding/Stages/ExistingHealthIssuesStage";
+import { FrequencyStage } from "~screens/onboarding/Stages/FrequencyStage";
 
 const Stack = createNativeStackNavigator<OnboardingNavigatorListT>();
+
+const ONBOARDING_FLOW = [
+    { name: "AgeStage", component: AgeStage },
+    { name: "GenderStage", component: GenderStage },
+    { name: "HeightStage", component: HeightStage },
+    { name: "WeightStage", component: WeightStage },
+    { name: "ActivityLevelStage", component: ActivityLevelStage },
+    { name: "FrequencyStage", component: FrequencyStage },
+    { name: "CurrentFitnessStage", component: CurrentFitnessStage },
+    { name: "WeightGoalStage", component: WeightGoalStage },
+    { name: "GoalsStage", component: GoalsStage },
+    { name: "FocusAreasStage", component: FocusAreasStage },
+    { name: "ExistingHealthIssuesStage", component: ExistingHealthIssuesStage },
+    { name: "NameStage", component: NameStage },
+] as const;
 
 export const OnboardingNavigator = () => {
     const colors = useRecoilValue(themeAtom);
@@ -31,17 +47,19 @@ export const OnboardingNavigator = () => {
                     animation: "slide_from_right",
                 }}
             >
-                <Stack.Screen name="ActivityLevelStage" component={ActivityLevelStage} />
-                <Stack.Screen name="AgeStage" component={AgeStage} />
-                <Stack.Screen name="CurrentFitnessStage" component={CurrentFitnessStage} />
-                <Stack.Screen name="ExistingHealthIssuesStage" component={ExistingHealthIssuesStage} />
-                <Stack.Screen name="FocusAreasStage" component={FocusAreasStage} />
-                <Stack.Screen name="GenderStage" component={GenderStage} />
-                <Stack.Screen name="GoalsStage" component={GoalsStage} />
-                <Stack.Screen name="HeightStage" component={HeightStage} />
-                <Stack.Screen name="WeightStage" component={WeightStage} />
-                <Stack.Screen name="WeightGoalStage" component={WeightGoalStage} />
-                <Stack.Screen name="NameStage" component={NameStage} />
+                {ONBOARDING_FLOW.map(({ name, component }, index) => (
+                    <Stack.Screen
+                        key={name}
+                        name={name as keyof OnboardingNavigatorListT}
+                        component={component}
+                        initialParams={{
+                            nextStage: ONBOARDING_FLOW[index + 1]?.name,
+                            prevStage: ONBOARDING_FLOW[index - 1]?.name,
+                            step: index + 1,
+                            totalSteps: ONBOARDING_FLOW.length,
+                        }}
+                    />
+                ))}
             </Stack.Navigator>
         </OnboardingProvider>
     );

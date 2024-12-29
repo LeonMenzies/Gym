@@ -15,7 +15,7 @@ const FITNESS_GOALS = [
     { id: "SPORTS_PERFORMANCE", label: "Sports Performance" },
 ];
 
-export const GoalsStage = ({ navigation }) => {
+export const GoalsStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
 
@@ -25,18 +25,11 @@ export const GoalsStage = ({ navigation }) => {
         updateData("goals", updatedGoals);
     };
 
-    const handleNext = async () => {
-        if (data.goals?.length > 0) {
-            navigation.navigate("FocusAreasStage");
-        }
-    };
-
     return (
         <OnboardingContainer
-            currentStep={8}
-            totalSteps={10}
-            onPressBack={() => navigation.goBack()}
-            onPressNext={handleNext}
+            complete={!!data.fitnessLevel}
+            navigation={navigation}
+            route={route}
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>What are your fitness goals?</Text>

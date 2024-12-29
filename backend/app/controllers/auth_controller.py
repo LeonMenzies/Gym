@@ -1,10 +1,10 @@
+from app.helpers.user_helper import UserHelper
 from flask import Blueprint, jsonify, request, make_response
-from flask_jwt_extended import create_access_token, set_access_cookies, unset_jwt_cookies
+from flask_jwt_extended import create_access_token, set_access_cookies
 from werkzeug.security import check_password_hash
 from app.models.users import Users
 from app.helpers.database import db
 from app.helpers.api_helpers import APIHelpers
-from werkzeug.security import generate_password_hash
 from app.helpers.api_exception import ApiException
 from datetime import timedelta
 
@@ -22,15 +22,19 @@ def post_login():
 
         user = Users.query.filter_by(email=email).first()
 
-        if user is None or not check_password_hash(user.passwordHash, password):
+        if user is None or not check_password_hash(user.password_hash, password):
             raise ApiException("Invalid email or password")
 
         user_info = {
             "id": user.id,
-            "firstName": user.firstName,
-            "lastName": user.lastName,
+            "first_name": user.user_info.first_name if user.user_info else None,
+            "last_name": user.user_info.last_name if user.user_info else None,
+            "last_name": user.user_info.last_name if user.user_info else None,
+            "notification_enabled": user.user_settings.notification_enabled if user.user_settings else None,
+            "theme": user.user_settings.theme if user.user_settings else None,
+            "metric_type": user.user_settings.metric_type if user.user_settings else None,
             "email": user.email,
-            "accountStatus": user.accountStatus.value,
+            "account_status": user.account_status.value,
         }
 
         # Create a long-lived access token (e.g., 30 days)
@@ -54,36 +58,40 @@ def post_login():
 def post_signup():
     try:
         helper = APIHelpers(request)
+        helper.validate_required_parameters(['email', 'password'])
 
-        helper.validate_required_parameters(['firstName', 'lastName', 'email', 'password'])
-
-        first_name = helper.get_parameters('firstName')
-        last_name = helper.get_parameters('lastName')
         email = helper.get_parameters('email')
         password = helper.get_parameters('password')
 
-        # Check if a user with this email already exists
-        existing_user = Users.query.filter_by(email=email).first()
-        if existing_user is not None:
-            raise ApiException("A user with this email already exists")
+        # Check if user exists
+        if Users.query.filter_by(email=email).first():
+            raise ApiException("A account with this email already exists")
 
-
-        # Hash the password
-        password_hash = generate_password_hash(password)
-
-        # Create a new user
-        new_user = Users(
-            firstName=first_name,
-            lastName=last_name,
+        # Create user and related records
+        user = UserHelper.create_user(
             email=email,
-            passwordHash=password_hash,
-            accountStatus='onboarding'
+            password=password,
         )
 
-        db.session.add(new_user)
-        db.session.commit()
+        # Create response data
+        user_info = {
+            "id": user.id,
+            "email": user.email,
+            "account_status": user.account_status.value
+        }
 
-        return helper.success_response()
+        # Generate JWT token
+        access_token = create_access_token(
+            identity=user_info, 
+            expires_delta=timedelta(days=30)
+        )
+        user_info["jwt"] = access_token
+
+        return jsonify({
+            'success': True,
+            'message': 'User created successfully',
+        })
+    
     except ApiException as e:
         raise e
 
@@ -101,7 +109,7 @@ def apple_login():
 
         user = Users.query.filter_by(email=email).first()
         if not user:
-            user = Users(firstName=first_name, lastName=last_name, email=email, passwordHash='')
+            user = Users(firstName=first_name, lastName=last_name, email=email, password_hash='')
             db.session.add(user)
             db.session.commit()
 

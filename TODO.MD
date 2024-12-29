@@ -1,6 +1,3 @@
-1. Add user info records where we can store onboarding data
-2. Add 1 to many records for things like Focus Areas
-3. Add endpoint to retrn all stored data
 4. Add enpoint to store data for each stage (or 1 endpioint?)
 5. add ednpoints and logic for user settings so theme works and persists
 6. Add integration with openAI

@@ -11,22 +11,15 @@ const FITNESS_LEVELS = [
     { id: "ADVANCED", label: "Advanced", description: "Experienced with various workout types for 1+ years" },
 ];
 
-export const CurrentFitnessStage = ({ navigation }) => {
+export const CurrentFitnessStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
 
-    const handleNext = async () => {
-        if (data.fitnessLevel) {
-            navigation.navigate("WeightGoalStage");
-        }
-    };
-
     return (
         <OnboardingContainer
-            currentStep={6}
-            totalSteps={8}
-            onPressBack={() => navigation.goBack()}
-            onPressNext={handleNext}
+            complete={!!data.fitnessLevel}
+            navigation={navigation}
+            route={route}
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>What's your fitness experience?</Text>

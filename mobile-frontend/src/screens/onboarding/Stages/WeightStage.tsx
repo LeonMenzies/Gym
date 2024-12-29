@@ -10,7 +10,7 @@ const convertLbsToKg = (lbs: number) => {
     return lbs * 0.453592;
 };
 
-export const WeightStage = ({ navigation }) => {
+export const WeightStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
     const [weight, setWeight] = useState(data?.weight?.toString() || "");
@@ -27,10 +27,9 @@ export const WeightStage = ({ navigation }) => {
 
     return (
         <OnboardingContainer
-            currentStep={5}
-            totalSteps={8}
-            onPressBack={() => navigation.goBack()}
-            onPressNext={handleNext}
+            complete={!!data.weight}
+            navigation={navigation}
+            route={route}
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>What's your weight?</Text>

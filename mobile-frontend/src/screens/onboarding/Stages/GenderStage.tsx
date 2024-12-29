@@ -11,22 +11,15 @@ const GENDERS = [
     { id: "OTHER", label: "Other" },
 ];
 
-export const GenderStage = ({ navigation }) => {
+export const GenderStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
 
-    const handleNext = async () => {
-        if (data.gender) {
-            navigation.navigate("HeightStage");
-        }
-    };
-
     return (
         <OnboardingContainer
-            currentStep={3}
-            totalSteps={8}
-            onPressBack={() => navigation.goBack()}
-            onPressNext={handleNext}
+            complete={!!data.gender}
+            navigation={navigation}
+            route={route}
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>What's your gender?</Text>
