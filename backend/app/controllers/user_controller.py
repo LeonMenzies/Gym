@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.helpers.api_helpers import APIHelpers
 from app.helpers.api_exception import ApiException
 from app.models.user_settings import UserSettings, Theme
-from app.models.user_info import ActivityLevel, FitnessLevel, Gender, UserInfo
+from app.models.user_info import ActivityLevel, FitnessLevel, FocusArea, Gender, Goal, HealthIssue, UserInfo
 from app.helpers.database import db
 
 bp = Blueprint('user', __name__, url_prefix='/api/user')
@@ -126,10 +126,27 @@ def update_user_info():
         for field in array_fields:
             if helper.has_parameters(field):
                 values = helper.get_parameters(field)
-                if value is not None:
+                if values is not None:  # Fix: changed 'value' to 'values'
                     if not isinstance(values, list):
                         raise ApiException(f"{field} must be an array")
-                    setattr(info, field, values)
+                    
+                    # Get related model class
+                    model_class = {
+                        'focus_areas': FocusArea,
+                        'goals': Goal,
+                        'health_issues': HealthIssue
+                    }[field]
+                    
+                    # Get or create items
+                    items = []
+                    for item_id in values:
+                        item = model_class.query.get(item_id)
+                        if item:
+                            items.append(item)
+                    
+                    # Set relationship
+                    setattr(info, field, items)
+
 
         db.session.commit()
 

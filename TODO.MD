@@ -1,4 +1,3 @@
-4. Add enpoint to store data for each stage (or 1 endpioint?)
 5. add ednpoints and logic for user settings so theme works and persists
 6. Add integration with openAI
 7. Add button to generate first workout
