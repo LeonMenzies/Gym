@@ -115,3 +115,22 @@ export type OnboardingStageT = {
     name: string;
     component: React.ComponentType<any>;
 };
+
+interface OptionItem {
+    id: string | number;
+    name: string;
+}
+
+export interface OptionsData {
+    activity_levels: OptionItem[];
+    fitness_levels: OptionItem[];
+    focus_areas: OptionItem[];
+    genders: OptionItem[];
+    goals: OptionItem[];
+    health_issues: OptionItem[];
+}
+
+export interface OptionsResponse {
+    data: OptionsData;
+    success: boolean;
+}

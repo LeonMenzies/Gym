@@ -1,19 +1,15 @@
-import { useContext } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { useState } from "react";
+import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
 import { OnboardingContainer } from "../OnboardingContainer";
 import { OnboardingContext } from "~utils/OnboardingProvider";
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
-
-const WEIGHT_GOALS = [
-    { id: "LOSE", label: "Lose Weight", description: "Reduce body fat and get leaner" },
-    { id: "MAINTAIN", label: "Maintain Weight", description: "Stay at current weight and improve fitness" },
-    { id: "GAIN", label: "Gain Weight", description: "Build muscle and increase strength" },
-];
+import { useContext } from "react";
 
 export const WeightGoalStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
+    const [isMetric, setIsMetric] = useState(true);
 
     return (
         <OnboardingContainer
@@ -22,17 +18,29 @@ export const WeightGoalStage = ({ navigation, route }) => {
             route={route}
             stage={
                 <View style={styles.container}>
-                    <Text style={[styles.title, { color: colors.textPrimary }]}>What's your weight goal?</Text>
-                    {WEIGHT_GOALS.map((goal) => (
-                        <Pressable
-                            key={goal.id}
-                            style={[styles.option, { borderColor: data?.weight_goal === goal.id ? colors.primary : colors.primary }]}
-                            onPress={() => updateData("weight_goal", goal.id)}
-                        >
-                            <Text style={[styles.optionTitle, { color: colors.textPrimary }]}>{goal.label}</Text>
-                            <Text style={[styles.optionDescription, { color: colors.textSecondary }]}>{goal.description}</Text>
+                    <Text style={[styles.title, { color: colors.textPrimary }]}>What's your target weight?</Text>
+                    <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+                        Current weight: {data.weight}
+                        {isMetric ? "kg" : "lbs"}
+                    </Text>
+
+                    <View style={styles.unitToggle}>
+                        <Pressable style={[styles.unitButton, { backgroundColor: isMetric ? colors.primary : colors.background }]} onPress={() => setIsMetric(true)}>
+                            <Text style={{ color: isMetric ? colors.white : colors.textPrimary }}>KG</Text>
                         </Pressable>
-                    ))}
+                        <Pressable style={[styles.unitButton, { backgroundColor: !isMetric ? colors.primary : colors.background }]} onPress={() => setIsMetric(false)}>
+                            <Text style={{ color: !isMetric ? colors.white : colors.textPrimary }}>LBS</Text>
+                        </Pressable>
+                    </View>
+
+                    <TextInput
+                        style={[styles.input, { color: colors.textPrimary, borderColor: colors.primary }]}
+                        value={data?.weight_goal?.toString()}
+                        onChangeText={(v) => updateData("weight_goal", v)}
+                        keyboardType="numeric"
+                        placeholder={`Target weight in ${isMetric ? "kg" : "lbs"}`}
+                        placeholderTextColor={colors.textSecondary}
+                    />
                 </View>
             }
         />
@@ -47,20 +55,27 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: "bold",
+        marginBottom: 8,
+    },
+    subtitle: {
+        fontSize: 16,
         marginBottom: 20,
     },
-    option: {
-        padding: 16,
+    unitToggle: {
+        flexDirection: "row",
+        marginBottom: 20,
+    },
+    unitButton: {
+        flex: 1,
+        padding: 10,
+        alignItems: "center",
         borderRadius: 8,
+    },
+    input: {
+        height: 50,
         borderWidth: 1,
-        marginBottom: 12,
-    },
-    optionTitle: {
-        fontSize: 18,
-        fontWeight: "600",
-        marginBottom: 4,
-    },
-    optionDescription: {
-        fontSize: 14,
+        borderRadius: 8,
+        padding: 10,
+        fontSize: 16,
     },
 });

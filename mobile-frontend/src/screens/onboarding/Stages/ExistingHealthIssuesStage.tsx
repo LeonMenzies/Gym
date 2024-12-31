@@ -6,18 +6,18 @@ import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-const HEALTH_CONDITIONS = [
-    { id: "BACK_PAIN", label: "Back Pain", icon: "human-back" },
-    { id: "JOINT_ISSUES", label: "Joint Issues", icon: "bone" },
-    { id: "HEART_CONDITION", label: "Heart Condition", icon: "heart-pulse" },
-    { id: "HIGH_BLOOD_PRESSURE", label: "High Blood Pressure", icon: "heart" },
-    { id: "ASTHMA", label: "Asthma", icon: "lungs" },
-    { id: "DIABETES", label: "Diabetes", icon: "diabetes" },
-    { id: "NONE", label: "No Health Issues", icon: "check-circle" },
+const HEALTH_ISSUE_ICONS = [
+    { name: "Back Pain", icon: "human" },
+    { name: "Joint Issues", icon: "bone" },
+    { name: "Heart Condition", icon: "heart-pulse" },
+    { name: "High Blood Pressure", icon: "heart" },
+    { name: "Asthma", icon: "lungs" },
+    { name: "Diabetes", icon: "diabetes" },
+    { name: "No Health Issues", icon: "check-circle" },
 ];
 
 export const ExistingHealthIssuesStage = ({ navigation, route }) => {
-    const { data, updateData } = useContext(OnboardingContext);
+    const { data, options, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
 
     const toggleCondition = (conditionId: string) => {
@@ -43,8 +43,8 @@ export const ExistingHealthIssuesStage = ({ navigation, route }) => {
                     <Text style={[styles.subtitle, { color: colors.textSecondary }]}>This helps us customize your workout plan</Text>
 
                     <View style={styles.conditionsContainer}>
-                        {HEALTH_CONDITIONS.map((condition) => {
-                            const isSelected = data.health_issues?.includes(condition.id);
+                        {options.health_issues.map((condition) => {
+                            const isSelected = data.health_issues?.includes(condition.name);
                             const isNone = condition.id === "NONE";
 
                             return (
@@ -57,10 +57,10 @@ export const ExistingHealthIssuesStage = ({ navigation, route }) => {
                                             borderColor: isSelected ? colors.primary : colors.primary,
                                         },
                                     ]}
-                                    onPress={() => toggleCondition(condition.id)}
+                                    onPress={() => toggleCondition(condition.name)}
                                 >
-                                    <Icon name={condition.icon} size={24} color={isSelected ? colors.white : colors.textPrimary} />
-                                    <Text style={[styles.conditionText, { color: isSelected ? colors.white : colors.textPrimary }]}>{condition.label}</Text>
+                                    <Icon name={HEALTH_ISSUE_ICONS.find((i) => i.name === condition.name)?.icon || "help-circle"} size={24} color={isSelected ? colors.white : colors.textPrimary} />
+                                    <Text style={[styles.conditionText, { color: isSelected ? colors.white : colors.textPrimary }]}>{condition.name}</Text>
                                 </Pressable>
                             );
                         })}

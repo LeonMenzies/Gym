@@ -19,7 +19,7 @@ import { FrequencyStage } from "~screens/onboarding/Stages/FrequencyStage";
 
 const Stack = createNativeStackNavigator<OnboardingNavigatorListT>();
 
-const ONBOARDING_FLOW = [
+export const ONBOARDING_FLOW = [
     { name: "AgeStage", component: AgeStage },
     { name: "GenderStage", component: GenderStage },
     { name: "HeightStage", component: HeightStage },

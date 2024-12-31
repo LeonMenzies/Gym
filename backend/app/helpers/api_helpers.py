@@ -52,3 +52,6 @@ class APIHelpers:
         if data is not None:
             response['data'] = data
         return jsonify(response)
+    
+    def format_error_message(field: str, reason: str) -> str:
+        return f"Invalid {field}: {reason}"

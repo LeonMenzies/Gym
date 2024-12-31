@@ -26,7 +26,7 @@ export const CurrentFitnessStage = ({ navigation, route }) => {
                     {FITNESS_LEVELS.map((level) => (
                         <Pressable
                             key={level.id}
-                            style={[styles.option, { borderColor: data?.fitness_level === level.id ? colors.primary : colors.primary }]}
+                            style={[styles.option, { borderColor: data?.fitness_level === level.id ? colors.primary : colors.secondary }]}
                             onPress={() => updateData("fitness_level", level.id)}
                         >
                             <Text style={[styles.optionTitle, { color: colors.textPrimary }]}>{level.label}</Text>

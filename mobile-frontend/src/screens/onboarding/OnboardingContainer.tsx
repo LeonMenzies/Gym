@@ -1,10 +1,13 @@
 import { OnboardingProgress } from "~screens/onboarding/OnboardingProgress";
 import { FC, useContext, useEffect, useState } from "react";
 import { Button } from "~components/Button";
-import { OnboardingContext } from "~utils/OnboardingProvider";
+import { OnboardingContext, OnboardingData } from "~utils/OnboardingProvider";
 import { View, StyleSheet, Text } from "react-native";
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
+import usePostApi from "~hooks/usePostApi";
+import { usePersistentUser } from "~hooks/usePersistentUser";
+import { UserT } from "~types/Types";
 
 type OnboardingContainerT = {
     complete: boolean;
@@ -18,6 +21,8 @@ export const OnboardingContainer: FC<OnboardingContainerT> = (props) => {
     const { submitData } = useContext(OnboardingContext);
     const [error, setError] = useState<string | null>(null);
     const colors = useRecoilValue(themeAtom);
+    const [postUserInfoResponse, , postCompleteOnobarding] = usePostApi<{}, UserT>("/user/complete-onboarding");
+    const { updateUser } = usePersistentUser();
 
     useEffect(() => {
         if (error) {
@@ -27,6 +32,14 @@ export const OnboardingContainer: FC<OnboardingContainerT> = (props) => {
             return () => clearTimeout(timer);
         }
     }, [error]);
+
+    useEffect(() => {
+        if (postUserInfoResponse && postUserInfoResponse.success) {
+            updateUser(postUserInfoResponse.data);
+        } else if (postUserInfoResponse && !postUserInfoResponse.success) {
+            setError(postUserInfoResponse.message);
+        }
+    }, [postUserInfoResponse]);
 
     const params = route?.params ?? {
         nextStage: undefined,
@@ -48,6 +61,17 @@ export const OnboardingContainer: FC<OnboardingContainerT> = (props) => {
         }
     };
 
+    const handleComplete = async () => {
+        if (!complete) {
+            setError("Please fill out the form");
+        }
+
+        if (complete) {
+            await submitData();
+            postCompleteOnobarding({});
+        }
+    };
+
     const handleBack = () => {
         if (prevStage) {
             navigation.navigate(prevStage);
@@ -56,12 +80,15 @@ export const OnboardingContainer: FC<OnboardingContainerT> = (props) => {
 
     return (
         <View style={styles.container}>
-            <OnboardingProgress progress={step} total={totalSteps} />
-            {stage}
+            <View style={styles.innercContainer}>
+                <OnboardingProgress progress={step} total={totalSteps} navigation={navigation} />
+                <View style={{ flex: 1 }}>{stage}</View>
+                <View style={{ width: 50 }} />
+            </View>
             <Text style={[styles.errorText, { color: colors.error }]}>{error}</Text>
             <View style={styles.buttonContainer}>
                 {prevStage ? <Button title="Back" onPress={handleBack} /> : <View />}
-                <Button title={!nextStage ? "Complete" : "Next"} onPress={handleNext} />
+                {nextStage ? <Button title="Next" onPress={handleNext} /> : <Button title="Complete" onPress={handleComplete} />}
             </View>
         </View>
     );
@@ -70,25 +97,22 @@ export const OnboardingContainer: FC<OnboardingContainerT> = (props) => {
 const styles = StyleSheet.create({
     container: {
         paddingTop: 70,
-        alignItems: "center",
         height: "100%",
     },
-    buttonContainer: {
+    innercContainer: {
+        flex: 1,
+        display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between",
-        width: "80%",
-        padding: 16,
     },
-    errorContainer: {
-        position: "absolute",
-        bottom: 100,
-        left: 20,
-        right: 20,
-        padding: 10,
-        borderRadius: 8,
-        alignItems: "center",
+    buttonContainer: {
+        padding: 24,
+        flexDirection: "row",
+        justifyContent: "space-around",
+        width: "100%",
     },
     errorText: {
+        width: "100%",
+        textAlign: "center",
         fontSize: 16,
     },
 });

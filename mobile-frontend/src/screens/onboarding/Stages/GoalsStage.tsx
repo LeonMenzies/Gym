@@ -16,7 +16,7 @@ const FITNESS_GOALS = [
 ];
 
 export const GoalsStage = ({ navigation, route }) => {
-    const { data, updateData } = useContext(OnboardingContext);
+    const { data, options, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
 
     const toggleGoal = (goalId: string) => {
@@ -35,8 +35,8 @@ export const GoalsStage = ({ navigation, route }) => {
                     <Text style={[styles.title, { color: colors.textPrimary }]}>What are your fitness goals?</Text>
                     <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Select all that apply</Text>
                     <View style={styles.goalsContainer}>
-                        {FITNESS_GOALS.map((goal) => {
-                            const isSelected = data.goals?.includes(goal.id);
+                        {options.goals.map((goal) => {
+                            const isSelected = data.goals?.includes(goal.name);
                             return (
                                 <Pressable
                                     key={goal.id}
@@ -47,9 +47,9 @@ export const GoalsStage = ({ navigation, route }) => {
                                             borderColor: isSelected ? colors.primary : colors.primary,
                                         },
                                     ]}
-                                    onPress={() => toggleGoal(goal.id)}
+                                    onPress={() => toggleGoal(goal.name)}
                                 >
-                                    <Text style={[styles.goalText, { color: isSelected ? colors.white : colors.textPrimary }]}>{goal.label}</Text>
+                                    <Text style={[styles.goalText, { color: isSelected ? colors.white : colors.textPrimary }]}>{goal.name}</Text>
                                 </Pressable>
                             );
                         })}

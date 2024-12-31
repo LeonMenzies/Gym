@@ -33,7 +33,7 @@ export const FrequencyStage = ({ navigation, route }) => {
                             style={[
                                 styles.option,
                                 {
-                                    borderColor: data?.weekly_frequency === option.id ? colors.primary : colors.primary,
+                                    borderColor: data?.weekly_frequency === option.id ? colors.primary : colors.secondary,
                                 },
                             ]}
                             onPress={() => updateData("weekly_frequency", option.id)}

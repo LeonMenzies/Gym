@@ -19,7 +19,7 @@ export const AgeStage = ({ navigation, route }) => {
                     <Text style={[styles.title, { color: colors.textPrimary }]}>How old are you?</Text>
                     <TextInput
                         style={[styles.input, { color: colors.textPrimary, borderColor: colors.primary }]}
-                        value={data?.age.toString() || ""}
+                        value={data?.age?.toString() || ""}
                         onChangeText={(v) => updateData("age", v)}
                         keyboardType="numeric"
                         placeholder="Enter your age"

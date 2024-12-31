@@ -13,7 +13,7 @@ const ACTIVITY_LEVELS = [
 ];
 
 export const ActivityLevelStage = ({ navigation, route }) => {
-    const { data, updateData } = useContext(OnboardingContext);
+    const { data, options, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
 
     const ActivityLevelOption = ({ level, isSelected, onSelect }) => (

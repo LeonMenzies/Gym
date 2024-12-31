@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import useFetchApi from "~hooks/useFetchApi";
 import usePostApi from "~hooks/usePostApi";
+import { OptionsData, OptionsResponse } from "~types/Types";
 
 export type OnboardingData = {
     name?: string;
@@ -19,6 +20,7 @@ export type OnboardingData = {
 
 type OnboardingContextType = {
     data: OnboardingData;
+    options: OptionsData;
     updateData: (key: keyof OnboardingData, value: any) => Promise<void>;
     submitData: () => Promise<void>;
 };
@@ -27,29 +29,45 @@ export const OnboardingContext = createContext<OnboardingContextType | undefined
 
 export const OnboardingProvider = ({ children }) => {
     const [data, setData] = useState<OnboardingData>({});
+    const [options, setOptions] = useState(null);
+    const [currentDatabaseVersion, setCurrentDatabaseVersion] = useState<OnboardingData>({});
     const [loading, setLoading] = useState(true);
+
     const [fetchUserInfoResponse, , fetchUserInfoData] = useFetchApi<OnboardingData>("/user/info");
+    const [fetchOptionsResponse, , fetchOptionsData] = useFetchApi<OptionsResponse>("/user/options");
     const [postUserInfoResponse, , postUserInfoData] = usePostApi<Partial<OnboardingData>, OnboardingData>("/user/info");
 
     useEffect(() => {
         const loadInitialData = async () => {
-            await fetchUserInfoData();
+            await Promise.all([fetchUserInfoData(), fetchOptionsData()]);
             setLoading(false);
         };
         loadInitialData();
     }, []);
 
     useEffect(() => {
-        console.log(fetchUserInfoResponse);
+        if (fetchOptionsResponse?.success) {
+            setOptions(fetchOptionsResponse.data);
+        }
+    }, [fetchOptionsResponse]);
 
-        if (fetchUserInfoResponse) {
+    useEffect(() => {
+        if (fetchOptionsResponse?.success) {
+            setOptions(fetchOptionsResponse.data);
+        }
+    }, [fetchOptionsResponse]);
+
+    useEffect(() => {
+        if (fetchUserInfoResponse && fetchUserInfoResponse.success) {
             setData(fetchUserInfoResponse.data);
+            setCurrentDatabaseVersion(fetchUserInfoResponse.data);
         }
     }, [fetchUserInfoResponse]);
 
     useEffect(() => {
-        if (postUserInfoResponse) {
+        if (postUserInfoResponse && postUserInfoResponse.success) {
             setData(postUserInfoResponse.data);
+            setCurrentDatabaseVersion(fetchUserInfoResponse.data);
         }
     }, [postUserInfoResponse]);
 
@@ -58,10 +76,14 @@ export const OnboardingProvider = ({ children }) => {
     };
 
     const submitOnboardingData = async () => {
-        postUserInfoData(data);
+        console.log(data);
+
+        if (data !== currentDatabaseVersion) {
+            postUserInfoData(data);
+        }
     };
 
-    if (loading || !data) {
+    if (loading || !data || !options) {
         return null;
     }
 
@@ -69,6 +91,7 @@ export const OnboardingProvider = ({ children }) => {
         <OnboardingContext.Provider
             value={{
                 data,
+                options,
                 updateData: updateOnboardingData,
                 submitData: submitOnboardingData,
             }}

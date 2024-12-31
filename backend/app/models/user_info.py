@@ -32,21 +32,6 @@ user_info_health_issues = db.Table('user_info_health_issues',
     db.Column('health_issue_id', db.Integer, db.ForeignKey('health_issues.id'), primary_key=True)
 )
 
-class FocusArea(db.Model):
-    __tablename__ = 'focus_areas'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False, unique=True)
-
-class Goal(db.Model):
-    __tablename__ = 'goals'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False, unique=True)
-
-class HealthIssue(db.Model):
-    __tablename__ = 'health_issues'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False, unique=True)
-
 class UserInfo(db.Model):
     __tablename__ = 'user_info'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

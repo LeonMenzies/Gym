@@ -5,14 +5,8 @@ import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
 import { useContext } from "react";
 
-const GENDERS = [
-    { id: "MALE", label: "Male" },
-    { id: "FEMALE", label: "Female" },
-    { id: "OTHER", label: "Other" },
-];
-
 export const GenderStage = ({ navigation, route }) => {
-    const { data, updateData } = useContext(OnboardingContext);
+    const { data, options, updateData } = useContext(OnboardingContext);
     const colors = useRecoilValue(themeAtom);
 
     return (
@@ -23,13 +17,13 @@ export const GenderStage = ({ navigation, route }) => {
             stage={
                 <View style={styles.container}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>What's your gender?</Text>
-                    {GENDERS.map((gender) => (
+                    {options.genders.map((gender) => (
                         <Pressable
                             key={gender.id}
-                            style={[styles.option, { borderColor: data?.gender === gender.id ? colors.primary : colors.primary }]}
+                            style={[styles.option, { borderColor: data?.gender == gender.name ? colors.primary : colors.secondary }]}
                             onPress={() => updateData("gender", gender.id)}
                         >
-                            <Text style={[styles.optionText, { color: colors.textPrimary }]}>{gender.label}</Text>
+                            <Text style={[styles.optionText, { color: colors.textPrimary }]}>{gender.name}</Text>
                         </Pressable>
                     ))}
                 </View>
