@@ -66,6 +66,13 @@ export type UserT = {
     email: string;
     jwt: string;
     account_status: typeof ACCOUNT_ONBOARDING_STATUS | typeof ACCOUNT_ACTIVE_STATUS | typeof ACCOUNT_DEACTIVATED_STATUS;
+    settings: UserSettingsT;
+};
+
+export type UserSettingsT = {
+    theme: "LIGHT" | "DARK";
+    metric_type: "METRIC" | "IMPERIAL";
+    notification_enabled: boolean;
 };
 
 export type EmailLoginT = {

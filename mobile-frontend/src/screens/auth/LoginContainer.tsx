@@ -1,18 +1,20 @@
 import { useEffect, FC, useState } from "react";
-import { View, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { EmailLoginT, UserT } from "~types/Types";
 import usePostApi from "hooks/usePostApi";
 import { ACCOUNT_DEACTIVATED_STATUS } from "~utils/Constants";
 import { usePersistentUser } from "~hooks/usePersistentUser";
+import { useRecoilValue } from "recoil";
+import { themeAtom } from "~recoil/themeAtom";
+import { Button } from "~components/Button";
 
 type LoginContainerT = {
-    showLoginPage: boolean;
-    setShowLoginPage: Function;
+    navigation: any;
 };
 
-export const LoginContainer: FC<LoginContainerT> = (props) => {
-    const { showLoginPage, setShowLoginPage } = props;
+export const LoginContainer: FC<LoginContainerT> = ({ navigation }) => {
+    const colors = useRecoilValue(themeAtom);
     const [email, setEmail] = useState("leon.menzies@hotmail.com");
     const [password, setPassword] = useState("Testing123!");
     const [postLoginResponse, postLoginLoading, postLogin] = usePostApi<EmailLoginT, UserT>("/auth/login");
@@ -59,17 +61,56 @@ export const LoginContainer: FC<LoginContainerT> = (props) => {
 
     return (
         <View style={styles.container}>
-            <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} />
-            <TextInput style={styles.input} placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
-            <Button title="Login" onPress={handleEmailSignIn} />
-            <AppleAuthentication.AppleAuthenticationButton
-                buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-                cornerRadius={5}
-                style={{ width: 200, height: 44, marginTop: 20 }}
-                onPress={handleAppleSignIn}
+            <Text style={[styles.title, { color: colors.textPrimary }]}>Welcome Back</Text>
+
+            <TextInput
+                style={[
+                    styles.input,
+                    {
+                        borderColor: colors.primary,
+                        color: colors.textPrimary,
+                        backgroundColor: colors.background,
+                    },
+                ]}
+                placeholder="Email"
+                placeholderTextColor={colors.textSecondary}
+                value={email}
+                onChangeText={setEmail}
             />
-            <Button title="Sign Up" onPress={() => setShowLoginPage(false)} />
+
+            <TextInput
+                style={[
+                    styles.input,
+                    {
+                        borderColor: colors.primary,
+                        color: colors.textPrimary,
+                        backgroundColor: colors.background,
+                    },
+                ]}
+                placeholder="Password"
+                placeholderTextColor={colors.textSecondary}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+            />
+
+            <View style={styles.buttonContainer}>
+                <Button title="Login" onPress={handleEmailSignIn} disabled={postLoginLoading} />
+
+                <AppleAuthentication.AppleAuthenticationButton
+                    buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                    buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                    cornerRadius={14}
+                    style={styles.appleButton}
+                    onPress={handleAppleSignIn}
+                />
+
+                <TouchableOpacity onPress={() => navigation.navigate("Signup")} style={styles.signUpContainer}>
+                    <Text style={[styles.signUpText, { color: colors.secondary }]}>
+                        Don't have an account? <Text style={{ color: colors.primary }}>Sign Up</Text>
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -78,17 +119,36 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
-        padding: 16,
+        padding: 20,
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: "bold",
+        marginBottom: 30,
+        textAlign: "center",
     },
     input: {
         width: "100%",
-        padding: 12,
-        marginVertical: 8,
+        height: 50,
+        padding: 15,
+        marginBottom: 15,
         borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 8,
+        borderRadius: 14,
+        fontSize: 16,
+    },
+    buttonContainer: {
+        marginTop: 20,
+        gap: 15,
+    },
+    appleButton: {
+        width: "100%",
+        height: 50,
+    },
+    signUpContainer: {
+        marginTop: 20,
+        alignItems: "center",
+    },
+    signUpText: {
+        fontSize: 14,
     },
 });
-
-export default LoginContainer;

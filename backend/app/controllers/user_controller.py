@@ -6,46 +6,80 @@ from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.helpers.api_helpers import APIHelpers
 from app.helpers.api_exception import ApiException
-from app.models.user_settings import UserSettings, Theme
+from app.models.user_settings import MetricType, UserSettings, Theme
 from app.models.user_info import ActivityLevel, FitnessLevel, Gender, UserInfo
 from app.helpers.database import db
 
 bp = Blueprint('user', __name__, url_prefix='/api/user')
+
+@bp.route('/settings', methods=['GET'])
+@jwt_required()
+def get_user_settings():
+    try:
+        helper = APIHelpers(request)
+        user_id = helper.get_user_id()
+        
+        settings = UserSettings.query.filter_by(user_id=user_id).first()
+        if not settings:
+            settings = UserSettings(user_id=user_id)
+            db.session.add(settings)
+            db.session.commit()
+
+        return jsonify({
+            'success': True,
+            'data': {
+                'theme': settings.theme.value,
+                'metric_type': settings.metric_type.value,
+                'notification_enabled': settings.notification_enabled
+            }
+        })
+    except Exception as e:
+        raise ApiException(str(e))
 
 @bp.route('/settings', methods=['POST'])
 @jwt_required()
 def update_user_settings():
     try:
         helper = APIHelpers(request)
-        user_id = get_jwt_identity()['id']
+        user_id = helper.get_user_id()
         
         settings = UserSettings.query.filter_by(user_id=user_id).first()
         if not settings:
             settings = UserSettings(user_id=user_id)
             db.session.add(settings)
 
+        # Handle enum fields
+        enum_fields = {
+            'theme': Theme,
+            'metric_type': MetricType
+        }
+
+        for field, enum_class in enum_fields.items():
+            if helper.has_parameters(field):
+                value = helper.get_parameters(field)
+                if value is not None:
+                    if value not in [e.value for e in enum_class]:
+                        raise ApiException(f"Invalid {field} value. Must be one of: {[e.value for e in enum_class]}")
+                    setattr(settings, field, enum_class(value))
+
+        # Handle boolean field
         if helper.has_parameters('notification_enabled'):
-            settings.notification_enabled = helper.get_parameters('notification_enabled')
-        
-        if helper.has_parameters('theme'):
-            theme = helper.get_parameters('theme')
-            if theme not in [t.value for t in Theme]:
-                raise ApiException("Invalid theme value")
-            settings.theme = Theme(theme)
+            value = helper.get_parameters('notification_enabled')
+            settings.notification_enabled = bool(value)
 
         db.session.commit()
 
         return jsonify({
             'success': True,
-            'message': '',
             'data': {
-                'notification_enabled': settings.notification_enabled,
-                'theme': settings.theme.value
+                'theme': settings.theme.value,
+                'metric_type': settings.metric_type.value,
+                'notification_enabled': settings.notification_enabled
             }
         })
-    except ApiException as e:
-        raise e
-
+    except Exception as e:
+        raise ApiException(str(e))
+    
 @bp.route('/info', methods=['GET'])
 @jwt_required()
 def get_user_info():

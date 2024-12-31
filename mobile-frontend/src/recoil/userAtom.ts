@@ -8,6 +8,11 @@ export const defaultUser: UserT = {
     email: "",
     jwt: "",
     account_status: "DEACTIVATED",
+    settings: {
+        theme: "DARK",
+        metric_type: "METRIC",
+        notification_enabled: false,
+    },
 };
 
 export const userAtom = atom<UserT>({

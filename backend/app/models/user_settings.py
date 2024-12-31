@@ -13,7 +13,7 @@ class UserSettings(db.Model):
     __tablename__ = 'user_settings'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, unique=True)
-    theme = db.Column(db.Enum(Theme), nullable=False, default=Theme.LIGHT)
+    theme = db.Column(db.Enum(Theme), nullable=False, default=Theme.DARK)
     metric_type = db.Column(db.Enum(MetricType), nullable=False, default=MetricType.METRIC)
     notification_enabled = db.Column(db.Boolean, nullable=False, default=True)
 

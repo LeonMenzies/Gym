@@ -28,6 +28,7 @@ export const Rest: FC<any> = () => {
 const styling = (colors: ThemeT) =>
     StyleSheet.create({
         container: {
+            paddingTop: 50,
             flex: 1,
             alignItems: "center",
         },

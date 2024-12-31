@@ -1,71 +1,87 @@
 import { useEffect, FC, useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { useRecoilValue } from "recoil";
+import { themeAtom } from "~recoil/themeAtom";
+import { Button } from "~components/Button";
+import usePostApi from "hooks/usePostApi";
 
 type SignupContainerT = {
-    showLoginPage: boolean;
-    setShowLoginPage: Function;
+    navigation: any;
 };
 
-export const SignupContainer: FC<SignupContainerT> = (props) => {
-    const { showLoginPage, setShowLoginPage } = props;
+export const SignupContainer: FC<SignupContainerT> = ({ navigation }) => {
+    const colors = useRecoilValue(themeAtom);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [signupResponse, signupLoading, signup] = usePostApi("/auth/signup");
 
-    const handleSignup = async () => {
+    const handleSignup = () => {
         if (password !== confirmPassword) {
-            console.error("Passwords do not match");
+            // TODO: Show error message
             return;
         }
-
-        try {
-            const response = await fetch("http://your-backend-url/api/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                }),
-            });
-
-            const data = await response.json();
-
-            // Handle the response from your backend
-            console.log(data);
-        } catch (e) {
-            console.error(e);
-        }
+        signup({ email, password });
     };
 
     return (
         <View style={styles.container}>
+            <Text style={[styles.title, { color: colors.textPrimary }]}>Create Account</Text>
+
             <TextInput
-                style={styles.input}
+                style={[
+                    styles.input,
+                    {
+                        borderColor: colors.primary,
+                        color: colors.textPrimary,
+                        backgroundColor: colors.background,
+                    },
+                ]}
                 placeholder="Email"
+                placeholderTextColor={colors.secondary}
                 value={email}
                 onChangeText={setEmail}
             />
+
             <TextInput
-                style={styles.input}
+                style={[
+                    styles.input,
+                    {
+                        borderColor: colors.primary,
+                        color: colors.textPrimary,
+                        backgroundColor: colors.background,
+                    },
+                ]}
                 placeholder="Password"
+                placeholderTextColor={colors.secondary}
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
             />
+
             <TextInput
-                style={styles.input}
+                style={[
+                    styles.input,
+                    {
+                        borderColor: colors.primary,
+                        color: colors.textPrimary,
+                        backgroundColor: colors.background,
+                    },
+                ]}
                 placeholder="Confirm Password"
+                placeholderTextColor={colors.secondary}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
-                secureTextEntry
             />
-            <Button title="Sign Up" onPress={handleSignup} />
-            <Button
-                title="Back to Login"
-                onPress={() => setShowLoginPage(true)}
-            />
+
+            <View style={styles.buttonContainer}>
+                <Button title="Sign Up" onPress={handleSignup} disabled={signupLoading} />
+
+                <TouchableOpacity onPress={() => navigation.navigate("Login")} style={styles.loginContainer}>
+                    <Text style={[styles.loginText, { color: colors.secondary }]}>
+                        Already have an account? <Text style={{ color: colors.primary }}>Login</Text>
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -74,17 +90,32 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
-        padding: 16,
+        padding: 20,
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: "bold",
+        marginBottom: 30,
+        textAlign: "center",
     },
     input: {
         width: "100%",
-        padding: 12,
-        marginVertical: 8,
+        height: 50,
+        padding: 15,
+        marginBottom: 15,
         borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 8,
+        borderRadius: 14,
+        fontSize: 16,
+    },
+    buttonContainer: {
+        marginTop: 20,
+        gap: 15,
+    },
+    loginContainer: {
+        marginTop: 20,
+        alignItems: "center",
+    },
+    loginText: {
+        fontSize: 14,
     },
 });
-
-export default SignupContainer;

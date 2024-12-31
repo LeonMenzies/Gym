@@ -1,4 +1,5 @@
 from app.helpers.user_helper import UserHelper
+from app.models.user_settings import MetricType, Theme
 from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import create_access_token, set_access_cookies
 from werkzeug.security import check_password_hash
@@ -29,12 +30,13 @@ def post_login():
             "id": user.id,
             "first_name": user.user_info.first_name if user.user_info else None,
             "last_name": user.user_info.last_name if user.user_info else None,
-            "last_name": user.user_info.last_name if user.user_info else None,
-            "notification_enabled": user.user_settings.notification_enabled if user.user_settings else None,
-            "theme": user.user_settings.theme if user.user_settings else None,
-            "metric_type": user.user_settings.metric_type if user.user_settings else None,
             "email": user.email,
             "account_status": user.account_status.value,
+            "settings": {
+                "theme": user.user_settings.theme.value if user.user_settings else Theme.DARK.value,
+                "metric_type": user.user_settings.metric_type.value if user.user_settings else MetricType.METRIC.value,
+                "notification_enabled": user.user_settings.notification_enabled if user.user_settings else True
+            }
         }
 
         # Create a long-lived access token (e.g., 30 days)
