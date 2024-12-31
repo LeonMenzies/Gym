@@ -76,8 +76,6 @@ export const OnboardingProvider = ({ children }) => {
     };
 
     const submitOnboardingData = async () => {
-        console.log(data);
-
         if (data !== currentDatabaseVersion) {
             postUserInfoData(data);
         }
