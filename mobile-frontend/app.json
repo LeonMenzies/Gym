@@ -8,6 +8,7 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "runtimeVersion": "1.0.0",
     "splash": {
       "image": "./src/assets/images/splash.png",
       "resizeMode": "contain",
@@ -26,7 +27,8 @@
         "application": {
           "android:extractNativeLibs": "true"
         }
-      }
+      },
+      "package": "com.leonmenzies.gym"
     },
     "web": {
       "bundler": "metro",
@@ -42,7 +44,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "c661cead-b01d-49a6-94ba-1e01d55965ae"
+        "projectId": "cc895fc3-849f-42b4-9a16-b947213f1299"
       },
       "router": {
         "origin": false
@@ -50,13 +52,10 @@
     },
     "updates": {
       "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/c661cead-b01d-49a6-94ba-1e01d55965ae"
+      "url": "https://u.expo.dev/cc895fc3-849f-42b4-9a16-b947213f1299"
     },
     "assetBundlePatterns": [
       "**/*"
-    ],
-    "runtimeVersion": {
-      "policy": "appVersion"
-    }
+    ]
   }
 }

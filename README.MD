@@ -5,22 +5,9 @@
 flask db migrate -m "Message"
 flask db upgrade
 
-### Frontend Deployment
+### Build Expo App
 
-1. **Build the frontend**:
-
-    ```sh
-    cd frontend
-    npm install
-    npm run build
-    ```
-
-2. **Copy build files to the server and restart the web server**:
-    ```sh
-    scp -r build/* leon@172.234.196.74:/var/www/html/
-    ssh leon@172.234.196.74
-    sudo systemctl restart nginx
-    ```
+eas build
 
 ### Backend Deployment
 
@@ -28,7 +15,7 @@ flask db upgrade
 
     ```sh
     ssh leon@172.234.196.74
-    cd /var/www/MacroDash/backend
+    cd /var/www/Gym/backend
     git pull origin master
     ```
 

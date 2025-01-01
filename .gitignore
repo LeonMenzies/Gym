@@ -45,3 +45,6 @@ expo-env.d.ts
 
 
 app.log
+
+mobile-frontend/android
+mobile-frontend/ios
