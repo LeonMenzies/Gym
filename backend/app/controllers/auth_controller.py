@@ -9,9 +9,9 @@ from app.helpers.api_helpers import APIHelpers
 from app.helpers.api_exception import ApiException
 from datetime import timedelta
 
-bp = Blueprint('auth', __name__, url_prefix='/gym/api/auth')
+bp = Blueprint('auth', __name__)
 
-@bp.route('/login', methods=['POST'])
+@bp.route('/auth/login', methods=['POST'])
 def post_login():
     try:
         helper = APIHelpers(request)
@@ -56,7 +56,7 @@ def post_login():
     except ApiException as e:
         raise e
 
-@bp.route('/signup', methods=['POST'])
+@bp.route('/auth/signup', methods=['POST'])
 def post_signup():
     try:
         helper = APIHelpers(request)
@@ -97,7 +97,7 @@ def post_signup():
     except ApiException as e:
         raise e
 
-@bp.route('/apple', methods=['POST'])
+@bp.route('/auth/apple', methods=['POST'])
 def apple_login():
     try:
         token = request.json.get('token')

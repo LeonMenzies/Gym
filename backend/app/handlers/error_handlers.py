@@ -1,6 +1,6 @@
 import logging
 import traceback
-from flask import jsonify
+from flask import jsonify, request, current_app
 from app.helpers.api_exception import ApiException
 
 def register_error_handlers(app):
@@ -12,6 +12,18 @@ def register_error_handlers(app):
             'message': str(error.message),
         })
         return response
+    
+    @app.errorhandler(404)
+    def handle_404_error(error):
+        routes = [str(rule) for rule in current_app.url_map.iter_rules()]
+        logging.error(f"404 Error: {request.url}")
+        logging.error(f"Available routes: {routes}")
+
+        response = jsonify({
+            'success': False,
+            'message': 'Invalid endpoint. Please check the API documentation.',
+        })
+        return response, 404
 
     @app.errorhandler(Exception)
     def handle_general_exception(error):

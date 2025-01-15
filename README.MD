@@ -9,6 +9,10 @@ flask db upgrade
 
 eas build
 
+### Usefull
+
+sudo journalctl -u gunicorn-gym -n 50 --no-pager
+
 ### Backend Deployment
 
 1. **SSH into the server, navigate to the backend directory, and pull the latest code**:

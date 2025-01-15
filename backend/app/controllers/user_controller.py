@@ -10,9 +10,9 @@ from app.models.user_settings import MetricType, UserSettings, Theme
 from app.models.user_info import ActivityLevel, FitnessLevel, Gender, UserInfo
 from app.helpers.database import db
 
-bp = Blueprint('user', __name__, url_prefix='/gym/api/user')
+bp = Blueprint('user', __name__)
 
-@bp.route('/settings', methods=['GET'])
+@bp.route('/user/settings', methods=['GET'])
 @jwt_required()
 def get_user_settings():
     try:
@@ -36,7 +36,7 @@ def get_user_settings():
     except Exception as e:
         raise ApiException(str(e))
 
-@bp.route('/settings', methods=['POST'])
+@bp.route('/user/settings', methods=['POST'])
 @jwt_required()
 def update_user_settings():
     try:
@@ -80,7 +80,7 @@ def update_user_settings():
     except Exception as e:
         raise ApiException(str(e))
     
-@bp.route('/info', methods=['GET'])
+@bp.route('/user/info', methods=['GET'])
 @jwt_required()
 def get_user_info():
     try:
@@ -115,7 +115,7 @@ def get_user_info():
     except ApiException as e:
         raise e
     
-@bp.route('/info', methods=['POST'])
+@bp.route('/user/info', methods=['POST'])
 @jwt_required()
 def update_user_info():
     try:
@@ -224,7 +224,7 @@ def update_user_info():
     except ApiException as e:
         raise e
     
-@bp.route('/complete-onboarding', methods=['POST'])
+@bp.route('/user/complete-onboarding', methods=['POST'])
 @jwt_required()
 def complete_onboarding():
     try:
@@ -290,7 +290,7 @@ def complete_onboarding():
         raise e
     
 
-@bp.route('/options', methods=['GET'])
+@bp.route('/user/options', methods=['GET'])
 @jwt_required()
 def get_options():
     try:
