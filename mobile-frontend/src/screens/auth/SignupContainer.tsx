@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-nativ
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
 import { Button } from "~components/Button";
-import usePostApi from "hooks/usePostApi";
+import usePostApi from "~hooks/usePostApi";
 
 type SignupContainerT = {
     navigation: any;

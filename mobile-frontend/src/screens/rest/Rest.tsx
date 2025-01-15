@@ -3,11 +3,11 @@ import { View, StyleSheet } from "react-native";
 import { useRecoilValue } from "recoil";
 import { useKeepAwake } from "expo-keep-awake";
 
-import { RestTimer } from "screens/rest/RestTimer";
+import { RestTimer } from "~screens/rest/RestTimer";
 import { themeAtom } from "~recoil/themeAtom";
 import { ThemeT } from "~types/Types";
-import { RestRestTimeInfo } from "screens/rest/RestTimeInfo";
-import { RestSetTime } from "screens/rest/RestSetTime";
+import { RestRestTimeInfo } from "~screens/rest/RestTimeInfo";
+import { RestSetTime } from "~screens/rest/RestSetTime";
 
 export const Rest: FC<any> = () => {
     const [sliderValue, setSliderValue] = useState(60);

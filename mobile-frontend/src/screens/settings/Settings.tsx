@@ -2,7 +2,7 @@ import { View, StyleSheet } from "react-native";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FC, useEffect } from "react";
 import { darkTheme, lightTheme, themeAtom } from "~recoil/themeAtom";
-import { SettingsT, ThemeT, UserSettingsT } from "~types/Types";
+import { UserSettingsT } from "~types/Types";
 import { SettingsSelectItem } from "~screens/settings/SettingsSelectItem";
 import { SettingsButtonItem } from "~screens/settings/SettingsButtonItem";
 import { defaultUser, userAtom } from "~recoil/userAtom";

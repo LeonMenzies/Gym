@@ -2,7 +2,7 @@ import { useEffect, FC, useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { EmailLoginT, UserT } from "~types/Types";
-import usePostApi from "hooks/usePostApi";
+import usePostApi from "~hooks/usePostApi";
 import { ACCOUNT_DEACTIVATED_STATUS } from "~utils/Constants";
 import { usePersistentUser } from "~hooks/usePersistentUser";
 import { useRecoilValue } from "recoil";
