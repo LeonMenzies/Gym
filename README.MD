@@ -13,6 +13,11 @@ eas build
 
 sudo journalctl -u gunicorn-gym -n 50 --no-pager
 
+eas build --platform ios --profile production
+eas submit -p ios --latest
+
+eas update --branch production
+
 ### Backend Deployment
 
 1. **SSH into the server, navigate to the backend directory, and pull the latest code**:
