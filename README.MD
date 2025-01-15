@@ -16,7 +16,7 @@ eas build
     ```sh
     ssh leon@172.234.196.74
     cd /var/www/Gym/backend
-    git pull origin master
+    git pull origin main
     ```
 
 2. **Activate virtual environment, install dependencies, reload systemd daemon, and restart Gunicorn**:
@@ -24,5 +24,5 @@ eas build
     source venv/bin/activate
     pip install -r requirements.txt
     sudo systemctl daemon-reload
-    sudo systemctl restart gunicorn
+    sudo systemctl restart gunicorn-macro-dash
     ```

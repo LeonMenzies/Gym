@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request, make_response
 from app.helpers.api_helpers import APIHelpers
 from app.helpers.api_exception import ApiException
 
-bp = Blueprint('helper', __name__, url_prefix='/api')
+bp = Blueprint('helper', __name__, url_prefix='/gym/api')
 
 @bp.route('/test', methods=['POST'])
 def test_route(job_id):

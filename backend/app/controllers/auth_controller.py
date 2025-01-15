@@ -9,7 +9,7 @@ from app.helpers.api_helpers import APIHelpers
 from app.helpers.api_exception import ApiException
 from datetime import timedelta
 
-bp = Blueprint('auth', __name__, url_prefix='/api/auth')
+bp = Blueprint('auth', __name__, url_prefix='/gym/api/auth')
 
 @bp.route('/login', methods=['POST'])
 def post_login():

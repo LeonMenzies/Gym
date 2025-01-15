@@ -10,7 +10,7 @@ from app.models.user_settings import MetricType, UserSettings, Theme
 from app.models.user_info import ActivityLevel, FitnessLevel, Gender, UserInfo
 from app.helpers.database import db
 
-bp = Blueprint('user', __name__, url_prefix='/api/user')
+bp = Blueprint('user', __name__, url_prefix='/gym/api/user')
 
 @bp.route('/settings', methods=['GET'])
 @jwt_required()
