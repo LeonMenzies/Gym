@@ -1,21 +1,21 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
-import { OnboardingNavigatorListT, OnboardingStageT } from "~types/Types";
 
-import { NameStage } from "~screens/onboarding/Stages/NameStage";
 import { ActivityLevelStage } from "~screens/onboarding/Stages/ActivityLevelStage";
-import { OnboardingProvider } from "~utils/OnboardingProvider";
 import { AgeStage } from "~screens/onboarding/Stages/AgeStage";
-import { GenderStage } from "~screens/onboarding/Stages/GenderStage";
 import { CurrentFitnessStage } from "~screens/onboarding/Stages/CurrentFitnessStage";
-import { WeightStage } from "~screens/onboarding/Stages/WeightStage";
-import { HeightStage } from "~screens/onboarding/Stages/HeightStage";
-import { WeightGoalStage } from "~screens/onboarding/Stages/WeightGoalStage";
-import { GoalsStage } from "~screens/onboarding/Stages/GoalsStage";
-import { FocusAreasStage } from "~screens/onboarding/Stages/FocusAreasStage";
 import { ExistingHealthIssuesStage } from "~screens/onboarding/Stages/ExistingHealthIssuesStage";
+import { FocusAreasStage } from "~screens/onboarding/Stages/FocusAreasStage";
 import { FrequencyStage } from "~screens/onboarding/Stages/FrequencyStage";
+import { GenderStage } from "~screens/onboarding/Stages/GenderStage";
+import { GoalsStage } from "~screens/onboarding/Stages/GoalsStage";
+import { HeightStage } from "~screens/onboarding/Stages/HeightStage";
+import { NameStage } from "~screens/onboarding/Stages/NameStage";
+import { WeightGoalStage } from "~screens/onboarding/Stages/WeightGoalStage";
+import { WeightStage } from "~screens/onboarding/Stages/WeightStage";
+import { OnboardingNavigatorListT, OnboardingStageT } from "~types/Types";
+import { OnboardingProvider } from "~utils/OnboardingProvider";
 
 const Stack = createNativeStackNavigator<OnboardingNavigatorListT>();
 

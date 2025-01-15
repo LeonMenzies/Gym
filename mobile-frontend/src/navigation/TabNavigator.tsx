@@ -3,9 +3,9 @@ import { themeAtom } from "~recoil/themeAtom";
 import Icon from "react-native-vector-icons/SimpleLineIcons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { Home } from "screens/home/Home";
-import { Rest } from "screens/rest/Rest";
-import { Settings } from "screens/settings/Settings";
+import { Home } from "~screens/home/Home";
+import { Rest } from "~screens/rest/Rest";
+import { Settings } from "~screens/settings/Settings";
 import { TabParamList } from "~types/Types";
 
 const Tab = createBottomTabNavigator<TabParamList>();
