@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        padding: 20,
+        padding: 40,
     },
     title: {
         fontSize: 28,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     },
     appleButton: {
         width: "100%",
-        height: 50,
+        height: 45,
     },
     signUpContainer: {
         marginTop: 20,
