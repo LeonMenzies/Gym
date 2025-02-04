@@ -2,7 +2,7 @@
   "expo": {
     "name": "gym",
     "slug": "gym",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "myapp",
@@ -39,7 +39,9 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      "react-native-safe-area-context",
+      "react-native-screens"
     ],
     "experiments": {
       "typedRoutes": true

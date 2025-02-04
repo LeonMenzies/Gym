@@ -44,5 +44,3 @@ export const useFetchApi = <T>(endpoint: string, initialParams: Record<string, u
 
     return [results, loading, fetchProducts];
 };
-
-export default useFetchApi;

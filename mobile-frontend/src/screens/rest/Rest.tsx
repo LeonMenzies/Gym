@@ -1,13 +1,12 @@
-import { FC, useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { useRecoilValue } from "recoil";
 import { useKeepAwake } from "expo-keep-awake";
-
-import { RestTimer } from "~screens/rest/RestTimer";
+import { FC, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
-import { ThemeT } from "~types/Types";
-import { RestRestTimeInfo } from "~screens/rest/RestTimeInfo";
 import { RestSetTime } from "~screens/rest/RestSetTime";
+import { RestRestTimeInfo } from "~screens/rest/RestTimeInfo";
+import { RestTimer } from "~screens/rest/RestTimer";
+import { ThemeT } from "~types/Types";
 
 export const Rest: FC<any> = () => {
     const [sliderValue, setSliderValue] = useState(60);

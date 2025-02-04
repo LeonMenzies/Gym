@@ -1,8 +1,8 @@
-import { useState, useCallback } from "react";
 import axios from "axios";
-import { ApiResponse } from "~types/Types";
+import { useCallback, useState } from "react";
 import { usePersistentUser } from "~hooks/usePersistentUser";
 import { defaultUser } from "~recoil/userAtom";
+import { ApiResponse } from "~types/Types";
 
 export const usePostApi = <D, T>(endpoint: string): [ApiResponse<T>, boolean, (data: D) => Promise<void>] => {
     const [results, setResults] = useState<ApiResponse<T>>({
@@ -43,5 +43,3 @@ export const usePostApi = <D, T>(endpoint: string): [ApiResponse<T>, boolean, (d
 
     return [results, loading, postProducts];
 };
-
-export default usePostApi;

@@ -1,4 +1,4 @@
-import { ACCOUNT_ONBOARDING_STATUS, ACCOUNT_ACTIVE_STATUS, ACCOUNT_DEACTIVATED_STATUS } from "~utils/Constants";
+import { ACCOUNT_ACTIVE_STATUS, ACCOUNT_DEACTIVATED_STATUS, ACCOUNT_ONBOARDING_STATUS } from "~utils/Constants";
 
 export interface ApiResponse<T> {
     success: boolean;

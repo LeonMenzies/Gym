@@ -1,13 +1,13 @@
-import { View, StyleSheet } from "react-native";
-import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FC, useEffect } from "react";
-import { darkTheme, lightTheme, themeAtom } from "~recoil/themeAtom";
-import { UserSettingsT } from "~types/Types";
-import { SettingsSelectItem } from "~screens/settings/SettingsSelectItem";
-import { SettingsButtonItem } from "~screens/settings/SettingsButtonItem";
-import { defaultUser, userAtom } from "~recoil/userAtom";
+import { StyleSheet, View } from "react-native";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { usePersistentUser } from "~hooks/usePersistentUser";
-import usePostApi from "~hooks/usePostApi";
+import { usePostApi } from "~hooks/usePostApi";
+import { darkTheme, lightTheme, themeAtom } from "~recoil/themeAtom";
+import { defaultUser, userAtom } from "~recoil/userAtom";
+import { SettingsButtonItem } from "~screens/settings/SettingsButtonItem";
+import { SettingsSelectItem } from "~screens/settings/SettingsSelectItem";
+import { UserSettingsT } from "~types/Types";
 
 export const Settings: FC = () => {
     const user = useRecoilValue(userAtom);

@@ -1,13 +1,15 @@
-import { View, Switch, StyleSheet, Text } from "react-native";
-import { useRecoilValue } from "recoil";
 import { FC } from "react";
-import { ThemeT } from "~types/Types";
+import { StyleSheet, Switch, Text, View } from "react-native";
+import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
+import { ThemeT } from "~types/Types";
+
 type SettingsT = {
     title: string;
     callBack: (value: boolean) => void;
     value: boolean;
 };
+
 export const SettingsSelectItem: FC<SettingsT> = ({ title, callBack, value }) => {
     const colors = useRecoilValue(themeAtom);
     const styles = styling(colors);

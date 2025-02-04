@@ -1,9 +1,10 @@
-import { useEffect, FC, useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { FC, useState } from "react";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRecoilValue } from "recoil";
-import { themeAtom } from "~recoil/themeAtom";
 import { Button } from "~components/Button";
-import usePostApi from "~hooks/usePostApi";
+import { usePostApi } from "~hooks/usePostApi";
+import { themeAtom } from "~recoil/themeAtom";
 
 type SignupContainerT = {
     navigation: any;
@@ -25,7 +26,7 @@ export const SignupContainer: FC<SignupContainerT> = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Text style={[styles.title, { color: colors.textPrimary }]}>Create Account</Text>
 
             <TextInput
@@ -82,7 +83,7 @@ export const SignupContainer: FC<SignupContainerT> = ({ navigation }) => {
                     </Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 

@@ -1,10 +1,9 @@
-import { FC, useState, useEffect } from "react";
-import { Image, View, StyleSheet, TouchableHighlight, Dimensions } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
-
-import { ThemeT } from "~types/Types";
+import { FC, useEffect, useState } from "react";
+import { Dimensions, Image, StyleSheet, TouchableHighlight, View } from "react-native";
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
+import { ThemeT } from "~types/Types";
 
 interface RestTimerT {
     rest: number;

@@ -1,13 +1,14 @@
-import { useEffect, FC, useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import * as AppleAuthentication from "expo-apple-authentication";
-import { EmailLoginT, UserT } from "~types/Types";
-import usePostApi from "~hooks/usePostApi";
-import { ACCOUNT_DEACTIVATED_STATUS } from "~utils/Constants";
-import { usePersistentUser } from "~hooks/usePersistentUser";
+import { FC, useEffect, useState } from "react";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRecoilValue } from "recoil";
-import { themeAtom } from "~recoil/themeAtom";
 import { Button } from "~components/Button";
+import { usePersistentUser } from "~hooks/usePersistentUser";
+import { usePostApi } from "~hooks/usePostApi";
+import { themeAtom } from "~recoil/themeAtom";
+import { EmailLoginT, UserT } from "~types/Types";
+import { ACCOUNT_DEACTIVATED_STATUS } from "~utils/Constants";
 
 type LoginContainerT = {
     navigation: any;
@@ -60,7 +61,7 @@ export const LoginContainer: FC<LoginContainerT> = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Text style={[styles.title, { color: colors.textPrimary }]}>Welcome Back</Text>
 
             <TextInput
@@ -111,7 +112,7 @@ export const LoginContainer: FC<LoginContainerT> = ({ navigation }) => {
                     </Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 

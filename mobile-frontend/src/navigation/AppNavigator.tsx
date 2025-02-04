@@ -1,16 +1,13 @@
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useRecoilValue } from "recoil";
-
-import { userAtom } from "~recoil/userAtom";
-import { ACCOUNT_ACTIVE_STATUS, ACCOUNT_ONBOARDING_STATUS } from "~utils/Constants";
-import { RootStackParamList } from "~types/Types";
-
 import { AuthNavigator } from "~navigation/AuthNavigator";
-import { TabNavigator } from "~navigation/TabNavigator";
 import { OnboardingNavigator } from "~navigation/OnboardingNavigator";
+import { TabNavigator } from "~navigation/TabNavigator";
 import { themeAtom } from "~recoil/themeAtom";
-import { View } from "react-native-reanimated/lib/typescript/Animated";
+import { userAtom } from "~recoil/userAtom";
+import { RootStackParamList } from "~types/Types";
+import { ACCOUNT_ACTIVE_STATUS, ACCOUNT_ONBOARDING_STATUS } from "~utils/Constants";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

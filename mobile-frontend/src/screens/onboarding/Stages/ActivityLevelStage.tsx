@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import { View, StyleSheet, Pressable, Text } from "react-native";
-import { OnboardingContainer } from "~screens/onboarding/OnboardingContainer";
-import { OnboardingContext } from "~utils/OnboardingProvider";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
+import { OnboardingContainer } from "~screens/onboarding/OnboardingContainer";
+import { OnboardingContext } from "~utils/OnboardingProvider";
 
 const ACTIVITY_LEVELS = [
     { id: "SEDENTARY", label: "Sedentary", description: "Little to no exercise" },

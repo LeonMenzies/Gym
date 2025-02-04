@@ -1,7 +1,7 @@
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Icon from "react-native-vector-icons/SimpleLineIcons";
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
-import Icon from "react-native-vector-icons/SimpleLineIcons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { Home } from "~screens/home/Home";
 import { Rest } from "~screens/rest/Rest";

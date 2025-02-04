@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
-import useFetchApi from "~hooks/useFetchApi";
-import usePostApi from "~hooks/usePostApi";
+import { useFetchApi } from "~hooks/useFetchApi";
+import { usePostApi } from "~hooks/usePostApi";
 import { OptionsData, OptionsResponse } from "~types/Types";
 
 export type OnboardingData = {

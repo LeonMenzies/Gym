@@ -14,7 +14,7 @@ import { HeightStage } from "~screens/onboarding/Stages/HeightStage";
 import { NameStage } from "~screens/onboarding/Stages/NameStage";
 import { WeightGoalStage } from "~screens/onboarding/Stages/WeightGoalStage";
 import { WeightStage } from "~screens/onboarding/Stages/WeightStage";
-import { OnboardingNavigatorListT, OnboardingStageT } from "~types/Types";
+import { OnboardingNavigatorListT } from "~types/Types";
 import { OnboardingProvider } from "~utils/OnboardingProvider";
 
 const Stack = createNativeStackNavigator<OnboardingNavigatorListT>();

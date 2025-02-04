@@ -1,10 +1,12 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useRecoilValue } from "recoil";
-import { themeAtom } from "../recoil/themeAtom";
 import { LoginContainer } from "~screens/auth/LoginContainer";
 import { SignupContainer } from "~screens/auth/SignupContainer";
 import { AuthStackParamList } from "~types/Types";
+import { themeAtom } from "../recoil/themeAtom";
+
 const Stack = createNativeStackNavigator<AuthStackParamList>();
+
 export const AuthNavigator = () => {
     const colors = useRecoilValue(themeAtom);
     return (

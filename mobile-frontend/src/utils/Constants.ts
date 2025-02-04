@@ -8,4 +8,3 @@ export const ACTION_KEY = "action-list";
 export const ACCOUNT_ONBOARDING_STATUS = "ONBOARDING";
 export const ACCOUNT_ACTIVE_STATUS = "ACTIVE";
 export const ACCOUNT_DEACTIVATED_STATUS = "DEACTIVATED";
-

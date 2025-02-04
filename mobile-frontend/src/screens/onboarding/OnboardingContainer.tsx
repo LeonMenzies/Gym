@@ -1,13 +1,13 @@
-import { OnboardingProgress } from "~screens/onboarding/OnboardingProgress";
 import { FC, useContext, useEffect, useState } from "react";
-import { Button } from "~components/Button";
-import { OnboardingContext, OnboardingData } from "~utils/OnboardingProvider";
-import { View, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useRecoilValue } from "recoil";
-import { themeAtom } from "~recoil/themeAtom";
-import usePostApi from "~hooks/usePostApi";
+import { Button } from "~components/Button";
 import { usePersistentUser } from "~hooks/usePersistentUser";
+import { usePostApi } from "~hooks/usePostApi";
+import { themeAtom } from "~recoil/themeAtom";
+import { OnboardingProgress } from "~screens/onboarding/OnboardingProgress";
 import { UserT } from "~types/Types";
+import { OnboardingContext } from "~utils/OnboardingProvider";
 
 type OnboardingContainerT = {
     complete: boolean;

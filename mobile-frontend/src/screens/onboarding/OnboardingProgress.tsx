@@ -1,10 +1,8 @@
-import { FC, useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Animated, TouchableOpacity, Text, DimensionValue } from "react-native";
+import { FC, useRef, useState } from "react";
+import { Animated, DimensionValue, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRecoilValue } from "recoil";
-import { themeAtom } from "~recoil/themeAtom";
-import { useContext } from "react";
-import { OnboardingContext, OnboardingData } from "~utils/OnboardingProvider";
 import { ONBOARDING_FLOW } from "~navigation/OnboardingNavigator";
+import { themeAtom } from "~recoil/themeAtom";
 
 type Props = {
     progress: number;

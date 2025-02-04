@@ -1,10 +1,9 @@
-import { useState } from "react";
-import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
-import { OnboardingContainer } from "../OnboardingContainer";
-import { OnboardingContext } from "~utils/OnboardingProvider";
+import { useContext, useState } from "react";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
-import { useContext } from "react";
+import { OnboardingContext } from "~utils/OnboardingProvider";
+import { OnboardingContainer } from "../OnboardingContainer";
 
 export const WeightStage = ({ navigation, route }) => {
     const { data, updateData } = useContext(OnboardingContext);

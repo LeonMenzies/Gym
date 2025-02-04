@@ -1,9 +1,9 @@
+import { FC, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import React, { FC } from "react";
 import { useRecoilValue } from "recoil";
-import { themeAtom } from "~recoil/themeAtom";
 import { Button } from "~components/Button";
 import { Dropdown } from "~components/DropDown";
+import { themeAtom } from "~recoil/themeAtom";
 
 const GYMS = [
     { label: "24/7 Fitness", value: "247" },
@@ -13,7 +13,7 @@ const GYMS = [
 
 export const Home: FC = () => {
     const colors = useRecoilValue(themeAtom);
-    const [selectedGym, setSelectedGym] = React.useState<string | null>(null);
+    const [selectedGym, setSelectedGym] = useState<string | null>(null);
 
     return (
         <View style={styles.container}>

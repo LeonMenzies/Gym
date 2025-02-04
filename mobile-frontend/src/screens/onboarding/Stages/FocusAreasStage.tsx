@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
-import { OnboardingContainer } from "../OnboardingContainer";
-import { OnboardingContext } from "~utils/OnboardingProvider";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useRecoilValue } from "recoil";
 import { themeAtom } from "~recoil/themeAtom";
+import { OnboardingContext } from "~utils/OnboardingProvider";
+import { OnboardingContainer } from "../OnboardingContainer";
 
 export const FocusAreasStage = ({ navigation, route }) => {
     const { data, options, updateData } = useContext(OnboardingContext);
