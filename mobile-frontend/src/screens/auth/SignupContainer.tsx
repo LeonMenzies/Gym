@@ -1,9 +1,10 @@
 import { FC, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, SafeAreaView } from "react-native";
 import { useRecoilValue } from "recoil";
 import { Button } from "~components/Button";
+import { ErrorMessage } from "~components/ErrorMessage";
 import { usePostApi } from "~hooks/usePostApi";
+import { useNavigation } from "~navigation/CustomNavigator";
 import { themeAtom } from "~recoil/themeAtom";
 
 type SignupContainerT = {
@@ -12,14 +13,16 @@ type SignupContainerT = {
 
 export const SignupContainer: FC<SignupContainerT> = ({ navigation }) => {
     const colors = useRecoilValue(themeAtom);
+    const { navigate } = useNavigation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [signupResponse, signupLoading, signup] = usePostApi("/auth/signup");
 
     const handleSignup = () => {
         if (password !== confirmPassword) {
-            // TODO: Show error message
+            setErrorMessage("Passwords do not match");
             return;
         }
         signup({ email, password });
@@ -74,10 +77,12 @@ export const SignupContainer: FC<SignupContainerT> = ({ navigation }) => {
                 onChangeText={setConfirmPassword}
             />
 
+            {errorMessage && <ErrorMessage message={errorMessage} />}
+
             <View style={styles.buttonContainer}>
                 <Button title="Sign Up" onPress={handleSignup} disabled={signupLoading} />
 
-                <TouchableOpacity onPress={() => navigation.navigate("Login")} style={styles.loginContainer}>
+                <TouchableOpacity onPress={() => navigate("login")} style={styles.loginContainer}>
                     <Text style={[styles.loginText, { color: colors.secondary }]}>
                         Already have an account? <Text style={{ color: colors.primary }}>Login</Text>
                     </Text>

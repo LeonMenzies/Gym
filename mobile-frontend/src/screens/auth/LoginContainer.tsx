@@ -1,23 +1,22 @@
 import * as AppleAuthentication from "expo-apple-authentication";
-import { FC, useEffect, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect, useState } from "react";
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useRecoilValue } from "recoil";
 import { Button } from "~components/Button";
 import { usePersistentUser } from "~hooks/usePersistentUser";
 import { usePostApi } from "~hooks/usePostApi";
+import { useNavigation } from "~navigation/CustomNavigator";
 import { themeAtom } from "~recoil/themeAtom";
 import { EmailLoginT, UserT } from "~types/Types";
+import { ErrorMessage } from "~components/ErrorMessage";
 import { ACCOUNT_DEACTIVATED_STATUS } from "~utils/Constants";
 
-type LoginContainerT = {
-    navigation: any;
-};
-
-export const LoginContainer: FC<LoginContainerT> = ({ navigation }) => {
+export const LoginContainer = () => {
     const colors = useRecoilValue(themeAtom);
+    const { navigate } = useNavigation();
     const [email, setEmail] = useState("leon.menzies@hotmail.com");
     const [password, setPassword] = useState("Testing123!");
+    const [errorMessage, setErrorMessage] = useState("");
     const [postLoginResponse, postLoginLoading, postLogin] = usePostApi<EmailLoginT, UserT>("/auth/login");
     const { updateUser } = usePersistentUser();
 
@@ -30,9 +29,9 @@ export const LoginContainer: FC<LoginContainerT> = ({ navigation }) => {
             if (postLoginResponse.data.account_status != ACCOUNT_DEACTIVATED_STATUS) {
                 updateUser(postLoginResponse.data);
             }
+        } else if (postLoginResponse.message) {
+            setErrorMessage(postLoginResponse.message);
         }
-
-        //TODO: Handle error message on screen
     }, [postLoginResponse]);
 
     const handleAppleSignIn = async () => {
@@ -95,6 +94,8 @@ export const LoginContainer: FC<LoginContainerT> = ({ navigation }) => {
                 secureTextEntry
             />
 
+            {errorMessage && <ErrorMessage message={errorMessage} />}
+
             <View style={styles.buttonContainer}>
                 <Button title="Login" onPress={handleEmailSignIn} disabled={postLoginLoading} />
 
@@ -106,7 +107,7 @@ export const LoginContainer: FC<LoginContainerT> = ({ navigation }) => {
                     onPress={handleAppleSignIn}
                 />
 
-                <TouchableOpacity onPress={() => navigation.navigate("Signup")} style={styles.signUpContainer}>
+                <TouchableOpacity onPress={() => navigate("signup")} style={styles.signUpContainer}>
                     <Text style={[styles.signUpText, { color: colors.secondary }]}>
                         Don't have an account? <Text style={{ color: colors.primary }}>Sign Up</Text>
                     </Text>

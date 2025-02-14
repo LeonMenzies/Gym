@@ -6,6 +6,18 @@ export interface ApiResponse<T> {
     data?: T;
 }
 
+export type Route = {
+    name: string;
+    component: React.ComponentType<any>;
+    protected?: boolean;
+    requiresAuth?: boolean;
+};
+
+export type NavigationState = {
+    currentRoute: string;
+    history: string[];
+};
+
 export type ThemeT = {
     primary: string;
     secondary: string;
