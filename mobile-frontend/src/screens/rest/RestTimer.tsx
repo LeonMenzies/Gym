@@ -1,75 +1,67 @@
-import MaskedView from "@react-native-masked-view/masked-view";
-import { FC, useEffect, useState } from "react";
-import { Dimensions, Image, StyleSheet, TouchableHighlight, View } from "react-native";
-import { useRecoilValue } from "recoil";
-import { themeAtom } from "~recoil/themeAtom";
-import { ThemeT } from "~types/Types";
+import { FC, useEffect, useRef } from "react";
+import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useTheme } from "~store/settingsStore";
 
 interface RestTimerT {
     rest: number;
 }
 
+const SIZE = 300;
+
 export const RestTimer: FC<RestTimerT> = ({ rest }) => {
-    const [rotation, setRotation] = useState(0);
-    const { width } = Dimensions.get("window");
-    const colors = useRecoilValue(themeAtom);
-    const styles = styling(colors, width);
+    const colors = useTheme();
+    const fillHeight = useRef(new Animated.Value(SIZE)).current;
+    const animRef = useRef<Animated.CompositeAnimation | null>(null);
+
+    const startTimer = () => {
+        fillHeight.setValue(SIZE);
+        animRef.current = Animated.timing(fillHeight, {
+            toValue: 0,
+            duration: rest * 1000,
+            useNativeDriver: false,
+        });
+        animRef.current.start(({ finished }) => {
+            if (finished) startTimer();
+        });
+    };
 
     useEffect(() => {
-        const fps = 60;
-        const degreesPerFrame = 720 / rest / fps;
+        startTimer();
+        return () => { animRef.current?.stop(); };
+    }, [rest]);
 
-        const timer = setInterval(() => {
-            if (rotation < 360) {
-                setRotation(rotation + degreesPerFrame);
-            } else {
-                setRotation(0);
-            }
-        }, 1000 / fps);
-
-        return () => clearInterval(timer);
-    }, [rotation, rest]);
-
-    const maskElement = (
-        <Image
-            style={{
-                width: width - 50,
-                height: width - 50,
-                backgroundColor: "transparent",
-                borderRadius: width / 2,
-                transform: [{ rotate: `${rotation}deg` }],
-            }}
-            source={require("~assets/mask.png")}
-        />
-    );
+    const handleReset = () => {
+        animRef.current?.stop();
+        startTimer();
+    };
 
     return (
         <View style={styles.container}>
-            <MaskedView {...{ maskElement }}>
-                <TouchableHighlight onPress={() => setRotation(0)} style={styles.button}>
-                    <View
-                        style={{
-                            flex: 1,
-                            backgroundColor: colors.secondary,
-                            borderRadius: width / 2,
-                        }}
+            <TouchableOpacity onPress={handleReset} activeOpacity={0.85}>
+                <View style={[styles.circle, { backgroundColor: colors.secondary }]}>
+                    <Animated.View
+                        style={[styles.fill, { backgroundColor: colors.primary, height: fillHeight }]}
                     />
-                </TouchableHighlight>
-            </MaskedView>
+                </View>
+            </TouchableOpacity>
         </View>
     );
 };
 
-const styling = (colors: ThemeT, width: number) =>
-    StyleSheet.create({
-        container: {
-            justifyContent: "center",
-            height: "60%",
-        },
-        button: {
-            width: width - 50,
-            height: width - 50,
-            backgroundColor: colors.primary,
-            borderRadius: width / 2,
-        },
-    });
+const styles = StyleSheet.create({
+    container: {
+        justifyContent: "center",
+        alignItems: "center",
+        height: "60%",
+    },
+    circle: {
+        width: SIZE,
+        height: SIZE,
+        borderRadius: SIZE / 2,
+        overflow: "hidden",
+        justifyContent: "flex-end",
+    },
+    fill: {
+        width: SIZE,
+    },
+});

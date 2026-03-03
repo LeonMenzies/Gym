@@ -1,8 +1,7 @@
 import { FC, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Modal, ScrollView } from "react-native";
-import { useRecoilValue } from "recoil";
-import { themeAtom } from "~recoil/themeAtom";
 import Icon from "react-native-vector-icons/SimpleLineIcons";
+import { useTheme } from "~store/settingsStore";
 
 type OptionT = {
     label: string;
@@ -17,7 +16,7 @@ type DropdownT = {
 };
 
 export const Dropdown: FC<DropdownT> = ({ options, value, onChange, placeholder = "Select option" }) => {
-    const colors = useRecoilValue(themeAtom);
+    const colors = useTheme();
     const [visible, setVisible] = useState(false);
 
     const selectedOption = options.find((option) => option.value === value);
@@ -36,27 +35,13 @@ export const Dropdown: FC<DropdownT> = ({ options, value, onChange, placeholder 
                             {options.map((option) => (
                                 <TouchableOpacity
                                     key={option.value}
-                                    style={[
-                                        styles.option,
-                                        {
-                                            backgroundColor: value === option.value ? colors.primary : colors.background,
-                                        },
-                                    ]}
+                                    style={[styles.option, { backgroundColor: value === option.value ? colors.primary : colors.background }]}
                                     onPress={() => {
                                         onChange(option.value);
                                         setVisible(false);
                                     }}
                                 >
-                                    <Text
-                                        style={[
-                                            styles.optionText,
-                                            {
-                                                color: value === option.value ? colors.white : colors.textPrimary,
-                                            },
-                                        ]}
-                                    >
-                                        {option.label}
-                                    </Text>
+                                    <Text style={[styles.optionText, { color: value === option.value ? colors.white : colors.textPrimary }]}>{option.label}</Text>
                                 </TouchableOpacity>
                             ))}
                         </ScrollView>

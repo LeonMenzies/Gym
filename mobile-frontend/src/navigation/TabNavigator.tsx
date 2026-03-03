@@ -1,17 +1,18 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/SimpleLineIcons";
-import { useRecoilValue } from "recoil";
-import { themeAtom } from "~recoil/themeAtom";
+import { useTheme } from "~store/settingsStore";
 
-import { Home } from "~screens/home/Home";
-import { Rest } from "~screens/rest/Rest";
+import { NotesNavigator } from "~navigation/NotesNavigator";
+import { RecipesScreen } from "~screens/recipes/RecipesScreen";
+import { TimerScreen } from "~screens/timer/TimerScreen";
 import { Settings } from "~screens/settings/Settings";
+import { TodoScreen } from "~screens/todo/TodoScreen";
 import { TabParamList } from "~types/Types";
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
 export const TabNavigator = () => {
-    const colors = useRecoilValue(themeAtom);
+    const colors = useTheme();
 
     return (
         <Tab.Navigator
@@ -27,24 +28,39 @@ export const TabNavigator = () => {
             }}
         >
             <Tab.Screen
-                name="Home"
-                component={Home}
+                name="Timer"
+                component={TimerScreen}
                 options={{
-                    tabBarIcon: ({ color }) => <Icon name="home" size={24} color={color} />,
+                    tabBarIcon: ({ color }) => <Icon name="clock" size={22} color={color} />,
                 }}
             />
             <Tab.Screen
-                name="Rest"
-                component={Rest}
+                name="Todo"
+                component={TodoScreen}
                 options={{
-                    tabBarIcon: ({ color }) => <Icon name="clock" size={24} color={color} />,
+                    tabBarLabel: "To-Do",
+                    tabBarIcon: ({ color }) => <Icon name="list" size={22} color={color} />,
+                }}
+            />
+            <Tab.Screen
+                name="Recipes"
+                component={RecipesScreen}
+                options={{
+                    tabBarIcon: ({ color }) => <Icon name="notebook" size={22} color={color} />,
+                }}
+            />
+            <Tab.Screen
+                name="Notes"
+                component={NotesNavigator}
+                options={{
+                    tabBarIcon: ({ color }) => <Icon name="note" size={22} color={color} />,
                 }}
             />
             <Tab.Screen
                 name="Settings"
                 component={Settings}
                 options={{
-                    tabBarIcon: ({ color }) => <Icon name="settings" size={24} color={color} />,
+                    tabBarIcon: ({ color }) => <Icon name="settings" size={22} color={color} />,
                 }}
             />
         </Tab.Navigator>

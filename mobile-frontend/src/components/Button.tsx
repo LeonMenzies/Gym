@@ -1,8 +1,6 @@
 import { FC } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import { useRecoilValue } from "recoil";
-
-import { themeAtom } from "~recoil/themeAtom";
+import { useTheme } from "~store/settingsStore";
 import { ThemeT } from "~types/Types";
 
 type ButtonT = {
@@ -12,7 +10,7 @@ type ButtonT = {
 };
 
 export const Button: FC<ButtonT> = ({ title, onPress, disabled = false }) => {
-    const colors = useRecoilValue(themeAtom);
+    const colors = useTheme();
     const styles = styling(disabled, colors);
 
     return (

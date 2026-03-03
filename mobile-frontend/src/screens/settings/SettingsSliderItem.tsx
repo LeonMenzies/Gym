@@ -1,8 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useRecoilValue } from "recoil";
 import { SliderInput } from "~components/SliderInput";
-import { themeAtom } from "~recoil/themeAtom";
+import { useTheme } from "~store/settingsStore";
 import { ThemeT } from "~types/Types";
 
 type SettingsT = {
@@ -12,7 +11,7 @@ type SettingsT = {
 };
 
 export const SettingsSliderItem: FC<SettingsT> = ({ title, onChange, value }) => {
-    const colors = useRecoilValue(themeAtom);
+    const colors = useTheme();
     const styles = styling(colors);
     const [sliderValue, setSliderValue] = useState(value);
 

@@ -1,9 +1,7 @@
 import { FC } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useRecoilValue } from "recoil";
 import { Button } from "~components/Button";
-import { themeAtom } from "~recoil/themeAtom";
-import { ThemeT } from "~types/Types";
+import { useTheme } from "~store/settingsStore";
 
 type SettingsT = {
     title: string;
@@ -12,38 +10,34 @@ type SettingsT = {
 };
 
 export const SettingsButtonItem: FC<SettingsT> = ({ title, buttonTitle, callBack }) => {
-    const colors = useRecoilValue(themeAtom);
-    const styles = styling(colors);
+    const colors = useTheme();
 
     return (
         <View style={styles.container}>
             <View style={styles.itemInnerContainer}>
-                <Text style={styles.itemText}>{title}</Text>
+                <Text style={[styles.itemText, { color: colors.textPrimary }]}>{title}</Text>
                 <Button title={buttonTitle} onPress={callBack} />
             </View>
-            <View style={styles.divider} />
+            <View style={[styles.divider, { borderBottomColor: colors.textPrimary }]} />
         </View>
     );
 };
 
-const styling = (colors: ThemeT) =>
-    StyleSheet.create({
-        container: {
-            width: "100%",
-        },
-        itemInnerContainer: {
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingLeft: 8,
-            height: 60,
-        },
-        itemText: {
-            fontSize: 17,
-            color: colors.textPrimary,
-        },
-        divider: {
-            borderBottomColor: colors.textPrimary,
-            borderBottomWidth: StyleSheet.hairlineWidth,
-        },
-    });
+const styles = StyleSheet.create({
+    container: {
+        width: "100%",
+    },
+    itemInnerContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingLeft: 8,
+        height: 60,
+    },
+    itemText: {
+        fontSize: 17,
+    },
+    divider: {
+        borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+});

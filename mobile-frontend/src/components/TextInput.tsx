@@ -1,9 +1,7 @@
 import { FC } from "react";
 import { Text, StyleSheet, View, KeyboardType } from "react-native";
 import { TextInput as Input } from "react-native";
-import { useRecoilValue } from "recoil";
-
-import { themeAtom } from "~recoil/themeAtom";
+import { useTheme } from "~store/settingsStore";
 import { ThemeT } from "~types/Types";
 
 type TextInputT = {
@@ -17,7 +15,7 @@ type TextInputT = {
 };
 
 export const TextInput: FC<TextInputT> = ({ title, value, onChangeText, placeholder, maxLength, keyboardType = "default", disabled }) => {
-    const colors = useRecoilValue(themeAtom);
+    const colors = useTheme();
     const styles = styling(colors);
 
     return (

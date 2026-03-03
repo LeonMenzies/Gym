@@ -3,7 +3,6 @@ module.exports = function (api) {
     return {
         presets: ["babel-preset-expo"],
         plugins: [
-            "react-native-reanimated/plugin",
             [
                 "module:react-native-dotenv",
                 {
@@ -24,7 +23,7 @@ module.exports = function (api) {
                         "~components": "./src/components",
                         "~screens": "./src/screens",
                         "~navigation": "./src/navigation",
-                        "~recoil": "./src/recoil",
+                        "~store": "./src/store",
                         "~types": "./src/types",
                         "~utils": "./src/utils",
                         "~hooks": "./src/hooks",

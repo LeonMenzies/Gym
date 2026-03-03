@@ -1,14 +1,13 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useRecoilValue } from "recoil";
-import { themeAtom } from "~recoil/themeAtom";
+import { useTheme } from "~store/settingsStore";
 
 type Props = {
     message: string;
 };
 
 export const ErrorMessage: React.FC<Props> = ({ message }) => {
-    const colors = useRecoilValue(themeAtom);
+    const colors = useTheme();
 
     if (!message) return null;
 

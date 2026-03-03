@@ -1,51 +1,33 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { StyleSheet, View } from "react-native";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { usePersistentUser } from "~hooks/usePersistentUser";
-import { usePostApi } from "~hooks/usePostApi";
-import { darkTheme, lightTheme, themeAtom } from "~recoil/themeAtom";
-import { defaultUser, userAtom } from "~recoil/userAtom";
-import { SettingsButtonItem } from "~screens/settings/SettingsButtonItem";
+import { useSettingsStore, useTheme } from "~store/settingsStore";
 import { SettingsSelectItem } from "~screens/settings/SettingsSelectItem";
-import { UserSettingsT } from "~types/Types";
 
 export const Settings: FC = () => {
-    const user = useRecoilValue(userAtom);
-    const [, , updateSettings] = usePostApi("/user/settings");
-    const { updateUser } = usePersistentUser();
-    const setTheme = useSetRecoilState(themeAtom);
-    useEffect(() => {
-        if (user.settings.theme === "LIGHT") {
-            setTheme(lightTheme);
-        } else {
-            setTheme(darkTheme);
-        }
-    }, [user]);
-    const handleSettingChange = async (setting: keyof UserSettingsT, value: any) => {
-        const newSettings = { ...user.settings, [setting]: value };
-        updateUser({ ...user, settings: newSettings });
-        updateSettings(newSettings);
-    };
-    const handleLogout = () => {
-        updateUser(defaultUser);
-    };
+    const colors = useTheme();
+    const { theme, metricType, setTheme, setMetricType } = useSettingsStore();
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             <SettingsSelectItem
-                title={user.settings.theme === "LIGHT" ? "Light Mode" : "Dark Mode"}
-                callBack={(e) => handleSettingChange("theme", e ? "LIGHT" : "DARK")}
-                value={user.settings.theme === "LIGHT"}
+                title={theme === "LIGHT" ? "Light Mode" : "Dark Mode"}
+                value={theme === "LIGHT"}
+                callBack={(val) => setTheme(val ? "LIGHT" : "DARK")}
             />
-            <SettingsSelectItem title="Use Metric" callBack={(e) => handleSettingChange("metric_type", e ? "METRIC" : "IMPERIAL")} value={user.settings.metric_type === "METRIC"} />
-            <SettingsSelectItem title="Notifications" callBack={(e) => handleSettingChange("notification_enabled", e)} value={user.settings.notification_enabled} />
-            <SettingsButtonItem title="Logout" buttonTitle="Logout" callBack={handleLogout} />
+            <SettingsSelectItem
+                title="Use Metric"
+                value={metricType === "METRIC"}
+                callBack={(val) => setMetricType(val ? "METRIC" : "IMPERIAL")}
+            />
         </View>
     );
 };
+
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         alignItems: "center",
-        marginTop: 50,
-        padding: 20,
+        paddingTop: 60,
+        paddingHorizontal: 20,
     },
 });
