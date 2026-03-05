@@ -1,4 +1,4 @@
-import Icon from "react-native-vector-icons/SimpleLineIcons";
+import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { FC, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, TouchableWithoutFeedback } from "react-native";
 import { useTheme } from "~store/settingsStore";

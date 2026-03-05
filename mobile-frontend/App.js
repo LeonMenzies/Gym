@@ -1,15 +1,33 @@
+import { Component } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Text, View } from "react-native";
+import { AppNavigator } from "./src/navigation/AppNavigator";
+import { ScrollView, Text, View } from "react-native";
 
-const Tab = createBottomTabNavigator();
-const Placeholder = () => <View style={{flex:1,justifyContent:"center",alignItems:"center"}}><Text>Tab</Text></View>;
+class ErrorBoundary extends Component {
+    state = { error: null };
+    static getDerivedStateFromError(error) {
+        return { error };
+    }
+    render() {
+        if (this.state.error) {
+            return (
+                <ScrollView style={{ flex: 1, backgroundColor: "white", padding: 20, paddingTop: 60 }}>
+                    <Text style={{ color: "red", fontWeight: "bold", fontSize: 16, marginBottom: 12 }}>CRASH</Text>
+                    <Text style={{ color: "black", fontSize: 13 }}>{String(this.state.error)}</Text>
+                    <Text style={{ color: "#666", fontSize: 11, marginTop: 12 }}>{this.state.error?.stack}</Text>
+                </ScrollView>
+            );
+        }
+        return this.props.children;
+    }
+}
 
-export default () => (
-    <NavigationContainer>
-        <Tab.Navigator id={undefined}>
-            <Tab.Screen name="A" component={Placeholder} />
-            <Tab.Screen name="B" component={Placeholder} />
-        </Tab.Navigator>
-    </NavigationContainer>
-);
+export default function App() {
+    return (
+        <ErrorBoundary>
+            <NavigationContainer>
+                <AppNavigator />
+            </NavigationContainer>
+        </ErrorBoundary>
+    );
+}

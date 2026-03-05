@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/SimpleLineIcons";
+import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { useNotesStore, Note } from "~store/notesStore";
 import { useTheme } from "~store/settingsStore";
 

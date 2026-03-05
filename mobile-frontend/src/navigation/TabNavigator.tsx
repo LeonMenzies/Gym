@@ -1,10 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Icon from "react-native-vector-icons/SimpleLineIcons";
+import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { useTheme } from "~store/settingsStore";
 
 import { NotesNavigator } from "~navigation/NotesNavigator";
+import { TimerNavigator } from "~navigation/TimerNavigator";
 import { RecipesScreen } from "~screens/recipes/RecipesScreen";
-import { TimerScreen } from "~screens/timer/TimerScreen";
 import { Settings } from "~screens/settings/Settings";
 import { TodoScreen } from "~screens/todo/TodoScreen";
 import { TabParamList } from "~types/Types";
@@ -29,7 +29,7 @@ export const TabNavigator = () => {
         >
             <Tab.Screen
                 name="Timer"
-                component={TimerScreen}
+                component={TimerNavigator}
                 options={{
                     tabBarIcon: ({ color }) => <Icon name="clock" size={22} color={color} />,
                 }}

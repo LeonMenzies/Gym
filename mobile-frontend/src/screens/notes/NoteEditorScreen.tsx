@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/SimpleLineIcons";
+import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { useNotesStore } from "~store/notesStore";
 import { useTheme } from "~store/settingsStore";
 

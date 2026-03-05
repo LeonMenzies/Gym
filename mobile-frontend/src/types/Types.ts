@@ -21,3 +21,9 @@ export type TabParamList = {
     Notes: undefined;
     Settings: undefined;
 };
+
+export type TimerStackParamList = {
+    TimerHome: undefined;
+    StretchBuilder: { routineId?: string } | undefined;
+    StretchRunner: { routineId: string };
+};

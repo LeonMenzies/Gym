@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import Icon from "react-native-vector-icons/SimpleLineIcons";
+import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { useTheme } from "~store/settingsStore";
 import { Task, useTodoStore } from "~store/todoStore";
 

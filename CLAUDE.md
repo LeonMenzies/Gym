@@ -83,6 +83,18 @@ cd mobile-frontend && npx tsc --noEmit
 cd mobile-frontend && npm install <package>
 ```
 
+## Working Process
+
+### Task Tracking
+- For any non-trivial task (3+ steps), use the **TaskCreate/TaskUpdate/TaskList** tools to maintain a live task list
+- Mark tasks `in_progress` before starting, `completed` when done — keep the list current so progress is always visible
+- Update task status continuously, not just at the end
+
+### Tackling Bugs / Complex Problems
+- Before diving in, **read the project brief** — check `CLAUDE.md` and `memory/MEMORY.md` for known crash history, past fixes, and architectural context
+- Check `MEMORY.md` crash history section first; the bug may have been seen before
+- Write out a short diagnosis plan (what you know, what you'll check) before making changes
+
 ## Do Not
 - Do not add backend calls or API hooks
 - Do not add auth / login flows

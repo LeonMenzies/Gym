@@ -32,11 +32,6 @@
       },
       "package": "com.leonmenzies.gym"
     },
-    "web": {
-      "bundler": "metro",
-      "output": "single",
-      "favicon": "./assets/images/favicon.png"
-    },
     "plugins": [
       "expo-font",
       "expo-asset"
