@@ -15,9 +15,9 @@ export type ThemeT = {
 };
 
 export type TabParamList = {
+    Dashboard: undefined;
     Timer: undefined;
     Todo: undefined;
-    Recipes: undefined;
     Notes: undefined;
     Settings: undefined;
 };

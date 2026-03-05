@@ -11,10 +11,18 @@ import {
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { useTheme } from "~store/settingsStore";
 import { Task, useTodoStore } from "~store/todoStore";
+import { useActivityStore } from "~store/activityStore";
 
 export const TodoScreen: FC = () => {
     const colors = useTheme();
     const { tasks, addTask, toggleTask, deleteTask, clearCompleted } = useTodoStore();
+    const { logActivity } = useActivityStore();
+
+    const handleToggle = (id: string) => {
+        const task = tasks.find((t) => t.id === id);
+        if (task && !task.completed) logActivity("todo");
+        toggleTask(id);
+    };
     const [inputText, setInputText] = useState("");
     const inputRef = useRef<TextInput>(null);
 
@@ -32,7 +40,7 @@ export const TodoScreen: FC = () => {
 
     const renderItem = ({ item }: { item: Task }) => (
         <View style={[styles.row, { borderBottomColor: colors.lightGrey }]}>
-            <TouchableOpacity onPress={() => toggleTask(item.id)} style={styles.checkbox}>
+            <TouchableOpacity onPress={() => handleToggle(item.id)} style={styles.checkbox}>
                 <View
                     style={[
                         styles.checkCircle,

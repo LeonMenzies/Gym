@@ -8,6 +8,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CircularTimer } from "~components/CircularTimer";
 import { StretchIllustration } from "~components/StretchIllustration";
 import { useTheme } from "~store/settingsStore";
+import { useActivityStore } from "~store/activityStore";
 import { BODY_PART_LABELS, STRETCHES, useStretchStore } from "~store/stretchStore";
 import { TimerStackParamList } from "~types/Types";
 
@@ -25,6 +26,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
     const nav = useNavigation<Nav>();
     const colors = useTheme();
     const { routines } = useStretchStore();
+    const { logActivity } = useActivityStore();
 
     const routine = routines.find((r) => r.id === route.params.routineId);
 
@@ -75,6 +77,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
                     // Done!
                     clearTimer();
                     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                    logActivity("stretch");
                     setStatus("done");
                 } else {
                     // Start swap phase
@@ -144,6 +147,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
         const nextIndex = T.current.index + 1;
         if (nextIndex >= items.length) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            logActivity("stretch");
             setStatus("done");
             return;
         }

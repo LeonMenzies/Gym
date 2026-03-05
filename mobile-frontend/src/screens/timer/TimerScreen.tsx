@@ -8,6 +8,7 @@ import { CircularTimer } from "~components/CircularTimer";
 import { useTheme } from "~store/settingsStore";
 import { STRETCHES, useStretchStore } from "~store/stretchStore";
 import { useTimerStore } from "~store/timerStore";
+import { useActivityStore } from "~store/activityStore";
 import { TimerStackParamList } from "~types/Types";
 
 type Nav = NativeStackNavigationProp<TimerStackParamList, "TimerHome">;
@@ -35,6 +36,7 @@ function labelForSeconds(s: number): string {
 const GymTimer: FC = () => {
     const colors = useTheme();
     const { gymRestSeconds, setGymRestSeconds } = useTimerStore();
+    const { logActivity } = useActivityStore();
 
     const [timeLeft, setTimeLeft] = useState(gymRestSeconds);
     const [running, setRunning] = useState(false);
@@ -51,6 +53,7 @@ const GymTimer: FC = () => {
                     if (prev <= 1) {
                         clearInterval(intervalRef.current!);
                         setRunning(false);
+                        logActivity("gym");
                         return 0;
                     }
                     return prev - 1;

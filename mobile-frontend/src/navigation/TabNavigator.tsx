@@ -4,7 +4,7 @@ import { useTheme } from "~store/settingsStore";
 
 import { NotesNavigator } from "~navigation/NotesNavigator";
 import { TimerNavigator } from "~navigation/TimerNavigator";
-import { RecipesScreen } from "~screens/recipes/RecipesScreen";
+import { DashboardScreen } from "~screens/dashboard/DashboardScreen";
 import { Settings } from "~screens/settings/Settings";
 import { TodoScreen } from "~screens/todo/TodoScreen";
 import { TabParamList } from "~types/Types";
@@ -28,6 +28,13 @@ export const TabNavigator = () => {
             }}
         >
             <Tab.Screen
+                name="Dashboard"
+                component={DashboardScreen}
+                options={{
+                    tabBarIcon: ({ color }) => <Icon name="grid" size={22} color={color} />,
+                }}
+            />
+            <Tab.Screen
                 name="Timer"
                 component={TimerNavigator}
                 options={{
@@ -40,13 +47,6 @@ export const TabNavigator = () => {
                 options={{
                     tabBarLabel: "To-Do",
                     tabBarIcon: ({ color }) => <Icon name="list" size={22} color={color} />,
-                }}
-            />
-            <Tab.Screen
-                name="Recipes"
-                component={RecipesScreen}
-                options={{
-                    tabBarIcon: ({ color }) => <Icon name="notebook" size={22} color={color} />,
                 }}
             />
             <Tab.Screen
