@@ -10,6 +10,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import { StretchIllustration } from "~components/StretchIllustration";
 import { useTheme } from "~store/settingsStore";
 import {
     BODY_PART_LABELS,
@@ -245,6 +246,11 @@ export const StretchBuilderScreen: FC<Props> = () => {
                                         onPress={() => addStretch(stretch.id, stretch.defaultDuration)}
                                         disabled={added}
                                     >
+                                        <StretchIllustration
+                                            stretchId={stretch.id}
+                                            size={64}
+                                            color={added ? colors.white : colors.primary}
+                                        />
                                         <Text style={[styles.stretchChipText, { color: added ? colors.white : colors.textPrimary }]}>
                                             {stretch.name}
                                         </Text>
@@ -334,12 +340,13 @@ const styles = StyleSheet.create({
     bodyPartText: { fontSize: 14, fontWeight: "500" },
     stretchGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
     stretchChip: {
-        flexDirection: "row",
+        flexDirection: "column",
         alignItems: "center",
-        gap: 6,
-        paddingHorizontal: 14,
+        gap: 4,
+        paddingHorizontal: 10,
         paddingVertical: 10,
         borderRadius: 12,
+        width: "47%",
     },
     stretchChipText: { fontSize: 14, fontWeight: "500" },
     stretchChipDuration: { fontSize: 12 },

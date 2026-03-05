@@ -5,6 +5,7 @@ import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-naviga
 import { FC, useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CircularTimer } from "~components/CircularTimer";
+import { StretchIllustration } from "~components/StretchIllustration";
 import { useTheme } from "~store/settingsStore";
 import { BODY_PART_LABELS, STRETCHES, useStretchStore } from "~store/stretchStore";
 import { TimerStackParamList } from "~types/Types";
@@ -208,6 +209,15 @@ export const StretchRunnerScreen: FC<Props> = () => {
                         {currentStretch ? BODY_PART_LABELS[currentStretch.bodyPart] : ""}
                     </Text>
                 </>
+            )}
+
+            {/* Stretch illustration */}
+            {displayPhase === "stretch" && currentStretch && (
+                <StretchIllustration
+                    stretchId={currentStretch.id}
+                    size={120}
+                    color={colors.primary}
+                />
             )}
 
             {/* Countdown */}
