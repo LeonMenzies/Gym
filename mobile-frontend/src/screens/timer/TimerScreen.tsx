@@ -122,13 +122,6 @@ const GymTimer: FC = () => {
                     thumbTintColor={colors.primary}
                     disabled={running}
                 />
-                <View style={styles.sliderTicks}>
-                    {[15, 30, 45, 60, 75, 90, 105, 120].map((s) => (
-                        <Text key={s} style={[styles.sliderTick, { color: colors.textSecondary }]}>
-                            {s < 60 ? `${s}s` : `${s / 60}m`}
-                        </Text>
-                    ))}
-                </View>
             </View>
         </View>
     );
@@ -316,16 +309,6 @@ const styles = StyleSheet.create({
     slider: {
         width: "100%",
         height: 40,
-    },
-    sliderTicks: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        width: "100%",
-        paddingHorizontal: 8,
-    },
-    sliderTick: {
-        fontSize: 10,
-        textAlign: "center",
     },
     // ── Stretch list ──
     listContent: {

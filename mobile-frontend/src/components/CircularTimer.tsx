@@ -1,5 +1,5 @@
 import { Audio } from "expo-av";
-import { Animated, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 import { FC, useEffect, useRef } from "react";
 
 const BEEP_WAV_BASE64 =
@@ -58,6 +58,7 @@ export const CircularTimer: FC<Props> = ({
             animRef.current = Animated.timing(rotVal, {
                 toValue: progress,
                 duration: 950,
+                easing: Easing.linear,
                 useNativeDriver: true,
             });
             animRef.current.start();
