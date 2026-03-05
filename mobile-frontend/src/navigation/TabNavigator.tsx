@@ -5,7 +5,7 @@ import { useTheme } from "~store/settingsStore";
 import { ListsNavigator } from "~navigation/ListsNavigator";
 import { TimerNavigator } from "~navigation/TimerNavigator";
 import { DashboardScreen } from "~screens/dashboard/DashboardScreen";
-import { RecipesScreen } from "~screens/recipes/RecipesScreen";
+import { RecipesNavigator } from "~navigation/RecipesNavigator";
 import { Settings } from "~screens/settings/Settings";
 import { TabParamList } from "~types/Types";
 
@@ -36,7 +36,7 @@ export const TabNavigator = () => {
             />
             <Tab.Screen
                 name="Recipes"
-                component={RecipesScreen}
+                component={RecipesNavigator}
                 options={{
                     tabBarIcon: ({ color }) => <Icon name="notebook" size={22} color={color} />,
                 }}

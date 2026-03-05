@@ -1,26 +1,198 @@
-import { FC } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { SimpleLineIcons as Icon } from "@expo/vector-icons";
+import { FC, useState } from "react";
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useTheme } from "~store/settingsStore";
+import { Recipe, useRecipeStore } from "~store/recipeStore";
 
-export const RecipesScreen: FC = () => {
+type Props = {
+    navigation: any;
+};
+
+function metaLabel(r: Recipe): string {
+    const parts: string[] = [];
+    if (r.prepMins || r.cookMins) parts.push(`${r.prepMins + r.cookMins} min`);
+    if (r.servings) parts.push(`serves ${r.servings}`);
+    return parts.join(" · ");
+}
+
+export const RecipesScreen: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
+    const { recipes, addRecipe } = useRecipeStore();
+    const [query, setQuery] = useState("");
+
+    const filtered = query.trim()
+        ? recipes.filter((r) => r.name.toLowerCase().includes(query.toLowerCase()))
+        : recipes;
+
+    const handleNew = () => {
+        const id = addRecipe();
+        navigation.navigate("RecipeEditor", { recipeId: id });
+    };
+
+    const renderItem = ({ item }: { item: Recipe }) => (
+        <TouchableOpacity
+            style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}
+            onPress={() => navigation.navigate("RecipeEditor", { recipeId: item.id })}
+            activeOpacity={0.75}
+        >
+            <View style={styles.cardBody}>
+                <Text style={[styles.cardName, { color: colors.textPrimary }]} numberOfLines={1}>
+                    {item.name || "Untitled recipe"}
+                </Text>
+                {item.description.length > 0 && (
+                    <Text style={[styles.cardDesc, { color: colors.textSecondary }]} numberOfLines={2}>
+                        {item.description}
+                    </Text>
+                )}
+                <View style={styles.cardMeta}>
+                    {item.ingredients.length > 0 && (
+                        <View style={[styles.metaChip, { backgroundColor: colors.background }]}>
+                            <Text style={[styles.metaChipText, { color: colors.textSecondary }]}>
+                                {item.ingredients.length} ingredient{item.ingredients.length !== 1 ? "s" : ""}
+                            </Text>
+                        </View>
+                    )}
+                    {item.steps.length > 0 && (
+                        <View style={[styles.metaChip, { backgroundColor: colors.background }]}>
+                            <Text style={[styles.metaChipText, { color: colors.textSecondary }]}>
+                                {item.steps.length} step{item.steps.length !== 1 ? "s" : ""}
+                            </Text>
+                        </View>
+                    )}
+                    {(item.prepMins > 0 || item.cookMins > 0) && (
+                        <View style={[styles.metaChip, { backgroundColor: colors.background }]}>
+                            <Text style={[styles.metaChipText, { color: colors.textSecondary }]}>
+                                {metaLabel(item)}
+                            </Text>
+                        </View>
+                    )}
+                </View>
+            </View>
+            <Icon name="arrow-right" size={14} color={colors.grey} />
+        </TouchableOpacity>
+    );
+
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <Text style={[styles.title, { color: colors.textPrimary }]}>Recipes</Text>
-            <Text style={{ color: colors.textSecondary }}>Coming soon</Text>
+            <View style={styles.header}>
+                <Text style={[styles.title, { color: colors.textPrimary }]}>Recipes</Text>
+            </View>
+
+            <View style={[styles.searchRow, { backgroundColor: colors.backgroundSecondary }]}>
+                <Icon name="magnifier" size={14} color={colors.grey} style={styles.searchIcon} />
+                <TextInput
+                    style={[styles.searchInput, { color: colors.textPrimary }]}
+                    placeholder="Search recipes..."
+                    placeholderTextColor={colors.grey}
+                    value={query}
+                    onChangeText={setQuery}
+                />
+                {query.length > 0 && (
+                    <TouchableOpacity onPress={() => setQuery("")}>
+                        <Icon name="close" size={14} color={colors.grey} />
+                    </TouchableOpacity>
+                )}
+            </View>
+
+            {filtered.length === 0 ? (
+                <View style={styles.empty}>
+                    <Text style={[styles.emptyTitle, { color: colors.textPrimary }]}>
+                        {query ? "No matching recipes" : "No recipes yet"}
+                    </Text>
+                    {!query && (
+                        <Text style={[styles.emptyHint, { color: colors.textSecondary }]}>
+                            Tap + to add your first recipe
+                        </Text>
+                    )}
+                </View>
+            ) : (
+                <FlatList
+                    data={filtered}
+                    keyExtractor={(r) => r.id}
+                    renderItem={renderItem}
+                    contentContainerStyle={styles.list}
+                    keyboardShouldPersistTaps="handled"
+                />
+            )}
+
+            <TouchableOpacity
+                style={[styles.fab, { backgroundColor: colors.primary }]}
+                onPress={handleNew}
+            >
+                <Icon name="plus" size={22} color={colors.white} />
+            </TouchableOpacity>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    container: { flex: 1, paddingTop: 60 },
+    header: {
+        paddingHorizontal: 20,
+        marginBottom: 16,
+    },
+    title: {
+        fontSize: 32,
+        fontWeight: "700",
+    },
+    searchRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginHorizontal: 20,
+        marginBottom: 16,
+        borderRadius: 12,
+        paddingHorizontal: 12,
+        paddingVertical: 2,
+    },
+    searchIcon: { marginRight: 8 },
+    searchInput: {
+        flex: 1,
+        fontSize: 15,
+        paddingVertical: 10,
+    },
+    list: {
+        paddingHorizontal: 20,
+        gap: 10,
+        paddingBottom: 100,
+    },
+    card: {
+        borderRadius: 14,
+        padding: 16,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+    },
+    cardBody: { flex: 1, gap: 6 },
+    cardName: { fontSize: 17, fontWeight: "600" },
+    cardDesc: { fontSize: 13, lineHeight: 18 },
+    cardMeta: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 2 },
+    metaChip: {
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+        borderRadius: 8,
+    },
+    metaChipText: { fontSize: 12 },
+    empty: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        gap: 8,
     },
-    title: {
-        fontSize: 28,
-        fontWeight: "600",
-        marginBottom: 8,
+    emptyTitle: { fontSize: 18, fontWeight: "600" },
+    emptyHint: { fontSize: 14 },
+    fab: {
+        position: "absolute",
+        bottom: 28,
+        right: 24,
+        width: 58,
+        height: 58,
+        borderRadius: 29,
+        alignItems: "center",
+        justifyContent: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        elevation: 6,
     },
 });
