@@ -1,5 +1,6 @@
 import * as Haptics from "expo-haptics";
 import { useKeepAwake } from "expo-keep-awake";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { FC, useEffect, useRef, useState } from "react";
@@ -127,6 +128,33 @@ export const StretchRunnerScreen: FC<Props> = () => {
         startTicking();
     };
 
+    const handlePrev = () => {
+        clearTimer();
+        const prevIndex = T.current.index > 0 ? T.current.index - 1 : 0;
+        T.current = { countdown: items[prevIndex].duration, phase: "stretch", index: prevIndex };
+        setDisplayCountdown(items[prevIndex].duration);
+        setDisplayPhase("stretch");
+        setDisplayIndex(prevIndex);
+        setStatus("running");
+        startTicking();
+    };
+
+    const handleNext = () => {
+        clearTimer();
+        const nextIndex = T.current.index + 1;
+        if (nextIndex >= items.length) {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            setStatus("done");
+            return;
+        }
+        T.current = { countdown: items[nextIndex].duration, phase: "stretch", index: nextIndex };
+        setDisplayCountdown(items[nextIndex].duration);
+        setDisplayPhase("stretch");
+        setDisplayIndex(nextIndex);
+        setStatus("running");
+        startTicking();
+    };
+
     // Derived
     const currentItem = items[displayIndex];
     const currentStretch = STRETCHES.find((s) => s.id === currentItem?.stretchId);
@@ -215,7 +243,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
             {displayPhase === "stretch" && currentStretch && (
                 <StretchIllustration
                     stretchId={currentStretch.id}
-                    size={120}
+                    size={88}
                     color={colors.primary}
                 />
             )}
@@ -226,7 +254,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 duration={phaseDuration}
                 timeLabel={`${displayCountdown}`}
                 subLabel="seconds"
-                size={220}
+                size={270}
                 color={displayPhase === "swap" ? colors.secondary : colors.primary}
                 bgColor={colors.backgroundSecondary}
                 textColor={colors.textPrimary}
@@ -248,26 +276,25 @@ export const StretchRunnerScreen: FC<Props> = () => {
 
             {/* Controls */}
             <View style={styles.controls}>
-                {status === "running" ? (
-                    <TouchableOpacity
-                        style={[styles.controlBtn, { borderColor: colors.primary }]}
-                        onPress={handlePause}
-                    >
-                        <Text style={[styles.controlBtnText, { color: colors.primary }]}>Pause</Text>
-                    </TouchableOpacity>
-                ) : (
-                    <TouchableOpacity
-                        style={[styles.controlBtn, { borderColor: colors.primary }]}
-                        onPress={handleResume}
-                    >
-                        <Text style={[styles.controlBtnText, { color: colors.primary }]}>Resume</Text>
-                    </TouchableOpacity>
-                )}
                 <TouchableOpacity
-                    style={[styles.controlBtn, { borderColor: colors.grey }]}
-                    onPress={handleReset}
+                    style={[styles.iconBtn, { backgroundColor: colors.backgroundSecondary }]}
+                    onPress={handlePrev}
                 >
-                    <Text style={[styles.controlBtnText, { color: colors.grey }]}>Restart</Text>
+                    <Ionicons name="play-skip-back" size={26} color={colors.textSecondary} />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={[styles.iconBtnCenter, { backgroundColor: colors.primary }]}
+                    onPress={status === "running" ? handlePause : handleResume}
+                >
+                    <Ionicons name={status === "running" ? "pause" : "play"} size={32} color={colors.white} />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={[styles.iconBtn, { backgroundColor: colors.backgroundSecondary }]}
+                    onPress={handleNext}
+                >
+                    <Ionicons name="play-skip-forward" size={26} color={colors.textSecondary} />
                 </TouchableOpacity>
             </View>
 
@@ -346,18 +373,23 @@ const styles = StyleSheet.create({
     },
     controls: {
         flexDirection: "row",
-        gap: 14,
-        marginTop: 20,
+        alignItems: "center",
+        gap: 28,
+        marginTop: 8,
     },
-    controlBtn: {
-        paddingHorizontal: 32,
-        paddingVertical: 14,
-        borderRadius: 25,
-        borderWidth: 1.5,
+    iconBtn: {
+        width: 54,
+        height: 54,
+        borderRadius: 27,
+        alignItems: "center",
+        justifyContent: "center",
     },
-    controlBtnText: {
-        fontSize: 16,
-        fontWeight: "500",
+    iconBtnCenter: {
+        width: 68,
+        height: 68,
+        borderRadius: 34,
+        alignItems: "center",
+        justifyContent: "center",
     },
     nextUp: {
         fontSize: 14,
