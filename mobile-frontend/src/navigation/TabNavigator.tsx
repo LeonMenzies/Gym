@@ -2,11 +2,11 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { useTheme } from "~store/settingsStore";
 
-import { NotesNavigator } from "~navigation/NotesNavigator";
+import { ListsNavigator } from "~navigation/ListsNavigator";
 import { TimerNavigator } from "~navigation/TimerNavigator";
 import { DashboardScreen } from "~screens/dashboard/DashboardScreen";
+import { RecipesScreen } from "~screens/recipes/RecipesScreen";
 import { Settings } from "~screens/settings/Settings";
-import { TodoScreen } from "~screens/todo/TodoScreen";
 import { TabParamList } from "~types/Types";
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -28,13 +28,6 @@ export const TabNavigator = () => {
             }}
         >
             <Tab.Screen
-                name="Dashboard"
-                component={DashboardScreen}
-                options={{
-                    tabBarIcon: ({ color }) => <Icon name="grid" size={22} color={color} />,
-                }}
-            />
-            <Tab.Screen
                 name="Timer"
                 component={TimerNavigator}
                 options={{
@@ -42,18 +35,24 @@ export const TabNavigator = () => {
                 }}
             />
             <Tab.Screen
-                name="Todo"
-                component={TodoScreen}
+                name="Recipes"
+                component={RecipesScreen}
                 options={{
-                    tabBarLabel: "To-Do",
-                    tabBarIcon: ({ color }) => <Icon name="list" size={22} color={color} />,
+                    tabBarIcon: ({ color }) => <Icon name="notebook" size={22} color={color} />,
                 }}
             />
             <Tab.Screen
-                name="Notes"
-                component={NotesNavigator}
+                name="Dashboard"
+                component={DashboardScreen}
                 options={{
-                    tabBarIcon: ({ color }) => <Icon name="note" size={22} color={color} />,
+                    tabBarIcon: ({ color }) => <Icon name="grid" size={22} color={color} />,
+                }}
+            />
+            <Tab.Screen
+                name="Lists"
+                component={ListsNavigator}
+                options={{
+                    tabBarIcon: ({ color }) => <Icon name="list" size={22} color={color} />,
                 }}
             />
             <Tab.Screen
