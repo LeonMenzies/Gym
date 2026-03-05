@@ -1,3 +1,4 @@
+import Slider from "@react-native-community/slider";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FC, useEffect, useRef, useState } from "react";
@@ -14,7 +15,6 @@ type TimerMode = "gym" | "stretch";
 
 const MIN_SECONDS = 15;
 const MAX_SECONDS = 120;
-const STEP = 5;
 
 function formatTime(seconds: number): string {
     const m = Math.floor(seconds / 60);
@@ -77,70 +77,58 @@ const GymTimer: FC = () => {
         setTimeLeft(gymRestSeconds);
     };
 
-    const adjustTime = (delta: number) => {
-        if (running) return;
-        const next = Math.min(MAX_SECONDS, Math.max(MIN_SECONDS, gymRestSeconds + delta));
-        setGymRestSeconds(next);
-    };
-
     const progress = gymRestSeconds > 0 ? timeLeft / gymRestSeconds : 0;
     const progressColor = progress > 0.5 ? colors.primary : progress > 0.25 ? colors.secondary : colors.error;
 
     return (
         <View style={styles.gymContainer}>
-            <CircularTimer
-                timeLeft={timeLeft}
-                duration={gymRestSeconds}
-                timeLabel={formatTime(timeLeft)}
-                subLabel="rest"
-                size={200}
-                color={running ? progressColor : colors.primary}
-                bgColor={colors.backgroundSecondary}
-                textColor={colors.textPrimary}
-                subTextColor={colors.textSecondary}
-            />
+            <TouchableOpacity onPress={handleReset} activeOpacity={0.7}>
+                <CircularTimer
+                    timeLeft={timeLeft}
+                    duration={gymRestSeconds}
+                    timeLabel={formatTime(timeLeft)}
+                    subLabel="rest"
+                    size={200}
+                    color={running ? progressColor : colors.primary}
+                    bgColor={colors.backgroundSecondary}
+                    textColor={colors.textPrimary}
+                    subTextColor={colors.textSecondary}
+                />
+            </TouchableOpacity>
 
-            <View style={styles.buttonsRow}>
-                <TouchableOpacity
-                    style={[styles.resetBtn, { borderColor: colors.secondary }]}
-                    onPress={handleReset}
-                >
-                    <Text style={[styles.resetBtnText, { color: colors.textSecondary }]}>Reset</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.startBtn, { backgroundColor: colors.primary }]}
-                    onPress={handleStartStop}
-                >
-                    <Text style={[styles.startBtnText, { color: colors.white }]}>
-                        {running ? "Pause" : timeLeft === 0 ? "Restart" : "Start"}
-                    </Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={styles.stepperSection}>
-                <Text style={[styles.stepperLabel, { color: colors.textSecondary }]}>Rest duration</Text>
-                <View style={styles.stepperRow}>
-                    <TouchableOpacity
-                        style={[styles.stepBtn, { backgroundColor: colors.backgroundSecondary, opacity: (!running && gymRestSeconds > MIN_SECONDS) ? 1 : 0.3 }]}
-                        onPress={() => adjustTime(-STEP)}
-                    >
-                        <Text style={[styles.stepBtnText, { color: colors.textPrimary }]}>−</Text>
-                    </TouchableOpacity>
-
-                    <Text style={[styles.stepperValue, { color: colors.textPrimary }]}>
-                        {labelForSeconds(gymRestSeconds)}
-                    </Text>
-
-                    <TouchableOpacity
-                        style={[styles.stepBtn, { backgroundColor: colors.backgroundSecondary, opacity: (!running && gymRestSeconds < MAX_SECONDS) ? 1 : 0.3 }]}
-                        onPress={() => adjustTime(STEP)}
-                    >
-                        <Text style={[styles.stepBtnText, { color: colors.textPrimary }]}>+</Text>
-                    </TouchableOpacity>
-                </View>
-                <Text style={[styles.stepperRange, { color: colors.textSecondary }]}>
-                    {labelForSeconds(MIN_SECONDS)} – {labelForSeconds(MAX_SECONDS)}, step {STEP}s
+            <TouchableOpacity
+                style={[styles.startBtn, { backgroundColor: colors.primary }]}
+                onPress={handleStartStop}
+            >
+                <Text style={[styles.startBtnText, { color: colors.white }]}>
+                    {running ? "Pause" : timeLeft === 0 ? "Restart" : "Start"}
                 </Text>
+            </TouchableOpacity>
+
+            <View style={[styles.sliderSection, { opacity: running ? 0.4 : 1 }]}>
+                <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>Rest duration</Text>
+                <Text style={[styles.sliderValue, { color: colors.textPrimary }]}>
+                    {labelForSeconds(gymRestSeconds)}
+                </Text>
+                <Slider
+                    style={styles.slider}
+                    minimumValue={MIN_SECONDS}
+                    maximumValue={MAX_SECONDS}
+                    step={15}
+                    value={gymRestSeconds}
+                    onValueChange={(v) => { if (!running) setGymRestSeconds(v); }}
+                    minimumTrackTintColor={colors.primary}
+                    maximumTrackTintColor={colors.lightGrey ?? colors.backgroundSecondary}
+                    thumbTintColor={colors.primary}
+                    disabled={running}
+                />
+                <View style={styles.sliderTicks}>
+                    {[15, 30, 45, 60, 75, 90, 105, 120].map((s) => (
+                        <Text key={s} style={[styles.sliderTick, { color: colors.textSecondary }]}>
+                            {s < 60 ? `${s}s` : `${s / 60}m`}
+                        </Text>
+                    ))}
+                </View>
             </View>
         </View>
     );
@@ -300,15 +288,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         paddingHorizontal: 24,
-        gap: 40,
-    },
-    buttonsRow: {
-        flexDirection: "row",
-        gap: 16,
-        alignItems: "center",
+        gap: 36,
     },
     startBtn: {
-        paddingHorizontal: 48,
+        paddingHorizontal: 64,
         paddingVertical: 14,
         borderRadius: 30,
     },
@@ -316,50 +299,33 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: "700",
     },
-    resetBtn: {
-        paddingHorizontal: 24,
-        paddingVertical: 14,
-        borderRadius: 30,
-        borderWidth: 1.5,
-    },
-    resetBtnText: {
-        fontSize: 17,
-        fontWeight: "600",
-    },
-    stepperSection: {
+    sliderSection: {
+        width: "100%",
         alignItems: "center",
-        gap: 10,
+        gap: 6,
     },
-    stepperLabel: {
+    sliderLabel: {
         fontSize: 13,
         textTransform: "uppercase",
         letterSpacing: 1,
     },
-    stepperRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 20,
-    },
-    stepBtn: {
-        width: 52,
-        height: 52,
-        borderRadius: 26,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    stepBtnText: {
-        fontSize: 26,
-        fontWeight: "300",
-        lineHeight: 30,
-    },
-    stepperValue: {
-        fontSize: 32,
+    sliderValue: {
+        fontSize: 28,
         fontWeight: "700",
-        minWidth: 80,
-        textAlign: "center",
     },
-    stepperRange: {
-        fontSize: 12,
+    slider: {
+        width: "100%",
+        height: 40,
+    },
+    sliderTicks: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
+        paddingHorizontal: 8,
+    },
+    sliderTick: {
+        fontSize: 10,
+        textAlign: "center",
     },
     // ── Stretch list ──
     listContent: {
