@@ -1,4 +1,5 @@
 import Slider from "@react-native-community/slider";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FC, useEffect, useRef, useState } from "react";
@@ -88,7 +89,7 @@ const GymTimer: FC = () => {
                     duration={gymRestSeconds}
                     timeLabel={formatTime(timeLeft)}
                     subLabel="rest"
-                    size={200}
+                    size={260}
                     color={running ? progressColor : colors.primary}
                     bgColor={colors.backgroundSecondary}
                     textColor={colors.textPrimary}
@@ -160,59 +161,67 @@ const StretchList: FC = () => {
         <View style={{ flex: 1 }}>
             <ScrollView contentContainerStyle={styles.listContent}>
                 {routines.length === 0 && (
-                    <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-                        No routines yet. Create one below.
-                    </Text>
+                    <View style={styles.emptyState}>
+                        <Text style={[styles.emptyTitle, { color: colors.textPrimary }]}>No routines yet</Text>
+                        <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
+                            Tap + to build your first stretch routine
+                        </Text>
+                    </View>
                 )}
                 {routines.map((routine) => (
-                    <View
+                    <TouchableOpacity
                         key={routine.id}
                         style={[styles.routineCard, { backgroundColor: colors.backgroundSecondary }]}
+                        onPress={() => nav.navigate("StretchRunner", { routineId: routine.id })}
+                        disabled={routine.items.length === 0}
+                        activeOpacity={0.75}
                     >
-                        <View style={styles.routineInfo}>
-                            <Text style={[styles.routineName, { color: colors.textPrimary }]}>{routine.name}</Text>
-                            <Text style={[styles.routineMeta, { color: colors.textSecondary }]}>
-                                {stretchCount(routine.items)} · {totalDuration(routine.items)}
-                            </Text>
-                            {routine.items.length > 0 && (
-                                <Text style={[styles.routinePreview, { color: colors.textSecondary }]} numberOfLines={1}>
-                                    {routine.items.slice(0, 3).map((item) => stretchName(item.stretchId)).join(", ")}
-                                    {routine.items.length > 3 ? "…" : ""}
+                        <View style={styles.routineCardTop}>
+                            <View style={styles.routineInfo}>
+                                <Text style={[styles.routineName, { color: colors.textPrimary }]}>{routine.name}</Text>
+                                <Text style={[styles.routineMeta, { color: colors.textSecondary }]}>
+                                    {stretchCount(routine.items)} · {totalDuration(routine.items)}
                                 </Text>
-                            )}
+                                {routine.items.length > 0 && (
+                                    <Text style={[styles.routinePreview, { color: colors.textSecondary }]} numberOfLines={1}>
+                                        {routine.items.slice(0, 3).map((item) => stretchName(item.stretchId)).join(", ")}
+                                        {routine.items.length > 3 ? "…" : ""}
+                                    </Text>
+                                )}
+                            </View>
+                            <View style={styles.cardActions}>
+                                <TouchableOpacity
+                                    style={styles.cardIconBtn}
+                                    onPress={() => nav.navigate("StretchBuilder", { routineId: routine.id })}
+                                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                                >
+                                    <Ionicons name="pencil-outline" size={18} color={colors.textSecondary} />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={styles.cardIconBtn}
+                                    onPress={() => handleDelete(routine.id, routine.name)}
+                                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                                >
+                                    <Ionicons name="trash-outline" size={18} color={colors.error} />
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                        <View style={styles.routineActions}>
-                            <TouchableOpacity
-                                style={[styles.actionBtn, { backgroundColor: colors.primary }]}
-                                onPress={() => nav.navigate("StretchRunner", { routineId: routine.id })}
-                                disabled={routine.items.length === 0}
-                            >
-                                <Text style={[styles.actionBtnText, { color: colors.white }]}>Start</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={[styles.actionBtnOutline, { borderColor: colors.secondary }]}
-                                onPress={() => nav.navigate("StretchBuilder", { routineId: routine.id })}
-                            >
-                                <Text style={[styles.actionBtnOutlineText, { color: colors.textSecondary }]}>Edit</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.deleteBtn}
-                                onPress={() => handleDelete(routine.id, routine.name)}
-                            >
-                                <Text style={[styles.deleteBtnText, { color: colors.error }]}>✕</Text>
-                            </TouchableOpacity>
+                        <View style={[styles.startHint, { borderTopColor: colors.background }]}>
+                            <Ionicons name="play-circle" size={16} color={colors.primary} />
+                            <Text style={[styles.startHintText, { color: colors.primary }]}>Tap to start</Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 ))}
+                <View style={{ height: 90 }} />
             </ScrollView>
-            <View style={[styles.newRoutineBar, { backgroundColor: colors.background }]}>
-                <TouchableOpacity
-                    style={[styles.newRoutineBtn, { backgroundColor: colors.primary }]}
-                    onPress={() => nav.navigate("StretchBuilder", undefined)}
-                >
-                    <Text style={[styles.newRoutineBtnText, { color: colors.white }]}>+ New Routine</Text>
-                </TouchableOpacity>
-            </View>
+
+            {/* FAB — New Routine */}
+            <TouchableOpacity
+                style={[styles.fab, { backgroundColor: colors.primary }]}
+                onPress={() => nav.navigate("StretchBuilder", undefined)}
+            >
+                <Ionicons name="add" size={30} color={colors.white} />
+            </TouchableOpacity>
         </View>
     );
 };
@@ -314,26 +323,36 @@ const styles = StyleSheet.create({
     listContent: {
         padding: 16,
         gap: 12,
-        paddingBottom: 8,
     },
-    emptyText: {
-        textAlign: "center",
-        marginTop: 48,
+    emptyState: {
+        alignItems: "center",
+        marginTop: 80,
+        gap: 8,
+    },
+    emptyTitle: {
+        fontSize: 20,
+        fontWeight: "600",
+    },
+    emptySubtitle: {
         fontSize: 15,
+        textAlign: "center",
     },
     routineCard: {
-        borderRadius: 14,
-        padding: 16,
+        borderRadius: 16,
+        overflow: "hidden",
+    },
+    routineCardTop: {
         flexDirection: "row",
-        alignItems: "center",
+        alignItems: "flex-start",
+        padding: 16,
         gap: 12,
     },
     routineInfo: {
         flex: 1,
-        gap: 3,
+        gap: 4,
     },
     routineName: {
-        fontSize: 17,
+        fontSize: 18,
         fontWeight: "600",
     },
     routineMeta: {
@@ -343,48 +362,39 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginTop: 2,
     },
-    routineActions: {
+    cardActions: {
+        flexDirection: "row",
+        gap: 12,
+        paddingTop: 2,
+    },
+    cardIconBtn: {
+        padding: 4,
+    },
+    startHint: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 8,
-    },
-    actionBtn: {
+        gap: 5,
         paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 20,
+        paddingVertical: 10,
+        borderTopWidth: 1,
     },
-    actionBtnText: {
-        fontSize: 14,
-        fontWeight: "600",
-    },
-    actionBtnOutline: {
-        paddingHorizontal: 14,
-        paddingVertical: 8,
-        borderRadius: 20,
-        borderWidth: 1.5,
-    },
-    actionBtnOutlineText: {
-        fontSize: 14,
+    startHintText: {
+        fontSize: 13,
         fontWeight: "500",
     },
-    deleteBtn: {
-        padding: 6,
-    },
-    deleteBtnText: {
-        fontSize: 16,
-        fontWeight: "600",
-    },
-    newRoutineBar: {
-        padding: 16,
-        paddingBottom: 24,
-    },
-    newRoutineBtn: {
-        paddingVertical: 14,
+    fab: {
+        position: "absolute",
+        bottom: 28,
+        right: 24,
+        width: 60,
+        height: 60,
         borderRadius: 30,
         alignItems: "center",
-    },
-    newRoutineBtnText: {
-        fontSize: 16,
-        fontWeight: "600",
+        justifyContent: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        elevation: 6,
     },
 });
