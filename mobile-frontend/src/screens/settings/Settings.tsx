@@ -99,17 +99,19 @@ export const Settings: FC<Props> = ({ navigation }) => {
                         <Text style={s.rowText}>Default rest duration</Text>
                         <Text style={s.sliderValue}>{formatSeconds(gymRestSeconds)}</Text>
                     </View>
-                    <Slider
-                        style={s.slider}
-                        minimumValue={15}
-                        maximumValue={120}
-                        step={15}
-                        value={gymRestSeconds}
-                        onValueChange={setGymRestSeconds}
-                        minimumTrackTintColor={colors.primary}
-                        maximumTrackTintColor={colors.lightGrey}
-                        thumbTintColor={colors.primary}
-                    />
+                    <View style={s.sliderWrapper}>
+                        <Slider
+                            style={s.slider}
+                            minimumValue={15}
+                            maximumValue={120}
+                            step={15}
+                            value={gymRestSeconds}
+                            onValueChange={setGymRestSeconds}
+                            minimumTrackTintColor={colors.primary}
+                            maximumTrackTintColor={colors.lightGrey}
+                            thumbTintColor={colors.primary}
+                        />
+                    </View>
                 </View>
 
                 <Text style={s.sectionLabel}>Data</Text>
@@ -208,9 +210,12 @@ const styles = (colors: ReturnType<typeof useTheme>) =>
             fontWeight: "600",
             color: colors.primary,
         },
+        sliderWrapper: {
+            paddingHorizontal: 16,
+            paddingBottom: 8,
+        },
         slider: {
             width: "100%",
             height: 40,
-            marginHorizontal: 8,
         },
     });

@@ -3,8 +3,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FC, useEffect, useRef, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { CircularTimer } from "~components/CircularTimer";
+import { StretchIllustration } from "~components/StretchIllustration";
 import { useTheme } from "~store/settingsStore";
 import { STRETCHES, useStretchStore } from "~store/stretchStore";
 import { useTimerStore } from "~store/timerStore";
@@ -138,8 +139,12 @@ const StretchList: FC = () => {
     const colors = useTheme();
     const nav = useNavigation<Nav>();
     const { routines, deleteRoutine } = useStretchStore();
+    const { width: screenWidth } = useWindowDimensions();
+    const [activeIndex, setActiveIndex] = useState(0);
 
     const sorted = [...routines].sort((a, b) => b.items.length - a.items.length);
+    const circleSize = Math.min(screenWidth - 64, 280);
+    const illSize = Math.floor(circleSize * 0.2);
 
     const confirmDelete = (id: string, name: string) => {
         Alert.alert("Delete Routine", `Delete "${name}"?`, [
@@ -166,43 +171,85 @@ const StretchList: FC = () => {
                     </Text>
                 </View>
             ) : (
-                <ScrollView contentContainerStyle={styles.bubblesContent} showsVerticalScrollIndicator={false}>
-                    {sorted.map((routine, i) => {
-                        const size = Math.max(80, 160 - i * 22);
-                        const nameFontSize = Math.max(10, Math.floor(size * 0.13));
-                        const countFontSize = Math.max(8, Math.floor(size * 0.09));
-                        const canStart = routine.items.length > 0;
-                        return (
-                            <TouchableOpacity
-                                key={routine.id}
-                                style={[
-                                    styles.bubble,
-                                    {
-                                        width: size,
-                                        height: size,
-                                        borderRadius: size / 2,
-                                        backgroundColor: colors.backgroundSecondary,
-                                        opacity: canStart ? 1 : 0.5,
-                                    },
-                                ]}
-                                onPress={() => canStart && nav.navigate("StretchRunner", { routineId: routine.id })}
-                                onLongPress={() => handleLongPress(routine.id, routine.name)}
-                                activeOpacity={0.75}
-                                delayLongPress={400}
-                            >
-                                <Text
-                                    style={[styles.bubbleName, { color: colors.textPrimary, fontSize: nameFontSize }]}
-                                    numberOfLines={3}
+                <View style={{ flex: 1, justifyContent: "center" }}>
+                    <ScrollView
+                        horizontal
+                        pagingEnabled
+                        showsHorizontalScrollIndicator={false}
+                        onMomentumScrollEnd={(e) => {
+                            setActiveIndex(Math.round(e.nativeEvent.contentOffset.x / screenWidth));
+                        }}
+                        style={{ flexGrow: 0 }}
+                    >
+                        {sorted.map((routine) => {
+                            const canStart = routine.items.length > 0;
+                            const previewIds = routine.items.slice(0, 3).map((it) => it.stretchId);
+                            return (
+                                <TouchableOpacity
+                                    key={routine.id}
+                                    style={[styles.carouselPage, { width: screenWidth }]}
+                                    onPress={() => canStart && nav.navigate("StretchRunner", { routineId: routine.id })}
+                                    onLongPress={() => handleLongPress(routine.id, routine.name)}
+                                    activeOpacity={0.85}
+                                    delayLongPress={400}
                                 >
-                                    {routine.name}
-                                </Text>
-                                <Text style={[styles.bubbleCount, { color: colors.textSecondary, fontSize: countFontSize }]}>
-                                    {routine.items.length} stretch{routine.items.length !== 1 ? "es" : ""}
-                                </Text>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </ScrollView>
+                                    <View style={[
+                                        styles.routineCircle,
+                                        {
+                                            width: circleSize,
+                                            height: circleSize,
+                                            borderRadius: circleSize / 2,
+                                            backgroundColor: colors.backgroundSecondary,
+                                            opacity: canStart ? 1 : 0.5,
+                                        },
+                                    ]}>
+                                        <Text style={[styles.circleName, { color: colors.textPrimary }]} numberOfLines={2}>
+                                            {routine.name}
+                                        </Text>
+                                        {previewIds.length > 0 && (
+                                            <View style={styles.illRow}>
+                                                {previewIds.map((sid) => (
+                                                    <StretchIllustration
+                                                        key={sid}
+                                                        stretchId={sid}
+                                                        size={illSize}
+                                                        color={colors.primary}
+                                                    />
+                                                ))}
+                                            </View>
+                                        )}
+                                        <Text style={[styles.circleCount, { color: colors.textSecondary }]}>
+                                            {routine.items.length} stretch{routine.items.length !== 1 ? "es" : ""}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </ScrollView>
+
+                    {/* Pagination dots */}
+                    {sorted.length > 1 && (
+                        <View style={styles.dotsRow}>
+                            {sorted.map((_, i) => (
+                                <View
+                                    key={i}
+                                    style={[
+                                        styles.dot,
+                                        {
+                                            backgroundColor: colors.primary,
+                                            width: i === activeIndex ? 18 : 7,
+                                            opacity: i === activeIndex ? 1 : 0.25,
+                                        },
+                                    ]}
+                                />
+                            ))}
+                        </View>
+                    )}
+
+                    <Text style={[styles.holdHint, { color: colors.textSecondary }]}>
+                        Hold to edit or delete
+                    </Text>
+                </View>
             )}
 
             {/* FAB — New Routine */}
@@ -309,28 +356,48 @@ const styles = StyleSheet.create({
         width: "100%",
         height: 40,
     },
-    // ── Stretch list ──
-    bubblesContent: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        padding: 20,
-        gap: 16,
-        justifyContent: "center",
-        paddingBottom: 100,
-    },
-    bubble: {
+    // ── Stretch carousel ──
+    carouselPage: {
         alignItems: "center",
         justifyContent: "center",
-        padding: 10,
+        paddingVertical: 24,
     },
-    bubbleName: {
-        fontWeight: "600",
-        textAlign: "center",
-        lineHeight: 15,
+    routineCircle: {
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 12,
+        padding: 28,
     },
-    bubbleCount: {
-        marginTop: 3,
+    circleName: {
+        fontSize: 22,
+        fontWeight: "700",
         textAlign: "center",
+    },
+    illRow: {
+        flexDirection: "row",
+        gap: 10,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    circleCount: {
+        fontSize: 13,
+    },
+    dotsRow: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 6,
+        paddingTop: 16,
+    },
+    dot: {
+        height: 7,
+        borderRadius: 4,
+    },
+    holdHint: {
+        textAlign: "center",
+        fontSize: 12,
+        marginTop: 10,
+        opacity: 0.6,
     },
     emptyState: {
         flex: 1,
