@@ -2,36 +2,61 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+export type Section = {
+    id: string;
+    name: string;
+};
+
 export type Task = {
     id: string;
     text: string;
     completed: boolean;
     createdAt: number;
+    sectionId: string;
 };
 
+const DEFAULT_SECTION_ID = "default";
+
 type TodoStore = {
+    sections: Section[];
     tasks: Task[];
-    addTask: (text: string) => void;
+    addSection: (name: string) => void;
+    deleteSection: (id: string) => void;
+    addTask: (text: string, sectionId: string) => void;
     toggleTask: (id: string) => void;
     deleteTask: (id: string) => void;
+    reorderTasks: (sectionId: string, orderedTasks: Task[]) => void;
     clearCompleted: () => void;
 };
 
 export const useTodoStore = create<TodoStore>()(
     persist(
         (set) => ({
+            sections: [{ id: DEFAULT_SECTION_ID, name: "To-Do" }],
             tasks: [],
 
-            addTask: (text) =>
+            addSection: (name) =>
+                set((s) => ({
+                    sections: [...s.sections, { id: `section_${Date.now()}`, name: name.trim() }],
+                })),
+
+            deleteSection: (id) =>
+                set((s) => ({
+                    sections: s.sections.filter((sec) => sec.id !== id),
+                    tasks: s.tasks.filter((t) => t.sectionId !== id),
+                })),
+
+            addTask: (text, sectionId) =>
                 set((s) => ({
                     tasks: [
+                        ...s.tasks,
                         {
-                            id: Date.now().toString(),
+                            id: `task_${Date.now()}`,
                             text: text.trim(),
                             completed: false,
                             createdAt: Date.now(),
+                            sectionId,
                         },
-                        ...s.tasks,
                     ],
                 })),
 
@@ -45,6 +70,13 @@ export const useTodoStore = create<TodoStore>()(
                     tasks: s.tasks.filter((t) => t.id !== id),
                 })),
 
+            reorderTasks: (sectionId, orderedTasks) =>
+                set((s) => {
+                    const orderedIds = new Set(orderedTasks.map((t) => t.id));
+                    const rest = s.tasks.filter((t) => t.sectionId !== sectionId || !orderedIds.has(t.id));
+                    return { tasks: [...rest, ...orderedTasks] };
+                }),
+
             clearCompleted: () =>
                 set((s) => ({
                     tasks: s.tasks.filter((t) => !t.completed),
@@ -53,6 +85,20 @@ export const useTodoStore = create<TodoStore>()(
         {
             name: "todo-storage",
             storage: createJSONStorage(() => AsyncStorage),
+            version: 2,
+            migrate: (state: any, version: number) => {
+                if (version < 2) {
+                    return {
+                        ...state,
+                        sections: [{ id: DEFAULT_SECTION_ID, name: "To-Do" }],
+                        tasks: (state.tasks ?? []).map((t: any) => ({
+                            ...t,
+                            sectionId: t.sectionId ?? DEFAULT_SECTION_ID,
+                        })),
+                    };
+                }
+                return state;
+            },
         }
     )
 );

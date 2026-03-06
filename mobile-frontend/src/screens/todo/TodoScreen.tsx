@@ -1,7 +1,8 @@
 import { FC, useRef, useState } from "react";
 import {
-    FlatList,
+    Alert,
     Keyboard,
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
@@ -9,78 +10,120 @@ import {
     View,
 } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "~store/settingsStore";
 import { Task, useTodoStore } from "~store/todoStore";
 import { useActivityStore } from "~store/activityStore";
 
 export const TodoScreen: FC = () => {
     const colors = useTheme();
-    const { tasks, addTask, toggleTask, deleteTask } = useTodoStore();
+    const { sections, tasks, addSection, deleteSection, addTask, toggleTask, deleteTask, reorderTasks } = useTodoStore();
     const { logActivity } = useActivityStore();
+
+    const [activeSectionId, setActiveSectionId] = useState<string>(sections[0]?.id ?? "default");
+    const [inputText, setInputText] = useState("");
+    const [showDone, setShowDone] = useState(true);
+    const inputRef = useRef<TextInput>(null);
+
+    const activeSection = sections.find((s) => s.id === activeSectionId) ?? sections[0];
+    const effectiveId = activeSection?.id ?? sections[0]?.id ?? "default";
+
+    // Tasks for this section — also catch legacy tasks with no sectionId in first section
+    const isFirstSection = effectiveId === sections[0]?.id;
+    const sectionTasks = tasks.filter(
+        (t) => t.sectionId === effectiveId || (!t.sectionId && isFirstSection)
+    );
+    const activeTasks = sectionTasks.filter((t) => !t.completed);
+    const completedTasks = sectionTasks.filter((t) => t.completed);
+    const displayTasks = showDone ? [...activeTasks, ...completedTasks] : activeTasks;
+    const hasCompleted = sectionTasks.some((t) => t.completed);
+
+    const handleAdd = () => {
+        if (!inputText.trim()) return;
+        addTask(inputText, effectiveId);
+        setInputText("");
+        inputRef.current?.focus();
+    };
 
     const handleToggle = (id: string) => {
         const task = tasks.find((t) => t.id === id);
         if (task && !task.completed) logActivity("todo");
         toggleTask(id);
     };
-    const [inputText, setInputText] = useState("");
-    const inputRef = useRef<TextInput>(null);
 
-    const handleAdd = () => {
-        if (!inputText.trim()) return;
-        addTask(inputText);
-        setInputText("");
-        inputRef.current?.focus();
+    const handleAddSection = () => {
+        Alert.prompt("New List", "Enter a name for the new list", (name) => {
+            if (name?.trim()) addSection(name);
+        });
     };
 
-    const [showDone, setShowDone] = useState(true);
-    const hasCompleted = tasks.some((t) => t.completed);
-    const activeTasks = tasks.filter((t) => !t.completed);
-    const completedTasks = tasks.filter((t) => t.completed);
-    const sorted = showDone ? [...activeTasks, ...completedTasks] : activeTasks;
+    const handleSectionLongPress = (id: string, name: string) => {
+        if (sections.length <= 1) {
+            Alert.alert("Can't delete", "You need at least one list.");
+            return;
+        }
+        Alert.alert(name, undefined, [
+            {
+                text: "Delete list",
+                style: "destructive",
+                onPress: () => {
+                    const next = sections.find((s) => s.id !== id);
+                    if (next) setActiveSectionId(next.id);
+                    deleteSection(id);
+                },
+            },
+            { text: "Cancel", style: "cancel" },
+        ]);
+    };
 
-    const renderItem = ({ item }: { item: Task }) => (
-        <Swipeable
-            renderRightActions={() => (
-                <TouchableOpacity
-                    style={[styles.deleteAction, { backgroundColor: colors.error }]}
-                    onPress={() => deleteTask(item.id)}
-                >
-                    <Icon name="trash" size={16} color="#fff" />
-                    <Text style={styles.deleteActionText}>Delete</Text>
-                </TouchableOpacity>
-            )}
-        >
-            <View style={[styles.row, { borderBottomColor: colors.lightGrey, backgroundColor: colors.background }]}>
-                <TouchableOpacity onPress={() => handleToggle(item.id)} style={styles.checkbox}>
-                    <View
+    const renderItem = ({ item, drag, isActive }: RenderItemParams<Task>) => (
+        <ScaleDecorator>
+            <Swipeable
+                renderRightActions={() => (
+                    <TouchableOpacity
+                        style={[styles.deleteAction, { backgroundColor: colors.error }]}
+                        onPress={() => deleteTask(item.id)}
+                    >
+                        <Icon name="trash" size={15} color="#fff" />
+                        <Text style={styles.deleteActionText}>Delete</Text>
+                    </TouchableOpacity>
+                )}
+            >
+                <View style={[styles.taskCard, { backgroundColor: colors.backgroundSecondary }]}>
+                    <TouchableOpacity onLongPress={drag} disabled={isActive} style={styles.dragHandle}>
+                        <Ionicons name="reorder-three" size={22} color={colors.textSecondary} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => handleToggle(item.id)} style={styles.checkbox}>
+                        <View
+                            style={[
+                                styles.checkCircle,
+                                {
+                                    borderColor: item.completed ? colors.primary : colors.grey,
+                                    backgroundColor: item.completed ? colors.primary : "transparent",
+                                },
+                            ]}
+                        >
+                            {item.completed && <Icon name="check" size={11} color={colors.white} />}
+                        </View>
+                    </TouchableOpacity>
+
+                    <Text
                         style={[
-                            styles.checkCircle,
+                            styles.taskText,
                             {
-                                borderColor: item.completed ? colors.primary : colors.grey,
-                                backgroundColor: item.completed ? colors.primary : "transparent",
+                                color: item.completed ? colors.grey : colors.textPrimary,
+                                textDecorationLine: item.completed ? "line-through" : "none",
                             },
                         ]}
                     >
-                        {item.completed && <Icon name="check" size={11} color={colors.white} />}
-                    </View>
-                </TouchableOpacity>
-
-                <Text
-                    style={[
-                        styles.taskText,
-                        {
-                            color: item.completed ? colors.grey : colors.textPrimary,
-                            textDecorationLine: item.completed ? "line-through" : "none",
-                            flex: 1,
-                        },
-                    ]}
-                >
-                    {item.text}
-                </Text>
-            </View>
-        </Swipeable>
+                        {item.text}
+                    </Text>
+                </View>
+            </Swipeable>
+        </ScaleDecorator>
     );
 
     return (
@@ -90,19 +133,54 @@ export const TodoScreen: FC = () => {
                 <Text style={[styles.title, { color: colors.textPrimary }]}>To-Do</Text>
                 {hasCompleted && (
                     <TouchableOpacity onPress={() => setShowDone((v) => !v)}>
-                        <Text style={[styles.clearBtn, { color: colors.grey }]}>
+                        <Text style={[styles.toggleDone, { color: colors.grey }]}>
                             {showDone ? "Hide done" : "Show done"}
                         </Text>
                     </TouchableOpacity>
                 )}
             </View>
 
+            {/* Section tabs */}
+            <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.tabsContent}
+                style={styles.tabsScroll}
+                keyboardShouldPersistTaps="handled"
+            >
+                {sections.map((section) => {
+                    const active = section.id === effectiveId;
+                    return (
+                        <TouchableOpacity
+                            key={section.id}
+                            style={[
+                                styles.tab,
+                                { backgroundColor: active ? colors.primary : colors.backgroundSecondary },
+                            ]}
+                            onPress={() => setActiveSectionId(section.id)}
+                            onLongPress={() => handleSectionLongPress(section.id, section.name)}
+                            delayLongPress={500}
+                        >
+                            <Text style={[styles.tabText, { color: active ? colors.white : colors.textSecondary }]}>
+                                {section.name}
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                })}
+                <TouchableOpacity
+                    style={[styles.tab, { backgroundColor: colors.backgroundSecondary }]}
+                    onPress={handleAddSection}
+                >
+                    <Ionicons name="add" size={18} color={colors.textSecondary} />
+                </TouchableOpacity>
+            </ScrollView>
+
             {/* Input */}
             <View style={[styles.inputRow, { backgroundColor: colors.backgroundSecondary }]}>
                 <TextInput
                     ref={inputRef}
                     style={[styles.input, { color: colors.textPrimary }]}
-                    placeholder="Add a task..."
+                    placeholder={`Add to ${activeSection?.name ?? "list"}…`}
                     placeholderTextColor={colors.grey}
                     value={inputText}
                     onChangeText={setInputText}
@@ -118,19 +196,20 @@ export const TodoScreen: FC = () => {
                 </TouchableOpacity>
             </View>
 
-            {/* List */}
-            {sorted.length === 0 ? (
+            {/* Task list */}
+            {displayTasks.length === 0 ? (
                 <View style={styles.empty}>
-                    <Text style={[styles.emptyText, { color: colors.grey }]}>No tasks yet</Text>
+                    <Text style={[styles.emptyText, { color: colors.grey }]}>Nothing here yet</Text>
                 </View>
             ) : (
-                <FlatList
-                    data={sorted}
+                <DraggableFlatList
+                    data={displayTasks}
                     keyExtractor={(item) => item.id}
                     renderItem={renderItem}
+                    onDragEnd={({ data }) => reorderTasks(effectiveId, data)}
+                    contentContainerStyle={styles.list}
                     keyboardShouldPersistTaps="handled"
                     onScrollBeginDrag={Keyboard.dismiss}
-                    contentContainerStyle={styles.list}
                 />
             )}
         </View>
@@ -147,20 +226,41 @@ const styles = StyleSheet.create({
         alignItems: "baseline",
         justifyContent: "space-between",
         paddingHorizontal: 20,
-        marginBottom: 16,
+        marginBottom: 12,
     },
     title: {
         fontSize: 32,
         fontWeight: "700",
     },
-    clearBtn: {
+    toggleDone: {
         fontSize: 14,
     },
+    // Section tabs
+    tabsScroll: {
+        flexGrow: 0,
+    },
+    tabsContent: {
+        paddingHorizontal: 16,
+        gap: 8,
+        paddingBottom: 12,
+    },
+    tab: {
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    tabText: {
+        fontSize: 14,
+        fontWeight: "600",
+    },
+    // Input
     inputRow: {
         flexDirection: "row",
         alignItems: "center",
-        marginHorizontal: 20,
-        marginBottom: 16,
+        marginHorizontal: 16,
+        marginBottom: 12,
         borderRadius: 12,
         paddingHorizontal: 14,
         paddingVertical: 4,
@@ -177,18 +277,24 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
+    // List
     list: {
-        paddingHorizontal: 20,
+        paddingHorizontal: 16,
+        gap: 8,
+        paddingBottom: 40,
     },
-    row: {
+    // Task card — matches stretch builder card style
+    taskCard: {
+        borderRadius: 12,
+        padding: 12,
         flexDirection: "row",
         alignItems: "center",
-        paddingVertical: 14,
-        borderBottomWidth: StyleSheet.hairlineWidth,
+        gap: 10,
     },
-    checkbox: {
-        marginRight: 12,
+    dragHandle: {
+        padding: 2,
     },
+    checkbox: {},
     checkCircle: {
         width: 24,
         height: 24,
@@ -198,19 +304,24 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     taskText: {
-        fontSize: 16,
+        flex: 1,
+        fontSize: 15,
     },
+    // Delete action
     deleteAction: {
         justifyContent: "center",
         alignItems: "center",
         width: 72,
+        borderRadius: 12,
         gap: 4,
+        marginLeft: 8,
     },
     deleteActionText: {
         color: "#fff",
         fontSize: 11,
         fontWeight: "600",
     },
+    // Empty
     empty: {
         flex: 1,
         alignItems: "center",
