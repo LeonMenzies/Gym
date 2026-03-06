@@ -1,7 +1,6 @@
 import { FC, useRef, useState } from "react";
 import {
     Alert,
-    FlatList,
     Keyboard,
     ScrollView,
     StyleSheet,
@@ -11,6 +10,7 @@ import {
     View,
 } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import DraggableFlatList, { ScaleDecorator, RenderItemParams } from "react-native-draggable-flatlist";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "~store/settingsStore";
@@ -19,7 +19,7 @@ import { useActivityStore } from "~store/activityStore";
 
 export const TodoScreen: FC = () => {
     const colors = useTheme();
-    const { sections, tasks, addSection, deleteSection, addTask, toggleTask, deleteTask, moveTask } = useTodoStore();
+    const { sections, tasks, addSection, deleteSection, addTask, toggleTask, deleteTask, reorderTasks } = useTodoStore();
     const { logActivity } = useActivityStore();
 
     const [activeSectionId, setActiveSectionId] = useState<string>(sections[0]?.id ?? "default");
@@ -77,66 +77,55 @@ export const TodoScreen: FC = () => {
         ]);
     };
 
-    const renderItem = ({ item, index }: { item: Task; index: number }) => (
-        <Swipeable
-            renderRightActions={() => (
-                <TouchableOpacity
-                    style={[styles.deleteAction, { backgroundColor: colors.error }]}
-                    onPress={() => deleteTask(item.id)}
-                >
-                    <Icon name="trash" size={15} color="#fff" />
-                    <Text style={styles.deleteActionText}>Delete</Text>
-                </TouchableOpacity>
-            )}
-        >
-            <View style={[styles.taskCard, { backgroundColor: colors.backgroundSecondary }]}>
-                {/* Reorder buttons */}
-                <View style={styles.reorderBtns}>
+    const renderItem = ({ item, drag, isActive }: RenderItemParams<Task>) => (
+        <ScaleDecorator>
+            <Swipeable
+                renderRightActions={() => (
                     <TouchableOpacity
-                        onPress={() => moveTask(item.id, -1)}
-                        disabled={index === 0}
-                        style={styles.reorderBtn}
+                        style={[styles.deleteAction, { backgroundColor: colors.error }]}
+                        onPress={() => deleteTask(item.id)}
                     >
-                        <Text style={[styles.reorderIcon, { color: index === 0 ? colors.lightGrey : colors.textSecondary }]}>▲</Text>
+                        <Icon name="trash" size={15} color="#fff" />
+                        <Text style={styles.deleteActionText}>Delete</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => moveTask(item.id, 1)}
-                        disabled={index === displayTasks.length - 1}
-                        style={styles.reorderBtn}
-                    >
-                        <Text style={[styles.reorderIcon, { color: index === displayTasks.length - 1 ? colors.lightGrey : colors.textSecondary }]}>▼</Text>
+                )}
+            >
+                <View style={[styles.taskCard, { backgroundColor: colors.backgroundSecondary, opacity: isActive ? 0.9 : 1 }]}>
+                    {/* Drag handle */}
+                    <TouchableOpacity onLongPress={drag} style={styles.dragHandle}>
+                        <Ionicons name="reorder-three" size={22} color={colors.lightGrey} />
                     </TouchableOpacity>
-                </View>
 
-                {/* Checkbox */}
-                <TouchableOpacity onPress={() => handleToggle(item.id)} style={styles.checkbox}>
-                    <View
+                    {/* Checkbox */}
+                    <TouchableOpacity onPress={() => handleToggle(item.id)} style={styles.checkbox}>
+                        <View
+                            style={[
+                                styles.checkCircle,
+                                {
+                                    borderColor: item.completed ? colors.primary : colors.grey,
+                                    backgroundColor: item.completed ? colors.primary : "transparent",
+                                },
+                            ]}
+                        >
+                            {item.completed && <Icon name="check" size={11} color={colors.white} />}
+                        </View>
+                    </TouchableOpacity>
+
+                    {/* Text */}
+                    <Text
                         style={[
-                            styles.checkCircle,
+                            styles.taskText,
                             {
-                                borderColor: item.completed ? colors.primary : colors.grey,
-                                backgroundColor: item.completed ? colors.primary : "transparent",
+                                color: item.completed ? colors.grey : colors.textPrimary,
+                                textDecorationLine: item.completed ? "line-through" : "none",
                             },
                         ]}
                     >
-                        {item.completed && <Icon name="check" size={11} color={colors.white} />}
-                    </View>
-                </TouchableOpacity>
-
-                {/* Text */}
-                <Text
-                    style={[
-                        styles.taskText,
-                        {
-                            color: item.completed ? colors.grey : colors.textPrimary,
-                            textDecorationLine: item.completed ? "line-through" : "none",
-                        },
-                    ]}
-                >
-                    {item.text}
-                </Text>
-            </View>
-        </Swipeable>
+                        {item.text}
+                    </Text>
+                </View>
+            </Swipeable>
+        </ScaleDecorator>
     );
 
     return (
@@ -215,10 +204,11 @@ export const TodoScreen: FC = () => {
                     <Text style={[styles.emptyText, { color: colors.grey }]}>Nothing here yet</Text>
                 </View>
             ) : (
-                <FlatList
+                <DraggableFlatList
                     data={displayTasks}
                     keyExtractor={(item) => item.id}
                     renderItem={renderItem}
+                    onDragEnd={({ data }) => reorderTasks(effectiveId, data)}
                     contentContainerStyle={styles.list}
                     keyboardShouldPersistTaps="handled"
                     onScrollBeginDrag={Keyboard.dismiss}
@@ -299,14 +289,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 10,
     },
-    reorderBtns: {
-        gap: 2,
-    },
-    reorderBtn: {
-        padding: 2,
-    },
-    reorderIcon: {
-        fontSize: 11,
+    dragHandle: {
+        paddingHorizontal: 2,
     },
     checkbox: {},
     checkCircle: {
