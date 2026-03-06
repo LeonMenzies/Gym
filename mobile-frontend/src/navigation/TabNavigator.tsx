@@ -2,11 +2,11 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { useTheme } from "~store/settingsStore";
 
-import { ListsNavigator } from "~navigation/ListsNavigator";
 import { TimerNavigator } from "~navigation/TimerNavigator";
-import { DashboardScreen } from "~screens/dashboard/DashboardScreen";
 import { RecipesNavigator } from "~navigation/RecipesNavigator";
-import { Settings } from "~screens/settings/Settings";
+import { DashboardNavigator } from "~navigation/DashboardNavigator";
+import { NotesNavigator } from "~navigation/NotesNavigator";
+import { TodoScreen } from "~screens/todo/TodoScreen";
 import { TabParamList } from "~types/Types";
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -43,23 +43,24 @@ export const TabNavigator = () => {
             />
             <Tab.Screen
                 name="Dashboard"
-                component={DashboardScreen}
+                component={DashboardNavigator}
                 options={{
                     tabBarIcon: ({ color }) => <Icon name="grid" size={22} color={color} />,
                 }}
             />
             <Tab.Screen
-                name="Lists"
-                component={ListsNavigator}
+                name="Todo"
+                component={TodoScreen}
                 options={{
-                    tabBarIcon: ({ color }) => <Icon name="list" size={22} color={color} />,
+                    tabBarLabel: "To-Do",
+                    tabBarIcon: ({ color }) => <Icon name="check" size={22} color={color} />,
                 }}
             />
             <Tab.Screen
-                name="Settings"
-                component={Settings}
+                name="Notes"
+                component={NotesNavigator}
                 options={{
-                    tabBarIcon: ({ color }) => <Icon name="settings" size={22} color={color} />,
+                    tabBarIcon: ({ color }) => <Icon name="note" size={22} color={color} />,
                 }}
             />
         </Tab.Navigator>

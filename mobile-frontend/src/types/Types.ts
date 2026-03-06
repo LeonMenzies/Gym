@@ -18,8 +18,8 @@ export type TabParamList = {
     Timer: undefined;
     Recipes: undefined;
     Dashboard: undefined;
-    Lists: undefined;
-    Settings: undefined;
+    Todo: undefined;
+    Notes: undefined;
 };
 
 export type TimerStackParamList = {

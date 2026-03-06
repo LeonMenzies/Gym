@@ -86,10 +86,11 @@ cd mobile-frontend && npm install <package>
 ## Working Process
 
 ### Deploying After Changes
-After every coding session, **always** do all three steps without waiting to be asked:
+After every coding session, **always** do all four steps without waiting to be asked:
 1. `git add <changed files> && git commit -m "..."` — commit with a descriptive message
 2. `git push` — push to GitHub
-3. `cd mobile-frontend && CI=1 npx eas update --branch production --platform ios --message "..."` — publish OTA update
+3. `cd mobile-frontend && npx jest --no-coverage` — run all tests; fix failures before continuing
+4. `cd mobile-frontend && CI=1 npx eas update --branch production --platform ios --message "..."` — publish OTA update
 
 Never skip the EAS update. The commit message and EAS message should match.
 

@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { FC, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "~store/settingsStore";
@@ -37,7 +38,9 @@ function buildCalendarCells(year: number, month: number): (number | null)[] {
     return cells;
 }
 
-export const DashboardScreen: FC = () => {
+type Props = { navigation: any };
+
+export const DashboardScreen: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
     const { log } = useActivityStore();
 
@@ -69,7 +72,15 @@ export const DashboardScreen: FC = () => {
 
     return (
         <View style={[styles.screen, { backgroundColor: colors.background }]}>
-            <Text style={[styles.header, { color: colors.textPrimary }]}>Dashboard</Text>
+            <View style={styles.headerRow}>
+                <Text style={[styles.header, { color: colors.textPrimary }]}>Dashboard</Text>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("Settings")}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                    <Icon name="settings" size={22} color={colors.textSecondary} />
+                </TouchableOpacity>
+            </View>
 
             <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
                 {/* Calendar card */}
@@ -177,12 +188,17 @@ const StatBox: FC<{ label: string; value: number; color: string; textColor: stri
 
 const styles = StyleSheet.create({
     screen: { flex: 1 },
-    header: {
-        fontSize: 28,
-        fontWeight: "700",
+    headerRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
         paddingTop: 64,
         paddingHorizontal: 20,
         paddingBottom: 8,
+    },
+    header: {
+        fontSize: 28,
+        fontWeight: "700",
     },
     scroll: {
         padding: 16,
