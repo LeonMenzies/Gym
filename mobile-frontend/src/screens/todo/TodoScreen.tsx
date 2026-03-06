@@ -15,7 +15,7 @@ import { useActivityStore } from "~store/activityStore";
 
 export const TodoScreen: FC = () => {
     const colors = useTheme();
-    const { tasks, addTask, toggleTask, deleteTask, clearCompleted } = useTodoStore();
+    const { tasks, addTask, toggleTask, deleteTask } = useTodoStore();
     const { logActivity } = useActivityStore();
 
     const handleToggle = (id: string) => {
@@ -33,10 +33,11 @@ export const TodoScreen: FC = () => {
         inputRef.current?.focus();
     };
 
+    const [showDone, setShowDone] = useState(true);
     const hasCompleted = tasks.some((t) => t.completed);
     const activeTasks = tasks.filter((t) => !t.completed);
     const completedTasks = tasks.filter((t) => t.completed);
-    const sorted = [...activeTasks, ...completedTasks];
+    const sorted = showDone ? [...activeTasks, ...completedTasks] : activeTasks;
 
     const renderItem = ({ item }: { item: Task }) => (
         <View style={[styles.row, { borderBottomColor: colors.lightGrey }]}>
@@ -79,8 +80,10 @@ export const TodoScreen: FC = () => {
             <View style={styles.header}>
                 <Text style={[styles.title, { color: colors.textPrimary }]}>To-Do</Text>
                 {hasCompleted && (
-                    <TouchableOpacity onPress={clearCompleted}>
-                        <Text style={[styles.clearBtn, { color: colors.grey }]}>Clear done</Text>
+                    <TouchableOpacity onPress={() => setShowDone((v) => !v)}>
+                        <Text style={[styles.clearBtn, { color: colors.grey }]}>
+                            {showDone ? "Hide done" : "Show done"}
+                        </Text>
                     </TouchableOpacity>
                 )}
             </View>
