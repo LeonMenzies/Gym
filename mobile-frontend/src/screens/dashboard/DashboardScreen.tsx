@@ -4,6 +4,9 @@ import { FC, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "~store/settingsStore";
 import { ActivityType, todayStr, useActivityStore } from "~store/activityStore";
+import { useStreakStore } from "~store/streakStore";
+import { useComponentStore } from "~store/componentStore";
+import { COMPONENT_WIDGETS } from "~screens/dashboard/ComponentWidgets";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -13,15 +16,9 @@ const MONTH_NAMES = [
 ];
 
 const ACTIVITY_COLORS: Record<ActivityType, string> = {
-    stretch: "#c8ac97",   // warm tan — matches primary tone
-    todo:    "#5b9e6e",   // green
-    gym:     "#4a90d9",   // blue
-};
-
-const ACTIVITY_LABELS: Record<ActivityType, string> = {
-    stretch: "Stretch",
-    todo: "To-Do",
-    gym: "Gym",
+    stretch: "#c8ac97",
+    todo:    "#5b9e6e",
+    gym:     "#4a90d9",
 };
 
 function dateStr(year: number, month: number, day: number): string {
@@ -29,8 +26,8 @@ function dateStr(year: number, month: number, day: number): string {
 }
 
 function buildCalendarCells(year: number, month: number): (number | null)[] {
-    const firstDow = new Date(year, month, 1).getDay(); // 0=Sun
-    const offset = (firstDow + 6) % 7; // convert to Mon-first
+    const firstDow = new Date(year, month, 1).getDay();
+    const offset = (firstDow + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const cells: (number | null)[] = Array(offset).fill(null);
     for (let d = 1; d <= daysInMonth; d++) cells.push(d);
@@ -43,6 +40,8 @@ type Props = { navigation: any };
 export const DashboardScreen: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
     const { log } = useActivityStore();
+    const { currentStreak, longestStreak } = useStreakStore();
+    const { activeComponents } = useComponentStore();
 
     const now = new Date();
     const [year, setYear] = useState(now.getFullYear());
@@ -63,7 +62,6 @@ export const DashboardScreen: FC<Props> = ({ navigation }) => {
     const weeks: (number | null)[][] = [];
     for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
 
-    // Summary: activities this month
     const monthPrefix = `${year}-${String(month + 1).padStart(2, "0")}`;
     const activeDays = Object.entries(log).filter(([k]) => k.startsWith(monthPrefix));
     const stretchCount = activeDays.filter(([, v]) => v.includes("stretch")).length;
@@ -83,9 +81,37 @@ export const DashboardScreen: FC<Props> = ({ navigation }) => {
             </View>
 
             <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+                {/* Streak card */}
+                <View style={[styles.streakCard, { backgroundColor: colors.backgroundSecondary }]}>
+                    <View style={styles.streakMain}>
+                        <Text style={styles.streakFlame}>🔥</Text>
+                        <View>
+                            <Text style={[styles.streakCount, { color: colors.textPrimary }]}>{currentStreak}</Text>
+                            <Text style={[styles.streakLabel, { color: colors.textSecondary }]}>day streak</Text>
+                        </View>
+                    </View>
+                    {longestStreak > 0 && (
+                        <View style={[styles.bestBadge, { backgroundColor: colors.background }]}>
+                            <Text style={[styles.bestText, { color: colors.textSecondary }]}>Best: {longestStreak} days</Text>
+                        </View>
+                    )}
+                </View>
+
+                {/* Active component widgets */}
+                {activeComponents.length > 0 && (
+                    <View style={styles.widgetsSection}>
+                        <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>Components</Text>
+                        <View style={styles.widgetsList}>
+                            {activeComponents.map((id) => {
+                                const Widget = COMPONENT_WIDGETS[id];
+                                return Widget ? <Widget key={id} /> : null;
+                            })}
+                        </View>
+                    </View>
+                )}
+
                 {/* Calendar card */}
                 <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                    {/* Month navigation */}
                     <View style={styles.monthRow}>
                         <TouchableOpacity onPress={prevMonth} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
                             <Ionicons name="chevron-back" size={22} color={colors.textSecondary} />
@@ -98,14 +124,12 @@ export const DashboardScreen: FC<Props> = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Day-of-week headers */}
                     <View style={styles.dowRow}>
                         {DAYS.map((d) => (
                             <Text key={d} style={[styles.dowLabel, { color: colors.textSecondary }]}>{d}</Text>
                         ))}
                     </View>
 
-                    {/* Weeks */}
                     {weeks.map((week, wi) => (
                         <View key={wi} style={styles.weekRow}>
                             {week.map((day, di) => {
@@ -190,6 +214,51 @@ const styles = StyleSheet.create({
         gap: 14,
         paddingBottom: 40,
     },
+    streakCard: {
+        borderRadius: 18,
+        padding: 18,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    streakMain: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+    },
+    streakFlame: {
+        fontSize: 36,
+    },
+    streakCount: {
+        fontSize: 36,
+        fontWeight: "700",
+        lineHeight: 40,
+    },
+    streakLabel: {
+        fontSize: 13,
+        fontWeight: "500",
+    },
+    bestBadge: {
+        borderRadius: 20,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+    },
+    bestText: {
+        fontSize: 13,
+        fontWeight: "500",
+    },
+    widgetsSection: {
+        gap: 10,
+    },
+    sectionTitle: {
+        fontSize: 12,
+        textTransform: "uppercase",
+        letterSpacing: 0.8,
+        fontWeight: "600",
+    },
+    widgetsList: {
+        gap: 10,
+    },
     card: {
         borderRadius: 18,
         padding: 18,
@@ -246,29 +315,6 @@ const styles = StyleSheet.create({
         width: 6,
         height: 6,
         borderRadius: 3,
-    },
-    sectionTitle: {
-        fontSize: 12,
-        textTransform: "uppercase",
-        letterSpacing: 0.8,
-        fontWeight: "600",
-    },
-    legendRow: {
-        flexDirection: "row",
-        gap: 20,
-    },
-    legendItem: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 7,
-    },
-    legendDot: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-    },
-    legendLabel: {
-        fontSize: 14,
     },
     statsRow: {
         flexDirection: "row",

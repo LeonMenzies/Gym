@@ -15,11 +15,12 @@ export type ThemeT = {
 };
 
 export type TabParamList = {
+    Dashboard: undefined;
     Timer: undefined;
     Recipes: undefined;
-    Dashboard: undefined;
     Todo: undefined;
     Notes: undefined;
+    Library: undefined;
 };
 
 export type TimerStackParamList = {
