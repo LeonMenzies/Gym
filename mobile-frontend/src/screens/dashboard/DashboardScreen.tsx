@@ -145,21 +145,6 @@ export const DashboardScreen: FC<Props> = ({ navigation }) => {
                     ))}
                 </View>
 
-                {/* Legend */}
-                <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                    <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>Activity types</Text>
-                    <View style={styles.legendRow}>
-                        {(["stretch", "todo", "gym"] as ActivityType[]).map((type) => (
-                            <View key={type} style={styles.legendItem}>
-                                <View style={[styles.legendDot, { backgroundColor: ACTIVITY_COLORS[type] }]} />
-                                <Text style={[styles.legendLabel, { color: colors.textSecondary }]}>
-                                    {ACTIVITY_LABELS[type]}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
-                </View>
-
                 {/* Monthly summary */}
                 <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
                     <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
