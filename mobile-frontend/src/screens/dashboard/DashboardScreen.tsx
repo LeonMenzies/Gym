@@ -6,7 +6,6 @@ import { useTheme } from "~store/settingsStore";
 import { ActivityType, todayStr, useActivityStore } from "~store/activityStore";
 import { useStreakStore } from "~store/streakStore";
 import { useComponentStore } from "~store/componentStore";
-import { COMPONENT_WIDGETS } from "~screens/dashboard/ComponentWidgets";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -68,23 +67,45 @@ export const DashboardScreen: FC<Props> = ({ navigation }) => {
     const todoCount    = activeDays.filter(([, v]) => v.includes("todo")).length;
     const gymCount     = activeDays.filter(([, v]) => v.includes("gym")).length;
 
+    // Build summary stats based on which components are active
+    const summaryStats: { label: string; value: number; color: string }[] = [];
+    if (activeComponents.includes("timer")) {
+        summaryStats.push({ label: "Stretch days", value: stretchCount, color: ACTIVITY_COLORS.stretch });
+        summaryStats.push({ label: "Gym days",     value: gymCount,     color: ACTIVITY_COLORS.gym });
+    }
+    if (activeComponents.includes("todo")) {
+        summaryStats.push({ label: "To-Do days",   value: todoCount,    color: ACTIVITY_COLORS.todo });
+    }
+
+    const goToLibrary = () => navigation.getParent()?.navigate("Library");
+
     return (
         <View style={[styles.screen, { backgroundColor: colors.background }]}>
             <View style={styles.headerRow}>
                 <Text style={[styles.header, { color: colors.textPrimary }]}>Dashboard</Text>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate("Settings")}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                >
-                    <Icon name="settings" size={22} color={colors.textSecondary} />
-                </TouchableOpacity>
+                <View style={styles.headerActions}>
+                    <TouchableOpacity
+                        onPress={goToLibrary}
+                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    >
+                        <Icon name="layers" size={22} color={colors.textSecondary} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("Settings")}
+                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    >
+                        <Icon name="settings" size={22} color={colors.textSecondary} />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
                 {/* Streak card */}
                 <View style={[styles.streakCard, { backgroundColor: colors.backgroundSecondary }]}>
                     <View style={styles.streakMain}>
-                        <Text style={styles.streakFlame}>🔥</Text>
+                        <View style={[styles.streakIconWrap, { backgroundColor: colors.background }]}>
+                            <Ionicons name="flame" size={26} color="#ff6b35" />
+                        </View>
                         <View>
                             <Text style={[styles.streakCount, { color: colors.textPrimary }]}>{currentStreak}</Text>
                             <Text style={[styles.streakLabel, { color: colors.textSecondary }]}>day streak</Text>
@@ -96,19 +117,6 @@ export const DashboardScreen: FC<Props> = ({ navigation }) => {
                         </View>
                     )}
                 </View>
-
-                {/* Active component widgets */}
-                {activeComponents.length > 0 && (
-                    <View style={styles.widgetsSection}>
-                        <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>Components</Text>
-                        <View style={styles.widgetsList}>
-                            {activeComponents.map((id) => {
-                                const Widget = COMPONENT_WIDGETS[id];
-                                return Widget ? <Widget key={id} /> : null;
-                            })}
-                        </View>
-                    </View>
-                )}
 
                 {/* Calendar card */}
                 <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
@@ -169,17 +177,26 @@ export const DashboardScreen: FC<Props> = ({ navigation }) => {
                     ))}
                 </View>
 
-                {/* Monthly summary */}
-                <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
-                    <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
-                        {MONTH_NAMES[month]} summary
-                    </Text>
-                    <View style={styles.statsRow}>
-                        <StatBox label="Stretch days" value={stretchCount} color={ACTIVITY_COLORS.stretch} textColor={colors.textPrimary} subColor={colors.textSecondary} />
-                        <StatBox label="To-Do days"   value={todoCount}    color={ACTIVITY_COLORS.todo}    textColor={colors.textPrimary} subColor={colors.textSecondary} />
-                        <StatBox label="Gym days"     value={gymCount}     color={ACTIVITY_COLORS.gym}     textColor={colors.textPrimary} subColor={colors.textSecondary} />
+                {/* Monthly summary — only rendered when there are applicable components */}
+                {summaryStats.length > 0 && (
+                    <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
+                        <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>
+                            {MONTH_NAMES[month]} summary
+                        </Text>
+                        <View style={styles.statsRow}>
+                            {summaryStats.map((s) => (
+                                <StatBox
+                                    key={s.label}
+                                    label={s.label}
+                                    value={s.value}
+                                    color={s.color}
+                                    textColor={colors.textPrimary}
+                                    subColor={colors.textSecondary}
+                                />
+                            ))}
+                        </View>
                     </View>
-                </View>
+                )}
             </ScrollView>
         </View>
     );
@@ -209,6 +226,11 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: "700",
     },
+    headerActions: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 18,
+    },
     scroll: {
         padding: 16,
         gap: 14,
@@ -224,10 +246,14 @@ const styles = StyleSheet.create({
     streakMain: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 12,
+        gap: 14,
     },
-    streakFlame: {
-        fontSize: 36,
+    streakIconWrap: {
+        width: 48,
+        height: 48,
+        borderRadius: 14,
+        alignItems: "center",
+        justifyContent: "center",
     },
     streakCount: {
         fontSize: 36,
@@ -246,18 +272,6 @@ const styles = StyleSheet.create({
     bestText: {
         fontSize: 13,
         fontWeight: "500",
-    },
-    widgetsSection: {
-        gap: 10,
-    },
-    sectionTitle: {
-        fontSize: 12,
-        textTransform: "uppercase",
-        letterSpacing: 0.8,
-        fontWeight: "600",
-    },
-    widgetsList: {
-        gap: 10,
     },
     card: {
         borderRadius: 18,
@@ -315,6 +329,12 @@ const styles = StyleSheet.create({
         width: 6,
         height: 6,
         borderRadius: 3,
+    },
+    sectionTitle: {
+        fontSize: 12,
+        textTransform: "uppercase",
+        letterSpacing: 0.8,
+        fontWeight: "600",
     },
     statsRow: {
         flexDirection: "row",
