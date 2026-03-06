@@ -20,7 +20,6 @@ export type TabParamList = {
     Recipes: undefined;
     Todo: undefined;
     Notes: undefined;
-    Library: undefined;
 };
 
 export type TimerStackParamList = {

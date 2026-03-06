@@ -77,7 +77,7 @@ export const DashboardScreen: FC<Props> = ({ navigation }) => {
         summaryStats.push({ label: "To-Do days",   value: todoCount,    color: ACTIVITY_COLORS.todo });
     }
 
-    const goToLibrary = () => navigation.getParent()?.navigate("Library");
+    const goToLibrary = () => navigation.navigate("Library");
 
     return (
         <View style={[styles.screen, { backgroundColor: colors.background }]}>

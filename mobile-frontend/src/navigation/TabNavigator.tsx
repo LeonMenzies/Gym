@@ -4,7 +4,6 @@ import { useTheme } from "~store/settingsStore";
 import { useComponentStore } from "~store/componentStore";
 import { COMPONENT_REGISTRY } from "~navigation/componentRegistry";
 import { DashboardNavigator } from "~navigation/DashboardNavigator";
-import { LibraryScreen } from "~screens/dashboard/LibraryScreen";
 import { TabParamList } from "~types/Types";
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -58,15 +57,6 @@ export const TabNavigator = () => {
             />
 
             {rightComponents.map(renderComponent)}
-
-            <Tab.Screen
-                name="Library"
-                component={LibraryScreen}
-                options={{
-                    tabBarLabel: "Library",
-                    tabBarIcon: ({ color }) => <Icon name="layers" size={22} color={color} />,
-                }}
-            />
         </Tab.Navigator>
     );
 };

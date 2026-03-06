@@ -1,12 +1,19 @@
 import { FC } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useTheme } from "~store/settingsStore";
 import { ComponentId, MAX_COMPONENTS, useComponentStore } from "~store/componentStore";
 import { COMPONENT_REGISTRY, ComponentDef } from "~navigation/componentRegistry";
+import { DashboardStackParamList } from "~navigation/DashboardNavigator";
+
+type Nav = NativeStackNavigationProp<DashboardStackParamList, "Library">;
 
 export const LibraryScreen: FC = () => {
     const colors = useTheme();
+    const nav = useNavigation<Nav>();
     const { activeComponents, addComponent, removeComponent } = useComponentStore();
 
     const atMax = activeComponents.length >= MAX_COMPONENTS;
@@ -59,10 +66,15 @@ export const LibraryScreen: FC = () => {
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <View style={styles.header}>
-                <Text style={[styles.title, { color: colors.textPrimary }]}>Library</Text>
-                <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-                    {activeComponents.length} / {MAX_COMPONENTS} active
-                </Text>
+                <TouchableOpacity onPress={() => nav.goBack()} style={styles.backBtn}>
+                    <Ionicons name="chevron-back" size={24} color={colors.primary} />
+                </TouchableOpacity>
+                <View>
+                    <Text style={[styles.title, { color: colors.textPrimary }]}>Library</Text>
+                    <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+                        {activeComponents.length} / {MAX_COMPONENTS} active
+                    </Text>
+                </View>
             </View>
 
             <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
@@ -100,12 +112,16 @@ export const LibraryScreen: FC = () => {
 const styles = StyleSheet.create({
     container: { flex: 1 },
     header: {
-        paddingTop: 64,
-        paddingHorizontal: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        paddingTop: 60,
+        paddingHorizontal: 16,
         paddingBottom: 12,
+        gap: 8,
     },
-    title: { fontSize: 28, fontWeight: "700" },
-    subtitle: { fontSize: 14, marginTop: 2 },
+    backBtn: { padding: 4 },
+    title: { fontSize: 24, fontWeight: "700" },
+    subtitle: { fontSize: 13, marginTop: 1 },
     scroll: { padding: 16, gap: 8, paddingBottom: 40 },
     sectionLabel: {
         fontSize: 12,
