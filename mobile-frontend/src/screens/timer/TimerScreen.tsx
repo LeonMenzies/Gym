@@ -48,17 +48,18 @@ const GymTimer: FC = () => {
 
     useEffect(() => {
         if (running) {
-            intervalRef.current = setInterval(() => {
+            const tick = () => {
                 setTimeLeft((prev) => {
                     if (prev <= 1) {
-                        clearInterval(intervalRef.current!);
                         setRunning(false);
                         logActivity("gym");
                         return 0;
                     }
                     return prev - 1;
                 });
-            }, 1000);
+            };
+            tick(); // fire immediately so animation starts right away
+            intervalRef.current = setInterval(tick, 1000);
         } else {
             if (intervalRef.current) clearInterval(intervalRef.current);
         }
@@ -138,85 +139,71 @@ const StretchList: FC = () => {
     const nav = useNavigation<Nav>();
     const { routines, deleteRoutine } = useStretchStore();
 
-    const stretchCount = (items: { stretchId: string; duration: number }[]) => {
-        return `${items.length} stretch${items.length !== 1 ? "es" : ""}`;
-    };
+    const sorted = [...routines].sort((a, b) => b.items.length - a.items.length);
 
-    const totalDuration = (items: { stretchId: string; duration: number }[]) => {
-        const total = items.reduce((acc, item) => acc + item.duration, 0) + Math.max(0, items.length - 1) * 5;
-        const m = Math.floor(total / 60);
-        const s = total % 60;
-        return m > 0 ? (s > 0 ? `~${m}m ${s}s` : `~${m}m`) : `${s}s`;
-    };
-
-    const handleDelete = (id: string, name: string) => {
+    const confirmDelete = (id: string, name: string) => {
         Alert.alert("Delete Routine", `Delete "${name}"?`, [
             { text: "Cancel", style: "cancel" },
             { text: "Delete", style: "destructive", onPress: () => deleteRoutine(id) },
         ]);
     };
 
-    const stretchName = (stretchId: string) => {
-        return STRETCHES.find((s) => s.id === stretchId)?.name ?? stretchId;
+    const handleLongPress = (id: string, name: string) => {
+        Alert.alert(name, undefined, [
+            { text: "Edit", onPress: () => nav.navigate("StretchBuilder", { routineId: id }) },
+            { text: "Delete", style: "destructive", onPress: () => confirmDelete(id, name) },
+            { text: "Cancel", style: "cancel" },
+        ]);
     };
 
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={styles.listContent}>
-                {routines.length === 0 && (
-                    <View style={styles.emptyState}>
-                        <Text style={[styles.emptyTitle, { color: colors.textPrimary }]}>No routines yet</Text>
-                        <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
-                            Tap + to build your first stretch routine
-                        </Text>
-                    </View>
-                )}
-                {routines.map((routine) => (
-                    <TouchableOpacity
-                        key={routine.id}
-                        style={[styles.routineCard, { backgroundColor: colors.backgroundSecondary }]}
-                        onPress={() => nav.navigate("StretchRunner", { routineId: routine.id })}
-                        disabled={routine.items.length === 0}
-                        activeOpacity={0.75}
-                    >
-                        <View style={styles.routineCardTop}>
-                            <View style={styles.routineInfo}>
-                                <Text style={[styles.routineName, { color: colors.textPrimary }]}>{routine.name}</Text>
-                                <Text style={[styles.routineMeta, { color: colors.textSecondary }]}>
-                                    {stretchCount(routine.items)} · {totalDuration(routine.items)}
+            {sorted.length === 0 ? (
+                <View style={styles.emptyState}>
+                    <Text style={[styles.emptyTitle, { color: colors.textPrimary }]}>No routines yet</Text>
+                    <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
+                        Tap + to build your first stretch routine
+                    </Text>
+                </View>
+            ) : (
+                <ScrollView contentContainerStyle={styles.bubblesContent} showsVerticalScrollIndicator={false}>
+                    {sorted.map((routine, i) => {
+                        const size = Math.max(80, 160 - i * 22);
+                        const nameFontSize = Math.max(10, Math.floor(size * 0.13));
+                        const countFontSize = Math.max(8, Math.floor(size * 0.09));
+                        const canStart = routine.items.length > 0;
+                        return (
+                            <TouchableOpacity
+                                key={routine.id}
+                                style={[
+                                    styles.bubble,
+                                    {
+                                        width: size,
+                                        height: size,
+                                        borderRadius: size / 2,
+                                        backgroundColor: colors.backgroundSecondary,
+                                        opacity: canStart ? 1 : 0.5,
+                                    },
+                                ]}
+                                onPress={() => canStart && nav.navigate("StretchRunner", { routineId: routine.id })}
+                                onLongPress={() => handleLongPress(routine.id, routine.name)}
+                                activeOpacity={0.75}
+                                delayLongPress={400}
+                            >
+                                <Text
+                                    style={[styles.bubbleName, { color: colors.textPrimary, fontSize: nameFontSize }]}
+                                    numberOfLines={3}
+                                >
+                                    {routine.name}
                                 </Text>
-                                {routine.items.length > 0 && (
-                                    <Text style={[styles.routinePreview, { color: colors.textSecondary }]} numberOfLines={1}>
-                                        {routine.items.slice(0, 3).map((item) => stretchName(item.stretchId)).join(", ")}
-                                        {routine.items.length > 3 ? "…" : ""}
-                                    </Text>
-                                )}
-                            </View>
-                            <View style={styles.cardActions}>
-                                <TouchableOpacity
-                                    style={styles.cardIconBtn}
-                                    onPress={() => nav.navigate("StretchBuilder", { routineId: routine.id })}
-                                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                                >
-                                    <Ionicons name="pencil-outline" size={18} color={colors.textSecondary} />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.cardIconBtn}
-                                    onPress={() => handleDelete(routine.id, routine.name)}
-                                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                                >
-                                    <Ionicons name="trash-outline" size={18} color={colors.error} />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View style={[styles.startHint, { borderTopColor: colors.background }]}>
-                            <Ionicons name="play-circle" size={16} color={colors.primary} />
-                            <Text style={[styles.startHintText, { color: colors.primary }]}>Tap to start</Text>
-                        </View>
-                    </TouchableOpacity>
-                ))}
-                <View style={{ height: 90 }} />
-            </ScrollView>
+                                <Text style={[styles.bubbleCount, { color: colors.textSecondary, fontSize: countFontSize }]}>
+                                    {routine.items.length} stretch{routine.items.length !== 1 ? "es" : ""}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </ScrollView>
+            )}
 
             {/* FAB — New Routine */}
             <TouchableOpacity
@@ -323,14 +310,34 @@ const styles = StyleSheet.create({
         height: 40,
     },
     // ── Stretch list ──
-    listContent: {
-        padding: 16,
-        gap: 12,
+    bubblesContent: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        padding: 20,
+        gap: 16,
+        justifyContent: "center",
+        paddingBottom: 100,
+    },
+    bubble: {
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 10,
+    },
+    bubbleName: {
+        fontWeight: "600",
+        textAlign: "center",
+        lineHeight: 15,
+    },
+    bubbleCount: {
+        marginTop: 3,
+        textAlign: "center",
     },
     emptyState: {
+        flex: 1,
         alignItems: "center",
-        marginTop: 80,
+        justifyContent: "center",
         gap: 8,
+        padding: 40,
     },
     emptyTitle: {
         fontSize: 20,
@@ -339,51 +346,6 @@ const styles = StyleSheet.create({
     emptySubtitle: {
         fontSize: 15,
         textAlign: "center",
-    },
-    routineCard: {
-        borderRadius: 16,
-        overflow: "hidden",
-    },
-    routineCardTop: {
-        flexDirection: "row",
-        alignItems: "flex-start",
-        padding: 16,
-        gap: 12,
-    },
-    routineInfo: {
-        flex: 1,
-        gap: 4,
-    },
-    routineName: {
-        fontSize: 18,
-        fontWeight: "600",
-    },
-    routineMeta: {
-        fontSize: 13,
-    },
-    routinePreview: {
-        fontSize: 12,
-        marginTop: 2,
-    },
-    cardActions: {
-        flexDirection: "row",
-        gap: 12,
-        paddingTop: 2,
-    },
-    cardIconBtn: {
-        padding: 4,
-    },
-    startHint: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 5,
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        borderTopWidth: 1,
-    },
-    startHintText: {
-        fontSize: 13,
-        fontWeight: "500",
     },
     fab: {
         position: "absolute",

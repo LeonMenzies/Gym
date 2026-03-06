@@ -211,5 +211,6 @@ const styles = (colors: ReturnType<typeof useTheme>) =>
         slider: {
             width: "100%",
             height: 40,
+            marginHorizontal: 8,
         },
     });
