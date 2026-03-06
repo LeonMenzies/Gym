@@ -1,9 +1,11 @@
 import { FC } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Slider from "@react-native-community/slider";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { useSettingsStore, useTheme } from "~store/settingsStore";
+import { useTimerStore } from "~store/timerStore";
 import { SettingsSelectItem } from "~screens/settings/SettingsSelectItem";
 import { exportData, importData, clearAllData } from "~utils/dataService";
 
@@ -12,6 +14,7 @@ type Props = { navigation: any };
 export const Settings: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
     const { theme, metricType, setTheme, setMetricType } = useSettingsStore();
+    const { gymRestSeconds, setGymRestSeconds } = useTimerStore();
 
     const handleImport = async () => {
         try {
@@ -54,6 +57,13 @@ export const Settings: FC<Props> = ({ navigation }) => {
 
     const s = styles(colors);
 
+    const formatSeconds = (secs: number) => {
+        if (secs < 60) return `${secs}s`;
+        const m = Math.floor(secs / 60);
+        const rem = secs % 60;
+        return rem === 0 ? `${m}m` : `${m}m ${rem}s`;
+    };
+
     return (
         <View style={s.container}>
             <View style={s.header}>
@@ -80,6 +90,25 @@ export const Settings: FC<Props> = ({ navigation }) => {
                         title="Use Metric"
                         value={metricType === "METRIC"}
                         callBack={(val) => setMetricType(val ? "METRIC" : "IMPERIAL")}
+                    />
+                </View>
+
+                <Text style={s.sectionLabel}>Gym Timer</Text>
+                <View style={s.section}>
+                    <View style={s.sliderRow}>
+                        <Text style={s.rowText}>Default rest duration</Text>
+                        <Text style={s.sliderValue}>{formatSeconds(gymRestSeconds)}</Text>
+                    </View>
+                    <Slider
+                        style={s.slider}
+                        minimumValue={15}
+                        maximumValue={120}
+                        step={15}
+                        value={gymRestSeconds}
+                        onValueChange={setGymRestSeconds}
+                        minimumTrackTintColor={colors.primary}
+                        maximumTrackTintColor={colors.lightGrey}
+                        thumbTintColor={colors.primary}
                     />
                 </View>
 
@@ -166,5 +195,21 @@ const styles = (colors: ReturnType<typeof useTheme>) =>
         divider: {
             height: 1,
             marginLeft: 48,
+        },
+        sliderRow: {
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 16,
+            paddingTop: 16,
+            paddingBottom: 4,
+        },
+        sliderValue: {
+            fontSize: 16,
+            fontWeight: "600",
+            color: colors.primary,
+        },
+        slider: {
+            width: "100%",
+            height: 40,
         },
     });

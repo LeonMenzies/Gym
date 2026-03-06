@@ -77,8 +77,8 @@ const GymTimer: FC = () => {
     };
 
     const handleReset = () => {
-        setRunning(false);
         setTimeLeft(gymRestSeconds);
+        setRunning(true);
     };
 
     const progress = gymRestSeconds > 0 ? timeLeft / gymRestSeconds : 0;
