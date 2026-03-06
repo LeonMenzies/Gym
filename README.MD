@@ -1,37 +1,70 @@
-## Deployment
+# OrganizationStation
 
-### Database Migration
+Personal multi-purpose utility app. Local-first, no backend required.
 
-flask db migrate -m "Message"
-flask db upgrade
+## Modules
 
-### Build Expo App
+| Tab | Description |
+|-----|-------------|
+| **Timer** | Gym rest timer + guided stretch routines with haptic cues |
+| **To-Do** | Simple task list with completion tracking |
+| **Recipes** | Personal recipe book with ingredients and steps |
+| **Notes** | Typed blocks — text notes, movies/TV tracker, subscriptions, key-value store |
+| **Settings** | Light/dark theme, metric/imperial units |
 
-eas build
+## Tech Stack
 
-### Usefull
+- **React Native 0.81** + **Expo SDK 54**
+- **TypeScript** (strict)
+- **Zustand** — state management with AsyncStorage persistence
+- **React Navigation 7** — bottom tabs + native stack
+- **@expo/vector-icons** — SimpleLineIcons
 
-sudo journalctl -u gunicorn-gym -n 50 --no-pager
+## Project Structure
 
-eas build --platform ios --profile production
-eas submit -p ios --latest
+```
+mobile-frontend/
+├── src/
+│   ├── screens/          # One folder per module
+│   ├── store/            # Zustand stores
+│   ├── navigation/       # Tab + stack navigators
+│   ├── components/       # Shared UI components
+│   ├── types/            # Shared TypeScript types
+│   └── utils/            # Helpers and constants
+├── assets/               # Icons and images
+└── app.json              # Expo config
+```
 
-eas update --branch production
+## Running Locally
 
-### Backend Deployment
+```bash
+cd mobile-frontend
 
-1. **SSH into the server, navigate to the backend directory, and pull the latest code**:
+# Start dev server
+npx expo start
 
-    ```sh
-    ssh leon@172.234.196.74
-    cd /var/www/Gym/backend
-    git pull origin main
-    ```
+# Type check
+npx tsc --noEmit
 
-2. **Activate virtual environment, install dependencies, reload systemd daemon, and restart Gunicorn**:
-    ```sh
-    source venv/bin/activate
-    pip install -r requirements.txt
-    sudo systemctl daemon-reload
-    sudo systemctl restart gunicorn-macro-dash
-    ```
+# Run tests
+npx jest
+```
+
+## Deploying
+
+After every coding session, run all three steps:
+
+```bash
+# 1. Commit
+git add <files> && git commit -m "..."
+
+# 2. Push
+git push
+
+# 3. OTA update (iOS)
+cd mobile-frontend && CI=1 npx eas update --branch production --platform ios --message "..."
+```
+
+## Data
+
+All data is stored locally via AsyncStorage — no accounts, no server, no sync.

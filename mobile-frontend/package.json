@@ -1,5 +1,5 @@
 {
-  "name": "gym",
+  "name": "organization-station",
   "main": "node_modules/expo/AppEntry.js",
   "version": "1.0.2",
   "scripts": {
@@ -10,7 +10,10 @@
     "test": "jest --watchAll"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "setupFiles": [
+      "./jest.setup.ts"
+    ]
   },
   "dependencies": {
     "@expo/config-plugins": "~54.0.4",

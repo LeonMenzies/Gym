@@ -48,5 +48,3 @@ app.log
 
 mobile-frontend/android
 mobile-frontend/ios
-# Legacy directory, not in use
-mobile-app/

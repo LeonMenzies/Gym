@@ -1,7 +1,7 @@
 # CLAUDE.md — Project Instructions
 
 ## Project Overview
-Personal multi-purpose React Native app (Expo). Local-first, no backend. Modules: Timer (gym + stretch), To-Do, Recipes, Notes, Settings.
+**OrganizationStation** — personal multi-purpose React Native app (Expo). Local-first, no backend. Modules: Timer (gym + stretch), To-Do, Recipes, Notes, Settings.
 
 ## Directory
 All app code lives in `mobile-frontend/`. The `backend/` directory is legacy and not in use.
