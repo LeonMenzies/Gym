@@ -6,22 +6,25 @@ import { useTheme } from "~store/settingsStore";
 
 type Props = {
     navigation: any;
-    route: { params: { noteId: string } };
+    route: { params: { blockId: string } };
 };
 
 export const NoteEditorScreen: FC<Props> = ({ navigation, route }) => {
-    const { noteId } = route.params;
+    const { blockId } = route.params;
     const colors = useTheme();
-    const { notes, updateNote, deleteNote } = useNotesStore();
+    const { blocks, updateBlockTitle, updateTextBody, deleteBlock } = useNotesStore();
 
-    const note = notes.find((n) => n.id === noteId);
-    const [title, setTitle] = useState(note?.title ?? "");
-    const [body, setBody] = useState(note?.body ?? "");
+    const block = blocks.find((b) => b.id === blockId && b.type === "text");
+    const [title, setTitle] = useState(block?.title ?? "");
+    const [body, setBody] = useState(block?.type === "text" ? block.body : "");
 
-    // Auto-save on every change
     useEffect(() => {
-        updateNote(noteId, title, body);
-    }, [title, body]);
+        updateBlockTitle(blockId, title);
+    }, [title]);
+
+    useEffect(() => {
+        updateTextBody(blockId, body);
+    }, [body]);
 
     const handleDelete = () => {
         Alert.alert("Delete note", "This cannot be undone.", [
@@ -30,7 +33,7 @@ export const NoteEditorScreen: FC<Props> = ({ navigation, route }) => {
                 text: "Delete",
                 style: "destructive",
                 onPress: () => {
-                    deleteNote(noteId);
+                    deleteBlock(blockId);
                     navigation.goBack();
                 },
             },
@@ -39,7 +42,6 @@ export const NoteEditorScreen: FC<Props> = ({ navigation, route }) => {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerBtn}>
                     <Icon name="arrow-left" size={18} color={colors.primary} />
@@ -77,7 +79,6 @@ export const NoteEditorScreen: FC<Props> = ({ navigation, route }) => {
                 />
             </ScrollView>
 
-            {/* Word count */}
             <View style={[styles.footer, { borderTopColor: colors.lightGrey }]}>
                 <Text style={[styles.wordCount, { color: colors.grey }]}>
                     {body.trim() ? body.trim().split(/\s+/).length : 0} words
@@ -88,36 +89,23 @@ export const NoteEditorScreen: FC<Props> = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: 56,
-    },
+    container: { flex: 1, paddingTop: 56 },
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
         paddingHorizontal: 16,
         paddingBottom: 8,
     },
-    headerBtn: {
-        padding: 8,
-    },
-    scroll: {
-        flex: 1,
-    },
-    scrollContent: {
-        paddingHorizontal: 20,
-        paddingBottom: 40,
-    },
+    headerBtn: { padding: 8 },
+    scroll: { flex: 1 },
+    scrollContent: { paddingHorizontal: 20, paddingBottom: 40 },
     titleInput: {
         fontSize: 26,
         fontWeight: "700",
         paddingVertical: 12,
         lineHeight: 34,
     },
-    divider: {
-        height: 1,
-        marginBottom: 12,
-    },
+    divider: { height: 1, marginBottom: 12 },
     bodyInput: {
         fontSize: 16,
         lineHeight: 26,
@@ -130,7 +118,5 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         alignItems: "flex-end",
     },
-    wordCount: {
-        fontSize: 12,
-    },
+    wordCount: { fontSize: 12 },
 });

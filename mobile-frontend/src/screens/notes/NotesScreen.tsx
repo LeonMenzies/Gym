@@ -1,7 +1,15 @@
 import { FC, useState } from "react";
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
-import { useNotesStore, Note } from "~store/notesStore";
+import {
+    useNotesStore,
+    NoteBlock,
+    BlockType,
+    SubscriptionsBlock,
+    MediaBlock,
+    KeyValueBlock,
+    TextBlock,
+} from "~store/notesStore";
 import { useTheme } from "~store/settingsStore";
 
 const timeAgo = (ts: number): string => {
@@ -16,43 +24,92 @@ const timeAgo = (ts: number): string => {
     return `${d}d ago`;
 };
 
-type Props = {
-    navigation: any;
+const subsSummary = (block: SubscriptionsBlock): string => {
+    const active = block.items.filter((s) => s.active);
+    if (active.length === 0) return "No active subscriptions";
+    const monthly = active.filter((s) => s.cycle === "monthly").reduce((sum, s) => sum + s.amount, 0);
+    const yearly = active.filter((s) => s.cycle === "yearly").reduce((sum, s) => sum + s.amount, 0);
+    const total = monthly + yearly / 12;
+    return `$${total.toFixed(2)}/mo · ${active.length} active`;
 };
+
+const mediaSummary = (block: MediaBlock): string => {
+    const movies = block.items.filter((i) => i.mediaType === "movie").length;
+    const books = block.items.filter((i) => i.mediaType === "book").length;
+    const tv = block.items.filter((i) => i.mediaType === "tv").length;
+    const parts: string[] = [];
+    if (movies > 0) parts.push(`${movies} movie${movies !== 1 ? "s" : ""}`);
+    if (books > 0) parts.push(`${books} book${books !== 1 ? "s" : ""}`);
+    if (tv > 0) parts.push(`${tv} show${tv !== 1 ? "s" : ""}`);
+    return parts.length > 0 ? parts.join(" · ") : "Empty";
+};
+
+const kvSummary = (block: KeyValueBlock): string => {
+    const count = block.items.length;
+    if (count === 0) return "No items";
+    return `${count} item${count !== 1 ? "s" : ""}`;
+};
+
+const textSummary = (block: TextBlock): string => {
+    if (!block.body.trim()) return "Empty";
+    const words = block.body.trim().split(/\s+/).length;
+    const preview = block.body.slice(0, 60).replace(/\n/g, " ");
+    return `${preview}${block.body.length > 60 ? "…" : ""} · ${words}w`;
+};
+
+const BLOCK_DEFS: { type: BlockType; label: string; icon: string; desc: string }[] = [
+    { type: "text", label: "Text Note", icon: "note", desc: "Free-form writing" },
+    { type: "subscriptions", label: "Subscriptions", icon: "tag", desc: "Track monthly & yearly costs" },
+    { type: "media", label: "Media", icon: "film", desc: "Movies, books & TV shows" },
+    { type: "key-value", label: "Important Info", icon: "key", desc: "Addresses, IDs & codes" },
+];
+
+const blockIcon = (type: BlockType) => BLOCK_DEFS.find((d) => d.type === type)?.icon ?? "note";
+const blockLabel = (type: BlockType) => BLOCK_DEFS.find((d) => d.type === type)?.label ?? "Note";
+
+const blockSummary = (block: NoteBlock): string => {
+    if (block.type === "text") return textSummary(block);
+    if (block.type === "subscriptions") return subsSummary(block);
+    if (block.type === "media") return mediaSummary(block);
+    return kvSummary(block);
+};
+
+const screenFor = (type: BlockType) => {
+    if (type === "text") return "NoteEditor";
+    if (type === "subscriptions") return "SubscriptionsBlock";
+    if (type === "media") return "MediaBlock";
+    return "KeyValueBlock";
+};
+
+type Props = { navigation: any };
 
 export const NotesScreen: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
-    const { notes, addNote } = useNotesStore();
-    const [query, setQuery] = useState("");
+    const { blocks, addBlock } = useNotesStore();
+    const [pickerVisible, setPickerVisible] = useState(false);
 
-    const filtered = query.trim()
-        ? notes.filter(
-              (n) =>
-                  n.title.toLowerCase().includes(query.toLowerCase()) ||
-                  n.body.toLowerCase().includes(query.toLowerCase())
-          )
-        : notes;
-
-    const handleNew = () => {
-        const id = addNote();
-        navigation.navigate("NoteEditor", { noteId: id });
+    const handleAdd = (type: BlockType) => {
+        setPickerVisible(false);
+        const id = addBlock(type);
+        navigation.navigate(screenFor(type), { blockId: id });
     };
 
-    const renderItem = ({ item }: { item: Note }) => (
+    const renderItem = ({ item }: { item: NoteBlock }) => (
         <TouchableOpacity
             style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}
-            onPress={() => navigation.navigate("NoteEditor", { noteId: item.id })}
+            onPress={() => navigation.navigate(screenFor(item.type), { blockId: item.id })}
             activeOpacity={0.7}
         >
-            <View style={styles.cardContent}>
+            <View style={[styles.iconBadge, { backgroundColor: colors.primary + "22" }]}>
+                <Icon name={blockIcon(item.type) as any} size={18} color={colors.primary} />
+            </View>
+            <View style={styles.cardBody}>
                 <Text style={[styles.cardTitle, { color: colors.textPrimary }]} numberOfLines={1}>
-                    {item.title || "Untitled"}
+                    {item.title || blockLabel(item.type)}
                 </Text>
-                {item.body.length > 0 && (
-                    <Text style={[styles.cardPreview, { color: colors.grey }]} numberOfLines={2}>
-                        {item.body}
-                    </Text>
-                )}
+                <Text style={[styles.cardSummary, { color: colors.grey }]} numberOfLines={1}>
+                    {blockSummary(item)}
+                </Text>
             </View>
             <Text style={[styles.cardDate, { color: colors.grey }]}>{timeAgo(item.updatedAt)}</Text>
         </TouchableOpacity>
@@ -62,51 +119,74 @@ export const NotesScreen: FC<Props> = ({ navigation }) => {
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <View style={styles.header}>
                 <Text style={[styles.title, { color: colors.textPrimary }]}>Notes</Text>
-                <TouchableOpacity onPress={handleNew} style={[styles.newBtn, { backgroundColor: colors.primary }]}>
+                <TouchableOpacity
+                    onPress={() => setPickerVisible(true)}
+                    style={[styles.addBtn, { backgroundColor: colors.primary }]}
+                >
                     <Icon name="plus" size={18} color={colors.white} />
                 </TouchableOpacity>
             </View>
 
-            <View style={[styles.searchRow, { backgroundColor: colors.backgroundSecondary }]}>
-                <Icon name="magnifier" size={14} color={colors.grey} style={styles.searchIcon} />
-                <TextInput
-                    style={[styles.searchInput, { color: colors.textPrimary }]}
-                    placeholder="Search notes..."
-                    placeholderTextColor={colors.grey}
-                    value={query}
-                    onChangeText={setQuery}
-                    returnKeyType="search"
-                />
-                {query.length > 0 && (
-                    <TouchableOpacity onPress={() => setQuery("")}>
-                        <Icon name="close" size={14} color={colors.grey} />
-                    </TouchableOpacity>
-                )}
-            </View>
-
-            {filtered.length === 0 ? (
+            {blocks.length === 0 ? (
                 <View style={styles.empty}>
-                    <Text style={[styles.emptyText, { color: colors.grey }]}>
-                        {query ? "No matching notes" : "No notes yet"}
-                    </Text>
+                    <Text style={[styles.emptyText, { color: colors.grey }]}>No blocks yet</Text>
                 </View>
             ) : (
                 <FlatList
-                    data={filtered}
+                    data={blocks}
                     keyExtractor={(item) => item.id}
                     renderItem={renderItem}
                     contentContainerStyle={styles.list}
-                    keyboardShouldPersistTaps="handled"
                 />
             )}
+
+            {/* Block type picker */}
+            <Modal
+                visible={pickerVisible}
+                transparent
+                animationType="slide"
+                onRequestClose={() => setPickerVisible(false)}
+            >
+                <TouchableOpacity
+                    style={styles.modalOverlay}
+                    activeOpacity={1}
+                    onPress={() => setPickerVisible(false)}
+                >
+                    <View
+                        style={[styles.sheet, { backgroundColor: colors.backgroundSecondary }]}
+                        onStartShouldSetResponder={() => true}
+                    >
+                        <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>Add block</Text>
+                        {BLOCK_DEFS.map((def) => (
+                            <TouchableOpacity
+                                key={def.type}
+                                style={[styles.sheetRow, { borderBottomColor: colors.lightGrey }]}
+                                onPress={() => handleAdd(def.type)}
+                                activeOpacity={0.7}
+                            >
+                                <View style={[styles.sheetIcon, { backgroundColor: colors.primary + "22" }]}>
+                                    <Icon name={def.icon as any} size={20} color={colors.primary} />
+                                </View>
+                                <View style={styles.sheetText}>
+                                    <Text style={[styles.sheetLabel, { color: colors.textPrimary }]}>
+                                        {def.label}
+                                    </Text>
+                                    <Text style={[styles.sheetDesc, { color: colors.grey }]}>
+                                        {def.desc}
+                                    </Text>
+                                </View>
+                                <Icon name="arrow-right" size={14} color={colors.grey} />
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </TouchableOpacity>
+            </Modal>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
+    container: { flex: 1 },
     header: {
         flexDirection: "row",
         alignItems: "center",
@@ -114,67 +194,68 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         marginBottom: 16,
     },
-    title: {
-        fontSize: 32,
-        fontWeight: "700",
-    },
-    newBtn: {
+    title: { fontSize: 32, fontWeight: "700" },
+    addBtn: {
         width: 38,
         height: 38,
         borderRadius: 19,
         alignItems: "center",
         justifyContent: "center",
     },
-    searchRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginHorizontal: 20,
-        marginBottom: 16,
-        borderRadius: 12,
-        paddingHorizontal: 12,
-        paddingVertical: 2,
-    },
-    searchIcon: {
-        marginRight: 8,
-    },
-    searchInput: {
-        flex: 1,
-        fontSize: 15,
-        paddingVertical: 10,
-    },
-    list: {
-        paddingHorizontal: 20,
-        gap: 10,
-    },
+    list: { paddingHorizontal: 20, gap: 10 },
     card: {
         borderRadius: 12,
         padding: 14,
         flexDirection: "row",
-        alignItems: "flex-start",
+        alignItems: "center",
         gap: 12,
     },
-    cardContent: {
-        flex: 1,
-        gap: 4,
-    },
-    cardTitle: {
-        fontSize: 16,
-        fontWeight: "600",
-    },
-    cardPreview: {
-        fontSize: 13,
-        lineHeight: 18,
-    },
-    cardDate: {
-        fontSize: 12,
-        paddingTop: 2,
-    },
-    empty: {
-        flex: 1,
+    iconBadge: {
+        width: 40,
+        height: 40,
+        borderRadius: 10,
         alignItems: "center",
         justifyContent: "center",
     },
-    emptyText: {
-        fontSize: 16,
+    cardBody: { flex: 1, gap: 3 },
+    cardTitle: { fontSize: 16, fontWeight: "600" },
+    cardSummary: { fontSize: 13 },
+    cardDate: { fontSize: 12 },
+    empty: { flex: 1, alignItems: "center", justifyContent: "center" },
+    emptyText: { fontSize: 16 },
+    // Modal
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.4)",
+        justifyContent: "flex-end",
     },
+    sheet: {
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        paddingTop: 20,
+        paddingBottom: 40,
+        paddingHorizontal: 20,
+    },
+    sheetTitle: {
+        fontSize: 18,
+        fontWeight: "700",
+        marginBottom: 16,
+    },
+    sheetRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 14,
+        paddingVertical: 14,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    sheetIcon: {
+        width: 44,
+        height: 44,
+        borderRadius: 12,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    sheetText: { flex: 1 },
+    sheetLabel: { fontSize: 16, fontWeight: "600" },
+    sheetDesc: { fontSize: 13, marginTop: 2 },
 });
