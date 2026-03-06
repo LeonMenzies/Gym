@@ -1,3 +1,5 @@
+import Slider from "@react-native-community/slider";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { FC, useEffect, useState } from "react";
@@ -25,8 +27,6 @@ import { TimerStackParamList } from "~types/Types";
 
 type Props = NativeStackScreenProps<TimerStackParamList, "StretchBuilder">;
 type Nav = NativeStackNavigationProp<TimerStackParamList, "StretchBuilder">;
-
-const DURATION_OPTIONS = [15, 20, 30, 45, 60, 90];
 
 function totalTime(items: RoutineItem[]): string {
     const secs = items.reduce((a, i) => a + i.duration, 0) + Math.max(0, items.length - 1) * 5;
@@ -139,53 +139,49 @@ export const StretchBuilderScreen: FC<Props> = () => {
                             Routine · {items.length} stretch{items.length !== 1 ? "es" : ""} · {totalTime(items)}
                         </Text>
                         {items.map((item, index) => (
-                            <View
+                            <Swipeable
                                 key={`${item.stretchId}_${index}`}
-                                style={[styles.itemCard, { backgroundColor: colors.backgroundSecondary }]}
+                                renderRightActions={() => (
+                                    <TouchableOpacity
+                                        style={[styles.deleteAction, { backgroundColor: colors.error }]}
+                                        onPress={() => removeItem(index)}
+                                    >
+                                        <Text style={styles.deleteActionText}>Delete</Text>
+                                    </TouchableOpacity>
+                                )}
                             >
-                                <View style={styles.itemReorder}>
-                                    <TouchableOpacity onPress={() => moveItem(index, -1)} disabled={index === 0} style={styles.reorderBtn}>
-                                        <Text style={[styles.reorderIcon, { color: index === 0 ? colors.lightGrey : colors.textSecondary }]}>▲</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => moveItem(index, 1)} disabled={index === items.length - 1} style={styles.reorderBtn}>
-                                        <Text style={[styles.reorderIcon, { color: index === items.length - 1 ? colors.lightGrey : colors.textSecondary }]}>▼</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.itemInfo}>
-                                    <Text style={[styles.itemName, { color: colors.textPrimary }]}>
-                                        {stretchName(item.stretchId)}
-                                    </Text>
-                                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.durationScroll}>
-                                        <View style={styles.durationRow}>
-                                            {DURATION_OPTIONS.map((d) => (
-                                                <TouchableOpacity
-                                                    key={d}
-                                                    style={[
-                                                        styles.durationChip,
-                                                        {
-                                                            borderColor: colors.primary,
-                                                            backgroundColor: item.duration === d ? colors.primary : "transparent",
-                                                        },
-                                                    ]}
-                                                    onPress={() => setDuration(index, d)}
-                                                >
-                                                    <Text
-                                                        style={[
-                                                            styles.durationChipText,
-                                                            { color: item.duration === d ? colors.white : colors.primary },
-                                                        ]}
-                                                    >
-                                                        {d}s
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            ))}
+                                <View style={[styles.itemCard, { backgroundColor: colors.backgroundSecondary }]}>
+                                    <View style={styles.itemReorder}>
+                                        <TouchableOpacity onPress={() => moveItem(index, -1)} disabled={index === 0} style={styles.reorderBtn}>
+                                            <Text style={[styles.reorderIcon, { color: index === 0 ? colors.lightGrey : colors.textSecondary }]}>▲</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => moveItem(index, 1)} disabled={index === items.length - 1} style={styles.reorderBtn}>
+                                            <Text style={[styles.reorderIcon, { color: index === items.length - 1 ? colors.lightGrey : colors.textSecondary }]}>▼</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.itemInfo}>
+                                        <View style={styles.itemNameRow}>
+                                            <Text style={[styles.itemName, { color: colors.textPrimary }]}>
+                                                {stretchName(item.stretchId)}
+                                            </Text>
+                                            <Text style={[styles.durationLabel, { color: colors.primary }]}>
+                                                {item.duration}s
+                                            </Text>
                                         </View>
-                                    </ScrollView>
+                                        <Slider
+                                            style={styles.durationSlider}
+                                            minimumValue={10}
+                                            maximumValue={90}
+                                            step={5}
+                                            value={item.duration}
+                                            onValueChange={(v) => setDuration(index, v)}
+                                            minimumTrackTintColor={colors.primary}
+                                            maximumTrackTintColor={colors.lightGrey}
+                                            thumbTintColor={colors.primary}
+                                        />
+                                    </View>
                                 </View>
-                                <TouchableOpacity onPress={() => removeItem(index)} style={styles.removeBtn}>
-                                    <Text style={[styles.removeIcon, { color: colors.error }]}>✕</Text>
-                                </TouchableOpacity>
-                            </View>
+                            </Swipeable>
                         ))}
                     </View>
                 )}
@@ -309,19 +305,19 @@ const styles = StyleSheet.create({
     itemReorder: { gap: 2 },
     reorderBtn: { padding: 2 },
     reorderIcon: { fontSize: 11 },
-    itemInfo: { flex: 1, gap: 8 },
-    itemName: { fontSize: 15, fontWeight: "500" },
-    durationScroll: {},
-    durationRow: { flexDirection: "row", gap: 6 },
-    durationChip: {
-        paddingHorizontal: 12,
-        paddingVertical: 5,
-        borderRadius: 14,
-        borderWidth: 1.5,
+    itemInfo: { flex: 1, gap: 4 },
+    itemNameRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+    itemName: { fontSize: 15, fontWeight: "500", flex: 1 },
+    durationLabel: { fontSize: 14, fontWeight: "600" },
+    durationSlider: { width: "100%", height: 36 },
+    deleteAction: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: 80,
+        borderRadius: 12,
+        marginLeft: 8,
     },
-    durationChipText: { fontSize: 13, fontWeight: "500" },
-    removeBtn: { padding: 6 },
-    removeIcon: { fontSize: 14, fontWeight: "600" },
+    deleteActionText: { color: "#fff", fontWeight: "600", fontSize: 14 },
     toggleLibraryBtn: {
         borderWidth: 1.5,
         borderRadius: 12,

@@ -143,7 +143,12 @@ const StretchList: FC = () => {
     const [activeIndex, setActiveIndex] = useState(0);
 
     const sorted = [...routines].sort((a, b) => b.items.length - a.items.length);
-    const circleSize = Math.min(screenWidth - 64, 280);
+
+    const SIDE_INSET = 40;
+    const CARD_GAP = 12;
+    const cardWidth = screenWidth - SIDE_INSET * 2;
+    const snapInterval = cardWidth + CARD_GAP;
+    const circleSize = cardWidth - 24;
     const illSize = Math.floor(circleSize * 0.2);
 
     const confirmDelete = (id: string, name: string) => {
@@ -174,10 +179,12 @@ const StretchList: FC = () => {
                 <View style={{ flex: 1, justifyContent: "center" }}>
                     <ScrollView
                         horizontal
-                        pagingEnabled
                         showsHorizontalScrollIndicator={false}
+                        decelerationRate="fast"
+                        snapToInterval={snapInterval}
+                        contentContainerStyle={{ paddingHorizontal: SIDE_INSET - CARD_GAP / 2 }}
                         onMomentumScrollEnd={(e) => {
-                            setActiveIndex(Math.round(e.nativeEvent.contentOffset.x / screenWidth));
+                            setActiveIndex(Math.round(e.nativeEvent.contentOffset.x / snapInterval));
                         }}
                         style={{ flexGrow: 0 }}
                     >
@@ -187,7 +194,7 @@ const StretchList: FC = () => {
                             return (
                                 <TouchableOpacity
                                     key={routine.id}
-                                    style={[styles.carouselPage, { width: screenWidth }]}
+                                    style={[styles.carouselPage, { width: cardWidth, marginHorizontal: CARD_GAP / 2 }]}
                                     onPress={() => canStart && nav.navigate("StretchRunner", { routineId: routine.id })}
                                     onLongPress={() => handleLongPress(routine.id, routine.name)}
                                     activeOpacity={0.85}

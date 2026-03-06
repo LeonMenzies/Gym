@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AppNavigator } from "./src/navigation/AppNavigator";
 import { ScrollView, Text, View } from "react-native";
 
@@ -24,10 +25,12 @@ class ErrorBoundary extends Component {
 
 export default function App() {
     return (
-        <ErrorBoundary>
-            <NavigationContainer>
-                <AppNavigator />
-            </NavigationContainer>
-        </ErrorBoundary>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <ErrorBoundary>
+                <NavigationContainer>
+                    <AppNavigator />
+                </NavigationContainer>
+            </ErrorBoundary>
+        </GestureHandlerRootView>
     );
 }

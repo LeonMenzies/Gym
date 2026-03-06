@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { useTheme } from "~store/settingsStore";
 import { Task, useTodoStore } from "~store/todoStore";
@@ -40,38 +41,46 @@ export const TodoScreen: FC = () => {
     const sorted = showDone ? [...activeTasks, ...completedTasks] : activeTasks;
 
     const renderItem = ({ item }: { item: Task }) => (
-        <View style={[styles.row, { borderBottomColor: colors.lightGrey }]}>
-            <TouchableOpacity onPress={() => handleToggle(item.id)} style={styles.checkbox}>
-                <View
+        <Swipeable
+            renderRightActions={() => (
+                <TouchableOpacity
+                    style={[styles.deleteAction, { backgroundColor: colors.error }]}
+                    onPress={() => deleteTask(item.id)}
+                >
+                    <Icon name="trash" size={16} color="#fff" />
+                    <Text style={styles.deleteActionText}>Delete</Text>
+                </TouchableOpacity>
+            )}
+        >
+            <View style={[styles.row, { borderBottomColor: colors.lightGrey, backgroundColor: colors.background }]}>
+                <TouchableOpacity onPress={() => handleToggle(item.id)} style={styles.checkbox}>
+                    <View
+                        style={[
+                            styles.checkCircle,
+                            {
+                                borderColor: item.completed ? colors.primary : colors.grey,
+                                backgroundColor: item.completed ? colors.primary : "transparent",
+                            },
+                        ]}
+                    >
+                        {item.completed && <Icon name="check" size={11} color={colors.white} />}
+                    </View>
+                </TouchableOpacity>
+
+                <Text
                     style={[
-                        styles.checkCircle,
+                        styles.taskText,
                         {
-                            borderColor: item.completed ? colors.primary : colors.grey,
-                            backgroundColor: item.completed ? colors.primary : "transparent",
+                            color: item.completed ? colors.grey : colors.textPrimary,
+                            textDecorationLine: item.completed ? "line-through" : "none",
+                            flex: 1,
                         },
                     ]}
                 >
-                    {item.completed && <Icon name="check" size={11} color={colors.white} />}
-                </View>
-            </TouchableOpacity>
-
-            <Text
-                style={[
-                    styles.taskText,
-                    {
-                        color: item.completed ? colors.grey : colors.textPrimary,
-                        textDecorationLine: item.completed ? "line-through" : "none",
-                        flex: 1,
-                    },
-                ]}
-            >
-                {item.text}
-            </Text>
-
-            <TouchableOpacity onPress={() => deleteTask(item.id)} style={styles.deleteBtn}>
-                <Icon name="trash" size={15} color={colors.grey} />
-            </TouchableOpacity>
-        </View>
+                    {item.text}
+                </Text>
+            </View>
+        </Swipeable>
     );
 
     return (
@@ -191,9 +200,16 @@ const styles = StyleSheet.create({
     taskText: {
         fontSize: 16,
     },
-    deleteBtn: {
-        padding: 8,
-        marginLeft: 8,
+    deleteAction: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: 72,
+        gap: 4,
+    },
+    deleteActionText: {
+        color: "#fff",
+        fontSize: 11,
+        fontWeight: "600",
     },
     empty: {
         flex: 1,
