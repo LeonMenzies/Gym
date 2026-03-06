@@ -136,6 +136,7 @@ export const StretchBuilderScreen: FC<Props> = () => {
                             data={items}
                             keyExtractor={(item, index) => `${item.stretchId}_${index}`}
                             onDragEnd={({ data }) => setItems(data)}
+                            ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
                             renderItem={({ item, drag, isActive, getIndex }: RenderItemParams<RoutineItem>) => {
                                 const index = getIndex() ?? 0;
                                 return (
