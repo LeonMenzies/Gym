@@ -5,7 +5,6 @@ import {
     KeyboardAvoidingView,
     Modal,
     Platform,
-    ScrollView,
     StyleSheet,
     Text,
     TextInput,
@@ -37,37 +36,13 @@ const STATUS_LABELS: Record<Status, string> = {
     done: "Done",
 };
 
-const TYPE_LABELS: Record<MediaType, string> = {
-    movie: "Movie",
-    book: "Book",
-    tv: "TV Show",
-};
-
-const TYPE_ICONS: Record<MediaType, string> = {
-    movie: "film",
-    book: "book-open",
-    tv: "screen-desktop",
-};
-
-const FILTER_TABS: { key: MediaType | "all"; label: string }[] = [
-    { key: "all", label: "All" },
-    { key: "movie", label: "Movies" },
-    { key: "book", label: "Books" },
-    { key: "tv", label: "TV" },
-];
-
 const statusColor = (status: Status, primary: string, grey: string) => {
     if (status === "done") return primary;
     if (status === "in-progress") return "#F59E0B";
     return grey;
 };
 
-const EMPTY_FORM = {
-    title: "",
-    mediaType: "movie" as MediaType,
-    status: "want" as Status,
-    rating: "",
-};
+const EMPTY_FORM = { title: "", status: "want" as Status, rating: "" };
 
 export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
     const { blockId } = route.params;
@@ -82,8 +57,8 @@ export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
     } = useNotesStore();
 
     const block = blocks.find((b) => b.id === blockId && b.type === "media") as MediaBlock | undefined;
+    const subtype: MediaType = (block?.subtype ?? "movie") as MediaType;
 
-    const [filter, setFilter] = useState<MediaType | "all">("all");
     const [editingTitle, setEditingTitle] = useState(false);
     const [titleDraft, setTitleDraft] = useState(block?.title ?? "Media");
     const [modalVisible, setModalVisible] = useState(false);
@@ -92,11 +67,9 @@ export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
 
     if (!block) return null;
 
-    const filtered = filter === "all" ? block.items : block.items.filter((i) => i.mediaType === filter);
-
     const openAdd = () => {
         setEditingItem(null);
-        setForm({ ...EMPTY_FORM, mediaType: filter !== "all" ? filter : "movie" });
+        setForm(EMPTY_FORM);
         setModalVisible(true);
     };
 
@@ -104,7 +77,6 @@ export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
         setEditingItem(item);
         setForm({
             title: item.title,
-            mediaType: item.mediaType,
             status: item.status,
             rating: item.rating !== undefined ? item.rating.toString() : "",
         });
@@ -123,7 +95,7 @@ export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
         const rating = form.rating ? parseFloat(form.rating) : undefined;
         const payload: Omit<MediaItem, "id"> = {
             title: form.title.trim(),
-            mediaType: form.mediaType,
+            mediaType: subtype,
             status: form.status,
             ...(rating !== undefined && !isNaN(rating) ? { rating: Math.min(5, Math.max(0, rating)) } : {}),
         };
@@ -165,9 +137,11 @@ export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
         updateBlockTitle(blockId, titleDraft.trim() || "Media");
     };
 
-    // Stats
-    const counts: Record<MediaType, number> = { movie: 0, book: 0, tv: 0 };
-    block.items.forEach((i) => counts[i.mediaType]++);
+    const statusCounts = {
+        want: block.items.filter((i) => i.status === "want").length,
+        "in-progress": block.items.filter((i) => i.status === "in-progress").length,
+        done: block.items.filter((i) => i.status === "done").length,
+    };
 
     const renderItem = ({ item }: { item: MediaItem }) => (
         <View style={[styles.itemRow, { backgroundColor: colors.backgroundSecondary }]}>
@@ -195,12 +169,9 @@ export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
                 >
                     {item.title}
                 </Text>
-                <View style={styles.itemMeta}>
-                    <Text style={[styles.itemType, { color: colors.grey }]}>{TYPE_LABELS[item.mediaType]}</Text>
-                    {item.rating !== undefined && (
-                        <Text style={[styles.itemRating, { color: "#F59E0B" }]}>★ {item.rating.toFixed(1)}</Text>
-                    )}
-                </View>
+                {item.rating !== undefined && (
+                    <Text style={[styles.itemRating, { color: "#F59E0B" }]}>★ {item.rating.toFixed(1)}</Text>
+                )}
             </TouchableOpacity>
             <TouchableOpacity
                 style={[styles.statusPill, { backgroundColor: statusColor(item.status, colors.primary, colors.lightGrey) + "33" }]}
@@ -246,44 +217,24 @@ export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
                 </TouchableOpacity>
             </View>
 
-            {/* Stats row */}
+            {/* Stats row — status breakdown */}
             <View style={styles.statsRow}>
-                {(["movie", "book", "tv"] as MediaType[]).map((t) => (
-                    <View key={t} style={[styles.statChip, { backgroundColor: colors.backgroundSecondary }]}>
-                        <Icon name={TYPE_ICONS[t] as any} size={14} color={colors.grey} />
-                        <Text style={[styles.statCount, { color: colors.textPrimary }]}>{counts[t]}</Text>
-                        <Text style={[styles.statLabel, { color: colors.grey }]}>{TYPE_LABELS[t]}s</Text>
-                    </View>
-                ))}
+                <View style={[styles.statChip, { backgroundColor: colors.backgroundSecondary }]}>
+                    <Text style={[styles.statCount, { color: colors.grey }]}>{statusCounts.want}</Text>
+                    <Text style={[styles.statLabel, { color: colors.grey }]}>Want</Text>
+                </View>
+                <View style={[styles.statChip, { backgroundColor: colors.backgroundSecondary }]}>
+                    <Text style={[styles.statCount, { color: "#F59E0B" }]}>{statusCounts["in-progress"]}</Text>
+                    <Text style={[styles.statLabel, { color: colors.grey }]}>Watching</Text>
+                </View>
+                <View style={[styles.statChip, { backgroundColor: colors.backgroundSecondary }]}>
+                    <Text style={[styles.statCount, { color: colors.primary }]}>{statusCounts.done}</Text>
+                    <Text style={[styles.statLabel, { color: colors.grey }]}>Done</Text>
+                </View>
             </View>
 
-            {/* Filter pills */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
-                {FILTER_TABS.map((tab) => (
-                    <TouchableOpacity
-                        key={tab.key}
-                        style={[
-                            styles.filterPill,
-                            {
-                                backgroundColor: filter === tab.key ? colors.primary : colors.backgroundSecondary,
-                            },
-                        ]}
-                        onPress={() => setFilter(tab.key)}
-                    >
-                        <Text
-                            style={[
-                                styles.filterText,
-                                { color: filter === tab.key ? colors.white : colors.grey },
-                            ]}
-                        >
-                            {tab.label}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </ScrollView>
-
             <FlatList
-                data={filtered}
+                data={block.items}
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem}
                 contentContainerStyle={styles.list}
@@ -314,28 +265,10 @@ export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
                             style={[styles.fieldInput, { color: colors.textPrimary, borderBottomColor: colors.lightGrey }]}
                             value={form.title}
                             onChangeText={(v) => setForm((f) => ({ ...f, title: v }))}
-                            placeholder="Movie, book or show title..."
+                            placeholder={subtype === "tv" ? "Show title..." : "Movie title..."}
                             placeholderTextColor={colors.grey}
                             autoFocus
                         />
-
-                        <Text style={[styles.fieldLabel, { color: colors.grey }]}>Type</Text>
-                        <View style={styles.toggleRow}>
-                            {(["movie", "book", "tv"] as MediaType[]).map((t) => (
-                                <TouchableOpacity
-                                    key={t}
-                                    style={[
-                                        styles.toggleBtn,
-                                        { backgroundColor: form.mediaType === t ? colors.primary : colors.lightGrey },
-                                    ]}
-                                    onPress={() => setForm((f) => ({ ...f, mediaType: t }))}
-                                >
-                                    <Text style={[styles.toggleText, { color: form.mediaType === t ? colors.white : colors.textPrimary }]}>
-                                        {TYPE_LABELS[t]}
-                                    </Text>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
 
                         <Text style={[styles.fieldLabel, { color: colors.grey }]}>Status</Text>
                         <View style={styles.toggleRow}>
@@ -412,16 +345,13 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         alignItems: "center",
-        gap: 5,
+        gap: 6,
         borderRadius: 10,
         paddingVertical: 8,
         paddingHorizontal: 10,
     },
-    statCount: { fontSize: 15, fontWeight: "700" },
+    statCount: { fontSize: 16, fontWeight: "700" },
     statLabel: { fontSize: 12 },
-    filterRow: { paddingHorizontal: 20, gap: 8, marginBottom: 12 },
-    filterPill: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 },
-    filterText: { fontSize: 14, fontWeight: "600" },
     list: { paddingHorizontal: 20, gap: 8, paddingBottom: 100 },
     itemRow: {
         flexDirection: "row",
@@ -441,9 +371,7 @@ const styles = StyleSheet.create({
     inProgressDot: { width: 8, height: 8, borderRadius: 4 },
     itemBody: { flex: 1 },
     itemTitle: { fontSize: 15, fontWeight: "600" },
-    itemMeta: { flexDirection: "row", gap: 8, marginTop: 2 },
-    itemType: { fontSize: 12 },
-    itemRating: { fontSize: 12 },
+    itemRating: { fontSize: 12, marginTop: 2 },
     statusPill: {
         paddingHorizontal: 10,
         paddingVertical: 4,

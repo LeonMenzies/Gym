@@ -43,6 +43,7 @@ export type MediaItem = {
 export type MediaBlock = {
     id: string;
     type: "media";
+    subtype?: "movie" | "tv";
     title: string;
     items: MediaItem[];
     createdAt: number;
@@ -71,7 +72,7 @@ export type BlockType = NoteBlock["type"];
 
 type NotesStore = {
     blocks: NoteBlock[];
-    addBlock: (type: BlockType, title?: string) => string;
+    addBlock: (type: BlockType, title?: string, subtype?: "movie" | "tv") => string;
     updateBlockTitle: (id: string, title: string) => void;
     deleteBlock: (id: string) => void;
     // Text block
@@ -105,14 +106,14 @@ export const useNotesStore = create<NotesStore>()(
         (set) => ({
             blocks: [],
 
-            addBlock: (type, title) => {
+            addBlock: (type, title, subtype) => {
                 const id = newId();
                 const now = Date.now();
                 const base = { id, title: title?.trim() || defaultTitles[type], createdAt: now, updatedAt: now };
                 let block: NoteBlock;
                 if (type === "text") block = { ...base, type: "text", body: "" };
                 else if (type === "subscriptions") block = { ...base, type: "subscriptions", items: [] };
-                else if (type === "media") block = { ...base, type: "media", items: [] };
+                else if (type === "media") block = { ...base, type: "media", subtype: subtype ?? "movie", items: [] };
                 else block = { ...base, type: "key-value", items: [] };
                 set((s) => ({ blocks: [block, ...s.blocks] }));
                 return id;

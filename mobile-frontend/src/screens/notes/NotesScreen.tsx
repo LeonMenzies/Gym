@@ -1,14 +1,20 @@
 import { FC, useRef, useState } from "react";
-import { FlatList, KeyboardAvoidingView, Modal, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+    FlatList,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import {
     useNotesStore,
     NoteBlock,
     BlockType,
-    SubscriptionsBlock,
-    MediaBlock,
-    KeyValueBlock,
-    TextBlock,
 } from "~store/notesStore";
 import { useTheme } from "~store/settingsStore";
 
@@ -24,54 +30,22 @@ const timeAgo = (ts: number): string => {
     return `${d}d ago`;
 };
 
-const subsSummary = (block: SubscriptionsBlock): string => {
-    const active = block.items.filter((s) => s.active);
-    if (active.length === 0) return "No active subscriptions";
-    const monthly = active.filter((s) => s.cycle === "monthly").reduce((sum, s) => sum + s.amount, 0);
-    const yearly = active.filter((s) => s.cycle === "yearly").reduce((sum, s) => sum + s.amount, 0);
-    const total = monthly + yearly / 12;
-    return `$${total.toFixed(2)}/mo · ${active.length} active`;
-};
-
-const mediaSummary = (block: MediaBlock): string => {
-    const movies = block.items.filter((i) => i.mediaType === "movie").length;
-    const books = block.items.filter((i) => i.mediaType === "book").length;
-    const tv = block.items.filter((i) => i.mediaType === "tv").length;
-    const parts: string[] = [];
-    if (movies > 0) parts.push(`${movies} movie${movies !== 1 ? "s" : ""}`);
-    if (books > 0) parts.push(`${books} book${books !== 1 ? "s" : ""}`);
-    if (tv > 0) parts.push(`${tv} show${tv !== 1 ? "s" : ""}`);
-    return parts.length > 0 ? parts.join(" · ") : "Empty";
-};
-
-const kvSummary = (block: KeyValueBlock): string => {
-    const count = block.items.length;
-    if (count === 0) return "No items";
-    return `${count} item${count !== 1 ? "s" : ""}`;
-};
-
-const textSummary = (block: TextBlock): string => {
-    if (!block.body.trim()) return "Empty";
-    const words = block.body.trim().split(/\s+/).length;
-    const preview = block.body.slice(0, 60).replace(/\n/g, " ");
-    return `${preview}${block.body.length > 60 ? "…" : ""} · ${words}w`;
-};
-
-const BLOCK_DEFS: { type: BlockType; label: string; icon: string; desc: string }[] = [
+const BLOCK_DEFS: { type: BlockType; subtype?: "movie" | "tv"; label: string; icon: string; desc: string }[] = [
     { type: "text", label: "Text Note", icon: "note", desc: "Free-form writing" },
     { type: "subscriptions", label: "Subscriptions", icon: "tag", desc: "Track monthly & yearly costs" },
-    { type: "media", label: "Media", icon: "film", desc: "Movies, books & TV shows" },
+    { type: "media", subtype: "movie", label: "Movies", icon: "film", desc: "Track movies to watch & rate" },
+    { type: "media", subtype: "tv", label: "TV Shows", icon: "screen-desktop", desc: "Track TV shows & series" },
     { type: "key-value", label: "Important Info", icon: "key", desc: "Addresses, IDs & codes" },
 ];
 
-const blockIcon = (type: BlockType) => BLOCK_DEFS.find((d) => d.type === type)?.icon ?? "note";
-const blockLabel = (type: BlockType) => BLOCK_DEFS.find((d) => d.type === type)?.label ?? "Note";
+const blockIcon = (block: NoteBlock): string => {
+    if (block.type === "media") return (block.subtype ?? "movie") === "tv" ? "screen-desktop" : "film";
+    return BLOCK_DEFS.find((d) => d.type === block.type && !d.subtype)?.icon ?? "note";
+};
 
-const blockSummary = (block: NoteBlock): string => {
-    if (block.type === "text") return textSummary(block);
-    if (block.type === "subscriptions") return subsSummary(block);
-    if (block.type === "media") return mediaSummary(block);
-    return kvSummary(block);
+const blockLabel = (block: NoteBlock): string => {
+    if (block.type === "media") return (block.subtype ?? "movie") === "tv" ? "TV Shows" : "Movies";
+    return BLOCK_DEFS.find((d) => d.type === block.type && !d.subtype)?.label ?? "Note";
 };
 
 const screenFor = (type: BlockType) => {
@@ -81,27 +55,171 @@ const screenFor = (type: BlockType) => {
     return "KeyValueBlock";
 };
 
+const MAX_PREVIEW = 5;
+
+const renderBlockPreview = (block: NoteBlock, colors: any) => {
+    if (block.type === "text") {
+        if (!block.body.trim()) {
+            return <Text style={[previewStyles.empty, { color: colors.grey }]}>Empty</Text>;
+        }
+        return (
+            <Text style={[previewStyles.text, { color: colors.grey }]} numberOfLines={4}>
+                {block.body}
+            </Text>
+        );
+    }
+
+    if (block.type === "media") {
+        if (block.items.length === 0) {
+            return <Text style={[previewStyles.empty, { color: colors.grey }]}>No items yet</Text>;
+        }
+        const shown = block.items.slice(0, MAX_PREVIEW);
+        const remaining = block.items.length - shown.length;
+        return (
+            <View style={previewStyles.list}>
+                {shown.map((item) => {
+                    const dotColor =
+                        item.status === "done"
+                            ? colors.primary
+                            : item.status === "in-progress"
+                            ? "#F59E0B"
+                            : colors.lightGrey;
+                    return (
+                        <View key={item.id} style={previewStyles.row}>
+                            <View style={[previewStyles.dot, { backgroundColor: dotColor }]} />
+                            <Text
+                                style={[
+                                    previewStyles.rowText,
+                                    {
+                                        color: item.status === "done" ? colors.grey : colors.textPrimary,
+                                        textDecorationLine: item.status === "done" ? "line-through" : "none",
+                                        flex: 1,
+                                    },
+                                ]}
+                                numberOfLines={1}
+                            >
+                                {item.title}
+                            </Text>
+                            {item.rating !== undefined && (
+                                <Text style={[previewStyles.rating, { color: "#F59E0B" }]}>
+                                    ★{item.rating.toFixed(1)}
+                                </Text>
+                            )}
+                        </View>
+                    );
+                })}
+                {remaining > 0 && (
+                    <Text style={[previewStyles.more, { color: colors.grey }]}>+{remaining} more</Text>
+                )}
+            </View>
+        );
+    }
+
+    if (block.type === "subscriptions") {
+        if (block.items.length === 0) {
+            return <Text style={[previewStyles.empty, { color: colors.grey }]}>No subscriptions yet</Text>;
+        }
+        const active = block.items.filter((s) => s.active);
+        const monthly = active.filter((s) => s.cycle === "monthly").reduce((sum, s) => sum + s.amount, 0);
+        const yearly = active.filter((s) => s.cycle === "yearly").reduce((sum, s) => sum + s.amount, 0);
+        const total = monthly + yearly / 12;
+        const shown = block.items.slice(0, MAX_PREVIEW);
+        const remaining = block.items.length - shown.length;
+        return (
+            <View style={previewStyles.list}>
+                {shown.map((sub) => (
+                    <View key={sub.id} style={previewStyles.row}>
+                        <View
+                            style={[
+                                previewStyles.dot,
+                                { backgroundColor: sub.active ? colors.primary : colors.lightGrey },
+                            ]}
+                        />
+                        <Text
+                            style={[previewStyles.rowText, { color: sub.active ? colors.textPrimary : colors.grey, flex: 1 }]}
+                            numberOfLines={1}
+                        >
+                            {sub.name}
+                        </Text>
+                        <Text style={[previewStyles.amount, { color: colors.grey }]}>
+                            {sub.currency}{sub.amount.toFixed(2)}/{sub.cycle === "monthly" ? "mo" : "yr"}
+                        </Text>
+                    </View>
+                ))}
+                {remaining > 0 && (
+                    <Text style={[previewStyles.more, { color: colors.grey }]}>+{remaining} more</Text>
+                )}
+                <View style={[previewStyles.divider, { backgroundColor: colors.lightGrey }]} />
+                <Text style={[previewStyles.total, { color: colors.primary }]}>
+                    ${total.toFixed(2)}/mo · {active.length} active
+                </Text>
+            </View>
+        );
+    }
+
+    // key-value
+    if (block.items.length === 0) {
+        return <Text style={[previewStyles.empty, { color: colors.grey }]}>No items yet</Text>;
+    }
+    const shown = block.items.slice(0, MAX_PREVIEW);
+    const remaining = block.items.length - shown.length;
+    return (
+        <View style={previewStyles.list}>
+            {shown.map((kv) => (
+                <View key={kv.id} style={previewStyles.row}>
+                    <Text style={[previewStyles.kvLabel, { color: colors.grey }]} numberOfLines={1}>
+                        {kv.label}
+                    </Text>
+                    <Text style={[previewStyles.kvValue, { color: colors.textPrimary }]} numberOfLines={1}>
+                        {kv.value}
+                    </Text>
+                </View>
+            ))}
+            {remaining > 0 && (
+                <Text style={[previewStyles.more, { color: colors.grey }]}>+{remaining} more</Text>
+            )}
+        </View>
+    );
+};
+
+const previewStyles = StyleSheet.create({
+    empty: { fontSize: 13 },
+    text: { fontSize: 14, lineHeight: 20 },
+    list: { gap: 6 },
+    row: { flexDirection: "row", alignItems: "center", gap: 8 },
+    dot: { width: 7, height: 7, borderRadius: 3.5 },
+    rowText: { fontSize: 14 },
+    rating: { fontSize: 12 },
+    amount: { fontSize: 13 },
+    more: { fontSize: 12, marginTop: 2 },
+    divider: { height: StyleSheet.hairlineWidth, marginVertical: 6 },
+    total: { fontSize: 13, fontWeight: "600" },
+    kvLabel: { fontSize: 12, fontWeight: "600", width: 90 },
+    kvValue: { flex: 1, fontSize: 13 },
+});
+
+type BlockDef = typeof BLOCK_DEFS[0];
 type Props = { navigation: any };
 
 export const NotesScreen: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
     const { blocks, addBlock } = useNotesStore();
     const [pickerVisible, setPickerVisible] = useState(false);
-    const [pendingType, setPendingType] = useState<BlockType | null>(null);
+    const [pendingDef, setPendingDef] = useState<BlockDef | null>(null);
     const [titleDraft, setTitleDraft] = useState("");
     const titleInputRef = useRef<TextInput>(null);
 
-    const handlePickType = (type: BlockType) => {
+    const handlePickDef = (def: BlockDef) => {
         setPickerVisible(false);
         setTitleDraft("");
-        setPendingType(type);
+        setPendingDef(def);
     };
 
     const handleCreate = () => {
-        if (!pendingType) return;
-        const id = addBlock(pendingType, titleDraft);
-        setPendingType(null);
-        navigation.navigate(screenFor(pendingType), { blockId: id });
+        if (!pendingDef) return;
+        const id = addBlock(pendingDef.type, titleDraft, pendingDef.subtype);
+        setPendingDef(null);
+        navigation.navigate(screenFor(pendingDef.type), { blockId: id });
     };
 
     const renderItem = ({ item }: { item: NoteBlock }) => (
@@ -110,18 +228,16 @@ export const NotesScreen: FC<Props> = ({ navigation }) => {
             onPress={() => navigation.navigate(screenFor(item.type), { blockId: item.id })}
             activeOpacity={0.7}
         >
-            <View style={[styles.iconBadge, { backgroundColor: colors.primary + "22" }]}>
-                <Icon name={blockIcon(item.type) as any} size={18} color={colors.primary} />
-            </View>
-            <View style={styles.cardBody}>
+            <View style={styles.cardHeader}>
+                <View style={[styles.iconBadge, { backgroundColor: colors.primary + "22" }]}>
+                    <Icon name={blockIcon(item) as any} size={18} color={colors.primary} />
+                </View>
                 <Text style={[styles.cardTitle, { color: colors.textPrimary }]} numberOfLines={1}>
-                    {item.title || blockLabel(item.type)}
+                    {item.title || blockLabel(item)}
                 </Text>
-                <Text style={[styles.cardSummary, { color: colors.grey }]} numberOfLines={1}>
-                    {blockSummary(item)}
-                </Text>
+                <Text style={[styles.cardDate, { color: colors.grey }]}>{timeAgo(item.updatedAt)}</Text>
             </View>
-            <Text style={[styles.cardDate, { color: colors.grey }]}>{timeAgo(item.updatedAt)}</Text>
+            <View style={styles.cardContent}>{renderBlockPreview(item, colors)}</View>
         </TouchableOpacity>
     );
 
@@ -152,10 +268,10 @@ export const NotesScreen: FC<Props> = ({ navigation }) => {
 
             {/* Title input modal */}
             <Modal
-                visible={pendingType !== null}
+                visible={pendingDef !== null}
                 transparent
                 animationType="slide"
-                onRequestClose={() => setPendingType(null)}
+                onRequestClose={() => setPendingDef(null)}
             >
                 <KeyboardAvoidingView
                     style={styles.modalOverlay}
@@ -164,25 +280,32 @@ export const NotesScreen: FC<Props> = ({ navigation }) => {
                     <TouchableOpacity
                         style={{ flex: 1 }}
                         activeOpacity={1}
-                        onPress={() => setPendingType(null)}
+                        onPress={() => setPendingDef(null)}
                     />
                     <View style={[styles.sheet, { backgroundColor: colors.backgroundSecondary }]}>
-                        {pendingType && (
+                        {pendingDef && (
                             <>
                                 <View style={styles.sheetTitleRow}>
                                     <View style={[styles.sheetIcon, { backgroundColor: colors.primary + "22" }]}>
-                                        <Icon name={blockIcon(pendingType) as any} size={20} color={colors.primary} />
+                                        <Icon name={pendingDef.icon as any} size={20} color={colors.primary} />
                                     </View>
                                     <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
-                                        Name your {BLOCK_DEFS.find((d) => d.type === pendingType)?.label}
+                                        Name your {pendingDef.label}
                                     </Text>
                                 </View>
                                 <TextInput
                                     ref={titleInputRef}
-                                    style={[styles.titleInput, { color: colors.textPrimary, borderBottomColor: colors.primary, backgroundColor: colors.background }]}
+                                    style={[
+                                        styles.titleInput,
+                                        {
+                                            color: colors.textPrimary,
+                                            borderBottomColor: colors.primary,
+                                            backgroundColor: colors.background,
+                                        },
+                                    ]}
                                     value={titleDraft}
                                     onChangeText={setTitleDraft}
-                                    placeholder={`e.g. ${pendingType === "media" ? "Movies to Watch" : pendingType === "subscriptions" ? "My Subscriptions" : pendingType === "key-value" ? "Passwords & IDs" : "My Notes"}`}
+                                    placeholder={`e.g. My ${pendingDef.label}`}
                                     placeholderTextColor={colors.grey}
                                     autoFocus
                                     returnKeyType="done"
@@ -219,9 +342,9 @@ export const NotesScreen: FC<Props> = ({ navigation }) => {
                         <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>Add block</Text>
                         {BLOCK_DEFS.map((def) => (
                             <TouchableOpacity
-                                key={def.type}
+                                key={def.label}
                                 style={[styles.sheetRow, { borderBottomColor: colors.lightGrey }]}
-                                onPress={() => handlePickType(def.type)}
+                                onPress={() => handlePickDef(def)}
                                 activeOpacity={0.7}
                             >
                                 <View style={[styles.sheetIcon, { backgroundColor: colors.primary + "22" }]}>
@@ -262,25 +385,27 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-    list: { paddingHorizontal: 20, gap: 10 },
+    list: { paddingHorizontal: 20, gap: 12, paddingBottom: 20 },
     card: {
         borderRadius: 12,
         padding: 14,
+        gap: 10,
+    },
+    cardHeader: {
         flexDirection: "row",
         alignItems: "center",
         gap: 12,
     },
     iconBadge: {
-        width: 40,
-        height: 40,
-        borderRadius: 10,
+        width: 36,
+        height: 36,
+        borderRadius: 9,
         alignItems: "center",
         justifyContent: "center",
     },
-    cardBody: { flex: 1, gap: 3 },
-    cardTitle: { fontSize: 16, fontWeight: "600" },
-    cardSummary: { fontSize: 13 },
+    cardTitle: { flex: 1, fontSize: 16, fontWeight: "600" },
     cardDate: { fontSize: 12 },
+    cardContent: {},
     empty: { flex: 1, alignItems: "center", justifyContent: "center" },
     emptyText: { fontSize: 16 },
     // Modal
