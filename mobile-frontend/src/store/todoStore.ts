@@ -26,6 +26,7 @@ type TodoStore = {
     toggleTask: (id: string) => void;
     deleteTask: (id: string) => void;
     reorderTasks: (sectionId: string, orderedTasks: Task[]) => void;
+    moveTask: (id: string, direction: 1 | -1) => void;
     clearCompleted: () => void;
 };
 
@@ -75,6 +76,20 @@ export const useTodoStore = create<TodoStore>()(
                     const orderedIds = new Set(orderedTasks.map((t) => t.id));
                     const rest = s.tasks.filter((t) => t.sectionId !== sectionId || !orderedIds.has(t.id));
                     return { tasks: [...rest, ...orderedTasks] };
+                }),
+
+            moveTask: (id, direction) =>
+                set((s) => {
+                    const task = s.tasks.find((t) => t.id === id);
+                    if (!task) return {};
+                    const sectionTasks = s.tasks.filter((t) => t.sectionId === task.sectionId);
+                    const idx = sectionTasks.findIndex((t) => t.id === id);
+                    const target = idx + direction;
+                    if (target < 0 || target >= sectionTasks.length) return {};
+                    const reordered = [...sectionTasks];
+                    [reordered[idx], reordered[target]] = [reordered[target], reordered[idx]];
+                    const others = s.tasks.filter((t) => t.sectionId !== task.sectionId);
+                    return { tasks: [...others, ...reordered] };
                 }),
 
             clearCompleted: () =>
