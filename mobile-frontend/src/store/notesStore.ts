@@ -71,7 +71,7 @@ export type BlockType = NoteBlock["type"];
 
 type NotesStore = {
     blocks: NoteBlock[];
-    addBlock: (type: BlockType) => string;
+    addBlock: (type: BlockType, title?: string) => string;
     updateBlockTitle: (id: string, title: string) => void;
     deleteBlock: (id: string) => void;
     // Text block
@@ -105,10 +105,10 @@ export const useNotesStore = create<NotesStore>()(
         (set) => ({
             blocks: [],
 
-            addBlock: (type) => {
+            addBlock: (type, title) => {
                 const id = newId();
                 const now = Date.now();
-                const base = { id, title: defaultTitles[type], createdAt: now, updatedAt: now };
+                const base = { id, title: title?.trim() || defaultTitles[type], createdAt: now, updatedAt: now };
                 let block: NoteBlock;
                 if (type === "text") block = { ...base, type: "text", body: "" };
                 else if (type === "subscriptions") block = { ...base, type: "subscriptions", items: [] };

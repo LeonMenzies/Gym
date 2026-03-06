@@ -1,5 +1,5 @@
-import { FC, useState } from "react";
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FC, useRef, useState } from "react";
+import { FlatList, KeyboardAvoidingView, Modal, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import {
     useNotesStore,
@@ -87,11 +87,21 @@ export const NotesScreen: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
     const { blocks, addBlock } = useNotesStore();
     const [pickerVisible, setPickerVisible] = useState(false);
+    const [pendingType, setPendingType] = useState<BlockType | null>(null);
+    const [titleDraft, setTitleDraft] = useState("");
+    const titleInputRef = useRef<TextInput>(null);
 
-    const handleAdd = (type: BlockType) => {
+    const handlePickType = (type: BlockType) => {
         setPickerVisible(false);
-        const id = addBlock(type);
-        navigation.navigate(screenFor(type), { blockId: id });
+        setTitleDraft("");
+        setPendingType(type);
+    };
+
+    const handleCreate = () => {
+        if (!pendingType) return;
+        const id = addBlock(pendingType, titleDraft);
+        setPendingType(null);
+        navigation.navigate(screenFor(pendingType), { blockId: id });
     };
 
     const renderItem = ({ item }: { item: NoteBlock }) => (
@@ -140,6 +150,56 @@ export const NotesScreen: FC<Props> = ({ navigation }) => {
                 />
             )}
 
+            {/* Title input modal */}
+            <Modal
+                visible={pendingType !== null}
+                transparent
+                animationType="slide"
+                onRequestClose={() => setPendingType(null)}
+            >
+                <KeyboardAvoidingView
+                    style={styles.modalOverlay}
+                    behavior={Platform.OS === "ios" ? "padding" : undefined}
+                >
+                    <TouchableOpacity
+                        style={{ flex: 1 }}
+                        activeOpacity={1}
+                        onPress={() => setPendingType(null)}
+                    />
+                    <View style={[styles.sheet, { backgroundColor: colors.backgroundSecondary }]}>
+                        {pendingType && (
+                            <>
+                                <View style={styles.sheetTitleRow}>
+                                    <View style={[styles.sheetIcon, { backgroundColor: colors.primary + "22" }]}>
+                                        <Icon name={blockIcon(pendingType) as any} size={20} color={colors.primary} />
+                                    </View>
+                                    <Text style={[styles.sheetTitle, { color: colors.textPrimary }]}>
+                                        Name your {BLOCK_DEFS.find((d) => d.type === pendingType)?.label}
+                                    </Text>
+                                </View>
+                                <TextInput
+                                    ref={titleInputRef}
+                                    style={[styles.titleInput, { color: colors.textPrimary, borderBottomColor: colors.primary, backgroundColor: colors.background }]}
+                                    value={titleDraft}
+                                    onChangeText={setTitleDraft}
+                                    placeholder={`e.g. ${pendingType === "media" ? "Movies to Watch" : pendingType === "subscriptions" ? "My Subscriptions" : pendingType === "key-value" ? "Passwords & IDs" : "My Notes"}`}
+                                    placeholderTextColor={colors.grey}
+                                    autoFocus
+                                    returnKeyType="done"
+                                    onSubmitEditing={handleCreate}
+                                />
+                                <TouchableOpacity
+                                    style={[styles.createBtn, { backgroundColor: colors.primary }]}
+                                    onPress={handleCreate}
+                                >
+                                    <Text style={[styles.createBtnText, { color: colors.white }]}>Create</Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
+
             {/* Block type picker */}
             <Modal
                 visible={pickerVisible}
@@ -161,7 +221,7 @@ export const NotesScreen: FC<Props> = ({ navigation }) => {
                             <TouchableOpacity
                                 key={def.type}
                                 style={[styles.sheetRow, { borderBottomColor: colors.lightGrey }]}
-                                onPress={() => handleAdd(def.type)}
+                                onPress={() => handlePickType(def.type)}
                                 activeOpacity={0.7}
                             >
                                 <View style={[styles.sheetIcon, { backgroundColor: colors.primary + "22" }]}>
@@ -258,4 +318,20 @@ const styles = StyleSheet.create({
     sheetText: { flex: 1 },
     sheetLabel: { fontSize: 16, fontWeight: "600" },
     sheetDesc: { fontSize: 13, marginTop: 2 },
+    sheetTitleRow: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 20 },
+    titleInput: {
+        fontSize: 16,
+        paddingHorizontal: 14,
+        paddingVertical: 12,
+        borderRadius: 12,
+        borderBottomWidth: 2,
+        marginBottom: 20,
+    },
+    createBtn: {
+        borderRadius: 14,
+        paddingVertical: 14,
+        alignItems: "center",
+        marginBottom: 8,
+    },
+    createBtnText: { fontSize: 16, fontWeight: "600" },
 });
