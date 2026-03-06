@@ -11,36 +11,27 @@ type SettingsT = {
 export const SettingsSelectItem: FC<SettingsT> = ({ title, callBack, value }) => {
     const colors = useTheme();
     return (
-        <View style={styles.container}>
-            <View style={styles.itemInnerContainer}>
-                <Text style={[styles.itemText, { color: colors.textPrimary }]}>{title}</Text>
-                <Switch
-                    trackColor={{ false: colors.secondary, true: colors.secondary }}
-                    thumbColor={colors.primary}
-                    onValueChange={callBack}
-                    value={value}
-                />
-            </View>
-            <View style={[styles.divider, { borderBottomColor: colors.textPrimary }]} />
+        <View style={[styles.row, { paddingHorizontal: 16 }]}>
+            <Text style={[styles.label, { color: colors.textPrimary }]}>{title}</Text>
+            <Switch
+                trackColor={{ false: colors.grey, true: colors.primary }}
+                thumbColor={colors.white}
+                ios_backgroundColor={colors.grey}
+                onValueChange={callBack}
+                value={value}
+            />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        width: "100%",
-    },
-    itemInnerContainer: {
+    row: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingHorizontal: 8,
-        height: 60,
+        paddingVertical: 14,
     },
-    itemText: {
-        fontSize: 17,
-    },
-    divider: {
-        borderBottomWidth: StyleSheet.hairlineWidth,
+    label: {
+        fontSize: 16,
     },
 });

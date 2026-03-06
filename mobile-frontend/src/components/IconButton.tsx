@@ -1,11 +1,12 @@
 import { FC } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
+import type { ComponentProps } from "react";
 import { useTheme } from "~store/settingsStore";
 import { ThemeT } from "~types/Types";
 
 type IconButtonT = {
-    icon: string;
+    icon: ComponentProps<typeof Icon>["name"];
     onPress: any;
     color: string;
     disabled?: boolean;
