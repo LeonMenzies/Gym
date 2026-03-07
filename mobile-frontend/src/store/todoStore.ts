@@ -96,25 +96,16 @@ export const useTodoStore = create<TodoStore>()(
                     .map((t) => t.text.toLowerCase());
                 const newTasks: Task[] = ingredients
                     .filter((ing) => ing.name.trim())
-                    .filter((ing) => {
-                        const label = ing.amount.trim()
-                            ? `${ing.amount.trim()} ${ing.name.trim()}`
-                            : ing.name.trim();
-                        return !existing.includes(label.toLowerCase());
-                    })
-                    .map((ing) => {
-                        const amount = ing.amount.trim();
-                        const unit = (ing as any).unit?.trim() ?? "";
-                        const parts = [amount, unit, ing.name.trim()].filter(Boolean);
-                        return {
+                    .filter((ing) => !existing.includes(ing.name.trim().toLowerCase()))
+                    .map((ing) => ({
                         id: `task_${Date.now()}_${Math.random()}`,
-                        text: parts.join(" "),
+                        text: ing.name.trim(),
                         completed: false,
                         createdAt: Date.now(),
                         sectionId: GROCERY_SECTION_ID,
                         recurrence: "none" as Recurrence,
                         completedAt: null,
-                    };});
+                    }));
                 if (newTasks.length > 0) {
                     set((s) => ({ tasks: [...s.tasks, ...newTasks] }));
                 }

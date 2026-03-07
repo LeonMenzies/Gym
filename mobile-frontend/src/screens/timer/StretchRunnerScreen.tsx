@@ -208,25 +208,16 @@ export const StretchRunnerScreen: FC<Props> = () => {
     if (status === "done") {
         return (
             <View style={[styles.container, { backgroundColor: colors.background }]}>
-                <Text style={[styles.doneEmoji]}>🎉</Text>
-                <Text style={[styles.doneTitle, { color: colors.primary }]}>Complete!</Text>
+                <Text style={[styles.doneTitle, { color: colors.primary }]}>Complete</Text>
                 <Text style={[styles.doneSub, { color: colors.textSecondary }]}>
                     {routine.name} · {items.length} stretch{items.length !== 1 ? "es" : ""}
                 </Text>
-                <View style={styles.doneButtons}>
-                    <TouchableOpacity
-                        style={[styles.primaryBtn, { backgroundColor: colors.primary }]}
-                        onPress={handleReset}
-                    >
-                        <Text style={[styles.primaryBtnText, { color: colors.white }]}>Go Again</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.outlineBtn, { borderColor: colors.secondary }]}
-                        onPress={() => nav.goBack()}
-                    >
-                        <Text style={[styles.outlineBtnText, { color: colors.textSecondary }]}>Back</Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                    style={[styles.outlineBtn, { borderColor: colors.secondary, marginTop: 32 }]}
+                    onPress={() => nav.goBack()}
+                >
+                    <Text style={[styles.outlineBtnText, { color: colors.textSecondary }]}>Back</Text>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -437,26 +428,11 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
     // Done
-    doneEmoji: { fontSize: 52 },
     doneTitle: {
         fontSize: 48,
         fontWeight: "300",
     },
     doneSub: { fontSize: 17 },
-    doneButtons: {
-        gap: 12,
-        marginTop: 24,
-        alignItems: "center",
-    },
-    primaryBtn: {
-        paddingHorizontal: 56,
-        paddingVertical: 16,
-        borderRadius: 30,
-    },
-    primaryBtnText: {
-        fontSize: 17,
-        fontWeight: "600",
-    },
     outlineBtn: {
         paddingHorizontal: 40,
         paddingVertical: 14,

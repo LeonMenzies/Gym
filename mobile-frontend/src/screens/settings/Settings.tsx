@@ -212,10 +212,10 @@ export const Settings: FC<Props> = ({ navigation }) => {
             </ScrollView>
 
             {/* Time picker modal */}
-            <Modal visible={picker.visible} transparent animationType="slide">
+            <Modal visible={picker.visible} transparent animationType="fade">
                 <View style={s.pickerOverlay}>
-                    <TouchableOpacity style={{ flex: 1 }} onPress={() => setPicker((p) => ({ ...p, visible: false }))} />
-                    <View style={[s.pickerSheet, { backgroundColor: colors.backgroundSecondary }]}>
+                    <TouchableOpacity style={StyleSheet.absoluteFillObject} onPress={() => setPicker((p) => ({ ...p, visible: false }))} />
+                    <View style={[s.pickerCard, { backgroundColor: colors.backgroundSecondary }]}>
                         <View style={s.pickerHeader}>
                             <TouchableOpacity onPress={() => setPicker((p) => ({ ...p, visible: false }))}>
                                 <Text style={[s.pickerCancel, { color: colors.textSecondary }]}>Cancel</Text>
@@ -261,8 +261,17 @@ const styles = (colors: ReturnType<typeof useTheme>) =>
         sliderWrapper: { paddingHorizontal: 16, paddingBottom: 8 },
         slider: { width: "100%", height: 40 },
         // Picker modal
-        pickerOverlay: { flex: 1 },
-        pickerSheet: { borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: 34 },
+        pickerOverlay: {
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.45)",
+            alignItems: "center",
+            justifyContent: "center",
+        },
+        pickerCard: {
+            width: "80%",
+            borderRadius: 18,
+            overflow: "hidden",
+        },
         pickerHeader: {
             flexDirection: "row", alignItems: "center", justifyContent: "space-between",
             paddingHorizontal: 20, paddingVertical: 14,
