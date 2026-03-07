@@ -37,7 +37,8 @@ export const darkTheme: ThemeT = {
 
 export type ReminderConfig = {
     enabled: boolean;
-    hour: number; // 0-23
+    hour: number;   // 0-23
+    minute: number; // 0-59
 };
 
 type SettingsStore = {
@@ -58,8 +59,8 @@ export const useSettingsStore = create<SettingsStore>()(
             theme: "LIGHT",
             metricType: "METRIC",
             colors: lightTheme,
-            stretchReminder: { enabled: false, hour: 8 },
-            todoReminder: { enabled: false, hour: 9 },
+            stretchReminder: { enabled: false, hour: 8, minute: 0 },
+            todoReminder: { enabled: false, hour: 9, minute: 0 },
             setTheme: (theme) =>
                 set({ theme, colors: theme === "LIGHT" ? lightTheme : darkTheme }),
             setMetricType: (metricType) => set({ metricType }),

@@ -170,6 +170,19 @@ export const StretchRunnerScreen: FC<Props> = () => {
 
     const handleNext = () => {
         clearTimer();
+        const currentStretchDef = getStretch(T.current.index);
+
+        // If on first side of a bilateral stretch, go to second side
+        if (T.current.phase === "stretch" && currentStretchDef?.bilateral) {
+            T.current = { ...T.current, phase: "bilateral", countdown: items[T.current.index].duration };
+            setDisplayPhase("bilateral");
+            setDisplayCountdown(items[T.current.index].duration);
+            setStatus("running");
+            startTicking();
+            return;
+        }
+
+        // Otherwise advance to next exercise
         const nextIndex = T.current.index + 1;
         if (nextIndex >= items.length) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -189,10 +202,6 @@ export const StretchRunnerScreen: FC<Props> = () => {
     // Derived
     const currentItem = items[displayIndex];
     const currentStretch = STRETCHES.find((s) => s.id === currentItem?.stretchId);
-    const phaseDuration =
-        displayPhase === "swap" ? SWAP_SECONDS : currentItem?.duration ?? 0;
-    const progressPct = phaseDuration > 0 ? displayCountdown / phaseDuration : 0;
-
     const sideLabel = displayPhase === "bilateral" ? "OTHER SIDE" : (currentStretch?.bilateral ? "FIRST SIDE" : null);
 
     // ─── Done screen ──────────────────────────────────────────────────────────
@@ -290,7 +299,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
             {/* Countdown */}
             <CircularTimer
                 timeLeft={displayCountdown}
-                duration={phaseDuration}
+                duration={displayPhase === "swap" ? SWAP_SECONDS : currentItem?.duration ?? 0}
                 timeLabel={`${displayCountdown}`}
                 subLabel="seconds"
                 size={270}
@@ -303,19 +312,6 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 textColor={colors.textPrimary}
                 subTextColor={colors.textSecondary}
             />
-
-            {/* Progress bar */}
-            <View style={[styles.progressTrack, { backgroundColor: colors.lightGrey }]}>
-                <View
-                    style={[
-                        styles.progressFill,
-                        {
-                            backgroundColor: displayPhase === "stretch" ? colors.primary : colors.secondary,
-                            width: `${Math.max(0, progressPct * 100)}%`,
-                        },
-                    ]}
-                />
-            </View>
 
             {/* Controls */}
             <View style={styles.controls}>
@@ -415,17 +411,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         textTransform: "uppercase",
         letterSpacing: 2,
-    },
-    progressTrack: {
-        width: "100%",
-        height: 5,
-        borderRadius: 3,
-        marginTop: 12,
-        overflow: "hidden",
-    },
-    progressFill: {
-        height: "100%",
-        borderRadius: 3,
     },
     controls: {
         flexDirection: "row",

@@ -19,18 +19,17 @@ export async function scheduleReminder(
     identifier: string,
     title: string,
     body: string,
-    hour: number
+    hour: number,
+    minute: number = 0
 ): Promise<void> {
-    // Cancel existing notification with this id first
     await Notifications.cancelScheduledNotificationAsync(identifier).catch(() => {});
-
     await Notifications.scheduleNotificationAsync({
         identifier,
         content: { title, body },
         trigger: {
             type: Notifications.SchedulableTriggerInputTypes.DAILY,
             hour,
-            minute: 0,
+            minute,
         },
     });
 }

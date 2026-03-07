@@ -2,7 +2,6 @@ import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { FC, useEffect, useRef, useState } from "react";
 import {
     Alert,
-    FlatList,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -13,13 +12,39 @@ import {
     View,
 } from "react-native";
 import { useTheme } from "~store/settingsStore";
-import { Ingredient, Recipe, useRecipeStore } from "~store/recipeStore";
+import { Ingredient, IngredientUnit, Recipe, convertIngredients, detectSystem, useRecipeStore } from "~store/recipeStore";
 import { useTodoStore } from "~store/todoStore";
 
 type Props = {
     navigation: any;
     route: { params: { recipeId: string } };
 };
+
+const ALL_UNITS: IngredientUnit[] = ["", "g", "kg", "ml", "L", "tsp", "tbsp", "cup", "oz", "lb", "fl oz", "piece"];
+const UNIT_LABEL: Record<IngredientUnit, string> = {
+    "":     "–",
+    g:      "g",
+    kg:     "kg",
+    ml:     "ml",
+    L:      "L",
+    tsp:    "tsp",
+    tbsp:   "tbsp",
+    cup:    "cup",
+    oz:     "oz",
+    lb:     "lb",
+    "fl oz": "fl oz",
+    piece:  "pc",
+};
+
+function pickUnit(current: IngredientUnit, onSelect: (u: IngredientUnit) => void) {
+    Alert.alert("Select unit", undefined, [
+        ...ALL_UNITS.map((u) => ({
+            text: current === u ? `${UNIT_LABEL[u]} ✓` : UNIT_LABEL[u],
+            onPress: () => onSelect(u),
+        })),
+        { text: "Cancel", style: "cancel" as const },
+    ]);
+}
 
 export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
     const colors = useTheme();
@@ -34,14 +59,13 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
     const [prepMins, setPrepMins] = useState(String(original?.prepMins ?? 0));
     const [cookMins, setCookMins] = useState(String(original?.cookMins ?? 0));
     const [servings, setServings] = useState(String(original?.servings ?? 2));
-    const [ingredients, setIngredients] = useState<Ingredient[]>(original?.ingredients ?? []);
+    const [ingredients, setIngredients] = useState<Ingredient[]>(
+        (original?.ingredients ?? []).map((ing) => ({ unit: "" as IngredientUnit, ...ing }))
+    );
     const [steps, setSteps] = useState<string[]>(original?.steps ?? []);
 
     const isDirty = useRef(false);
-
-    useEffect(() => {
-        isDirty.current = true;
-    }, [name, description, prepMins, cookMins, servings, ingredients, steps]);
+    useEffect(() => { isDirty.current = true; }, [name, description, prepMins, cookMins, servings, ingredients, steps]);
 
     const save = () => {
         if (!original) return;
@@ -58,10 +82,7 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
         updateRecipe(updated);
     };
 
-    const handleBack = () => {
-        save();
-        navigation.goBack();
-    };
+    const handleBack = () => { save(); navigation.goBack(); };
 
     const handleAddToGrocery = () => {
         if (ingredients.length === 0) {
@@ -81,49 +102,47 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
     const handleDelete = () => {
         Alert.alert("Delete Recipe", "Are you sure?", [
             { text: "Cancel", style: "cancel" },
-            {
-                text: "Delete",
-                style: "destructive",
-                onPress: () => {
-                    deleteRecipe(recipeId);
-                    navigation.goBack();
-                },
-            },
+            { text: "Delete", style: "destructive", onPress: () => { deleteRecipe(recipeId); navigation.goBack(); } },
         ]);
     };
 
-    // Ingredients
-    const addIngredient = () => {
-        const newIng: Ingredient = {
-            id: `ing_${Date.now()}`,
-            amount: "",
-            name: "",
-        };
-        setIngredients((prev) => [...prev, newIng]);
-    };
-
-    const updateIngredient = (id: string, field: "amount" | "name", value: string) => {
-        setIngredients((prev) =>
-            prev.map((ing) => (ing.id === id ? { ...ing, [field]: value } : ing))
+    const handleConvert = () => {
+        const system = detectSystem(ingredients);
+        if (system === "none") return;
+        const target = system === "imperial" ? "metric" : "imperial";
+        const label = target === "metric" ? "metric (g, ml, L)" : "imperial (oz, lb, fl oz, cup)";
+        Alert.alert(
+            "Convert units",
+            `Convert all to ${label}?`,
+            [
+                { text: "Cancel", style: "cancel" },
+                { text: "Convert", onPress: () => setIngredients((prev) => convertIngredients(prev, target)) },
+            ]
         );
     };
 
-    const removeIngredient = (id: string) => {
+    // Ingredients
+    const addIngredient = () =>
+        setIngredients((prev) => [...prev, { id: `ing_${Date.now()}`, amount: "", unit: "", name: "" }]);
+
+    const updateIngredient = (id: string, field: keyof Ingredient, value: string) =>
+        setIngredients((prev) => prev.map((ing) => ing.id === id ? { ...ing, [field]: value } : ing));
+
+    const setIngredientUnit = (id: string, unit: IngredientUnit) =>
+        setIngredients((prev) => prev.map((ing) => ing.id === id ? { ...ing, unit } : ing));
+
+    const removeIngredient = (id: string) =>
         setIngredients((prev) => prev.filter((ing) => ing.id !== id));
-    };
 
     // Steps
-    const addStep = () => {
-        setSteps((prev) => [...prev, ""]);
-    };
-
-    const updateStep = (index: number, value: string) => {
-        setSteps((prev) => prev.map((s, i) => (i === index ? value : s)));
-    };
-
-    const removeStep = (index: number) => {
+    const addStep = () => setSteps((prev) => [...prev, ""]);
+    const updateStep = (index: number, value: string) =>
+        setSteps((prev) => prev.map((s, i) => i === index ? value : s));
+    const removeStep = (index: number) =>
         setSteps((prev) => prev.filter((_, i) => i !== index));
-    };
+
+    const system = detectSystem(ingredients);
+    const canConvert = system !== "none";
 
     const s = styles(colors);
 
@@ -148,11 +167,7 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
                 </View>
             </View>
 
-            <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={s.scroll}
-                keyboardShouldPersistTaps="handled"
-            >
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
                 {/* Name */}
                 <TextInput
                     style={[s.titleInput, { color: colors.textPrimary }]}
@@ -177,48 +192,42 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
 
                 {/* Meta row */}
                 <View style={s.metaRow}>
-                    <View style={s.metaField}>
-                        <Text style={[s.metaLabel, { color: colors.textSecondary }]}>Prep (min)</Text>
-                        <TextInput
-                            style={[s.metaInput, { color: colors.textPrimary, backgroundColor: colors.backgroundSecondary }]}
-                            value={prepMins}
-                            onChangeText={setPrepMins}
-                            keyboardType="number-pad"
-                            placeholder="0"
-                            placeholderTextColor={colors.grey}
-                        />
-                    </View>
-                    <View style={s.metaField}>
-                        <Text style={[s.metaLabel, { color: colors.textSecondary }]}>Cook (min)</Text>
-                        <TextInput
-                            style={[s.metaInput, { color: colors.textPrimary, backgroundColor: colors.backgroundSecondary }]}
-                            value={cookMins}
-                            onChangeText={setCookMins}
-                            keyboardType="number-pad"
-                            placeholder="0"
-                            placeholderTextColor={colors.grey}
-                        />
-                    </View>
-                    <View style={s.metaField}>
-                        <Text style={[s.metaLabel, { color: colors.textSecondary }]}>Serves</Text>
-                        <TextInput
-                            style={[s.metaInput, { color: colors.textPrimary, backgroundColor: colors.backgroundSecondary }]}
-                            value={servings}
-                            onChangeText={setServings}
-                            keyboardType="number-pad"
-                            placeholder="2"
-                            placeholderTextColor={colors.grey}
-                        />
-                    </View>
+                    {[
+                        { label: "Prep (min)", value: prepMins, set: setPrepMins },
+                        { label: "Cook (min)", value: cookMins, set: setCookMins },
+                        { label: "Serves",     value: servings,  set: setServings },
+                    ].map(({ label, value, set }) => (
+                        <View key={label} style={s.metaField}>
+                            <Text style={[s.metaLabel, { color: colors.textSecondary }]}>{label}</Text>
+                            <TextInput
+                                style={[s.metaInput, { color: colors.textPrimary, backgroundColor: colors.backgroundSecondary }]}
+                                value={value}
+                                onChangeText={set}
+                                keyboardType="number-pad"
+                                placeholder="0"
+                                placeholderTextColor={colors.grey}
+                            />
+                        </View>
+                    ))}
                 </View>
 
                 {/* Ingredients */}
                 <View style={s.section}>
                     <View style={s.sectionHeader}>
                         <Text style={[s.sectionTitle, { color: colors.textPrimary }]}>Ingredients</Text>
-                        <TouchableOpacity onPress={addIngredient} style={[s.addBtn, { backgroundColor: colors.backgroundSecondary }]}>
-                            <Icon name="plus" size={14} color={colors.primary} />
-                        </TouchableOpacity>
+                        <View style={s.sectionActions}>
+                            {canConvert && (
+                                <TouchableOpacity onPress={handleConvert} style={[s.actionBtn, { backgroundColor: colors.backgroundSecondary }]}>
+                                    <Icon name="refresh" size={13} color={colors.primary} />
+                                    <Text style={[s.actionBtnText, { color: colors.primary }]}>
+                                        {system === "metric" ? "→ imperial" : system === "imperial" ? "→ metric" : "convert"}
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
+                            <TouchableOpacity onPress={addIngredient} style={[s.addBtn, { backgroundColor: colors.backgroundSecondary }]}>
+                                <Icon name="plus" size={14} color={colors.primary} />
+                            </TouchableOpacity>
+                        </View>
                     </View>
 
                     {ingredients.length === 0 && (
@@ -229,11 +238,20 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
                         <View key={ing.id} style={[s.ingredientRow, { backgroundColor: colors.backgroundSecondary }]}>
                             <TextInput
                                 style={[s.amountInput, { color: colors.textPrimary }]}
-                                placeholder="Amount"
+                                placeholder="Qty"
                                 placeholderTextColor={colors.grey}
                                 value={ing.amount}
                                 onChangeText={(v) => updateIngredient(ing.id, "amount", v)}
+                                keyboardType="decimal-pad"
                             />
+                            <TouchableOpacity
+                                style={[s.unitBtn, { borderColor: colors.lightGrey }]}
+                                onPress={() => pickUnit(ing.unit, (u) => setIngredientUnit(ing.id, u))}
+                            >
+                                <Text style={[s.unitText, { color: ing.unit ? colors.primary : colors.grey }]}>
+                                    {UNIT_LABEL[ing.unit]}
+                                </Text>
+                            </TouchableOpacity>
                             <View style={[s.divider, { backgroundColor: colors.background }]} />
                             <TextInput
                                 style={[s.ingNameInput, { color: colors.textPrimary }]}
@@ -298,17 +316,9 @@ const styles = (colors: any) =>
             paddingHorizontal: 20,
             paddingBottom: 12,
         },
-        headerRight: {
-            flexDirection: "row",
-            alignItems: "center",
-        },
-        headerBtn: {
-            padding: 8,
-        },
-        scroll: {
-            paddingHorizontal: 20,
-            paddingTop: 8,
-        },
+        headerRight: { flexDirection: "row", alignItems: "center" },
+        headerBtn: { padding: 8 },
+        scroll: { paddingHorizontal: 20, paddingTop: 8 },
         titleInput: {
             fontSize: 28,
             fontWeight: "700",
@@ -322,15 +332,8 @@ const styles = (colors: any) =>
             paddingVertical: 4,
             minHeight: 44,
         },
-        metaRow: {
-            flexDirection: "row",
-            gap: 12,
-            marginBottom: 28,
-        },
-        metaField: {
-            flex: 1,
-            gap: 6,
-        },
+        metaRow: { flexDirection: "row", gap: 12, marginBottom: 28 },
+        metaField: { flex: 1, gap: 6 },
         metaLabel: {
             fontSize: 12,
             fontWeight: "600",
@@ -344,19 +347,23 @@ const styles = (colors: any) =>
             fontSize: 15,
             textAlign: "center",
         },
-        section: {
-            marginBottom: 28,
-            gap: 10,
-        },
+        section: { marginBottom: 28, gap: 10 },
         sectionHeader: {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
         },
-        sectionTitle: {
-            fontSize: 18,
-            fontWeight: "700",
+        sectionTitle: { fontSize: 18, fontWeight: "700" },
+        sectionActions: { flexDirection: "row", alignItems: "center", gap: 8 },
+        actionBtn: {
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 4,
+            paddingHorizontal: 10,
+            paddingVertical: 6,
+            borderRadius: 14,
         },
+        actionBtnText: { fontSize: 12, fontWeight: "600" },
         addBtn: {
             width: 32,
             height: 32,
@@ -364,11 +371,7 @@ const styles = (colors: any) =>
             alignItems: "center",
             justifyContent: "center",
         },
-        emptyHint: {
-            fontSize: 14,
-            textAlign: "center",
-            paddingVertical: 10,
-        },
+        emptyHint: { fontSize: 14, textAlign: "center", paddingVertical: 10 },
         ingredientRow: {
             flexDirection: "row",
             alignItems: "center",
@@ -376,25 +379,28 @@ const styles = (colors: any) =>
             overflow: "hidden",
         },
         amountInput: {
-            width: 80,
-            paddingHorizontal: 12,
+            width: 52,
+            paddingHorizontal: 10,
             paddingVertical: 12,
             fontSize: 14,
         },
-        divider: {
-            width: 1,
-            height: "100%",
-            minHeight: 44,
+        unitBtn: {
+            paddingHorizontal: 8,
+            paddingVertical: 12,
+            borderLeftWidth: StyleSheet.hairlineWidth,
+            borderRightWidth: StyleSheet.hairlineWidth,
+            alignItems: "center",
+            minWidth: 44,
         },
+        unitText: { fontSize: 13, fontWeight: "600" },
+        divider: { width: 1, height: "100%", minHeight: 44 },
         ingNameInput: {
             flex: 1,
             paddingHorizontal: 12,
             paddingVertical: 12,
             fontSize: 14,
         },
-        removeBtn: {
-            padding: 12,
-        },
+        removeBtn: { padding: 12 },
         stepRow: {
             flexDirection: "row",
             alignItems: "flex-start",
@@ -411,13 +417,6 @@ const styles = (colors: any) =>
             marginTop: 1,
             flexShrink: 0,
         },
-        stepNumberText: {
-            fontSize: 12,
-            fontWeight: "700",
-        },
-        stepInput: {
-            flex: 1,
-            fontSize: 14,
-            lineHeight: 20,
-        },
+        stepNumberText: { fontSize: 12, fontWeight: "700" },
+        stepInput: { flex: 1, fontSize: 14, lineHeight: 20 },
     });

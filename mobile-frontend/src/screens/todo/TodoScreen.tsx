@@ -249,9 +249,15 @@ export const TodoScreen: FC = () => {
             {/* Task list */}
             {displayTasks.length === 0 ? (
                 <View style={styles.empty}>
-                    <Text style={[styles.emptyText, { color: colors.grey }]}>
-                        {isGrocery ? "Tap + or use 🛒 in a recipe" : "Nothing here yet"}
-                    </Text>
+                    {isGrocery ? (
+                        <View style={styles.groceryEmptyRow}>
+                            <Text style={[styles.emptyText, { color: colors.grey }]}>Tap + or use</Text>
+                            <Icon name="basket" size={15} color={colors.grey} />
+                            <Text style={[styles.emptyText, { color: colors.grey }]}>in a recipe</Text>
+                        </View>
+                    ) : (
+                        <Text style={[styles.emptyText, { color: colors.grey }]}>Nothing here yet</Text>
+                    )}
                 </View>
             ) : (
                 <FlatList
@@ -376,5 +382,10 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         fontSize: 16,
+    },
+    groceryEmptyRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 6,
     },
 });

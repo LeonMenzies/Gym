@@ -102,17 +102,19 @@ export const useTodoStore = create<TodoStore>()(
                             : ing.name.trim();
                         return !existing.includes(label.toLowerCase());
                     })
-                    .map((ing) => ({
+                    .map((ing) => {
+                        const amount = ing.amount.trim();
+                        const unit = (ing as any).unit?.trim() ?? "";
+                        const parts = [amount, unit, ing.name.trim()].filter(Boolean);
+                        return {
                         id: `task_${Date.now()}_${Math.random()}`,
-                        text: ing.amount.trim()
-                            ? `${ing.amount.trim()} ${ing.name.trim()}`
-                            : ing.name.trim(),
+                        text: parts.join(" "),
                         completed: false,
                         createdAt: Date.now(),
                         sectionId: GROCERY_SECTION_ID,
                         recurrence: "none" as Recurrence,
                         completedAt: null,
-                    }));
+                    };});
                 if (newTasks.length > 0) {
                     set((s) => ({ tasks: [...s.tasks, ...newTasks] }));
                 }
