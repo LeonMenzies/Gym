@@ -1,6 +1,5 @@
 import Slider from "@react-native-community/slider";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import { NestableScrollContainer, NestableDraggableFlatList, ScaleDecorator, RenderItemParams } from "react-native-draggable-flatlist";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { FC, useEffect, useState } from "react";
@@ -13,7 +12,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { StretchIllustration } from "~components/StretchIllustration";
 import { useTheme } from "~store/settingsStore";
 import {
@@ -115,7 +113,7 @@ export const StretchBuilderScreen: FC<Props> = () => {
                 </TouchableOpacity>
             </View>
 
-            <NestableScrollContainer contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+            <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
                 {/* Name input */}
                 <TextInput
                     style={[styles.nameInput, { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary }]}
@@ -132,56 +130,45 @@ export const StretchBuilderScreen: FC<Props> = () => {
                         <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>
                             Routine · {items.length} stretch{items.length !== 1 ? "es" : ""} · {totalTime(items)}
                         </Text>
-                        <NestableDraggableFlatList
-                            data={items}
-                            keyExtractor={(item, index) => `${item.stretchId}_${index}`}
-                            onDragEnd={({ data }) => setItems(data)}
-                            ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
-                            renderItem={({ item, drag, isActive, getIndex }: RenderItemParams<RoutineItem>) => {
-                                const index = getIndex() ?? 0;
-                                return (
-                                    <ScaleDecorator>
-                                        <Swipeable
-                                            renderRightActions={() => (
-                                                <TouchableOpacity
-                                                    style={[styles.deleteAction, { backgroundColor: colors.error }]}
-                                                    onPress={() => removeItem(index)}
-                                                >
-                                                    <Text style={styles.deleteActionText}>Delete</Text>
-                                                </TouchableOpacity>
-                                            )}
+                        <View style={styles.itemList}>
+                            {items.map((item, index) => (
+                                <Swipeable
+                                    key={`${item.stretchId}_${index}`}
+                                    renderRightActions={() => (
+                                        <TouchableOpacity
+                                            style={[styles.deleteAction, { backgroundColor: colors.error }]}
+                                            onPress={() => removeItem(index)}
                                         >
-                                            <View style={[styles.itemCard, { backgroundColor: colors.backgroundSecondary, opacity: isActive ? 0.9 : 1 }]}>
-                                                <TouchableOpacity onLongPress={drag} style={styles.dragHandle}>
-                                                    <Ionicons name="reorder-three" size={22} color={colors.lightGrey} />
-                                                </TouchableOpacity>
-                                                <View style={styles.itemInfo}>
-                                                    <View style={styles.itemNameRow}>
-                                                        <Text style={[styles.itemName, { color: colors.textPrimary }]}>
-                                                            {stretchName(item.stretchId)}
-                                                        </Text>
-                                                        <Text style={[styles.durationLabel, { color: colors.primary }]}>
-                                                            {item.duration}s
-                                                        </Text>
-                                                    </View>
-                                                    <Slider
-                                                        style={styles.durationSlider}
-                                                        minimumValue={10}
-                                                        maximumValue={90}
-                                                        step={5}
-                                                        value={item.duration}
-                                                        onValueChange={(v) => setDuration(index, v)}
-                                                        minimumTrackTintColor={colors.primary}
-                                                        maximumTrackTintColor={colors.lightGrey}
-                                                        thumbTintColor={colors.primary}
-                                                    />
-                                                </View>
+                                            <Text style={styles.deleteActionText}>Delete</Text>
+                                        </TouchableOpacity>
+                                    )}
+                                >
+                                    <View style={[styles.itemCard, { backgroundColor: colors.backgroundSecondary }]}>
+                                        <View style={styles.itemInfo}>
+                                            <View style={styles.itemNameRow}>
+                                                <Text style={[styles.itemName, { color: colors.textPrimary }]}>
+                                                    {stretchName(item.stretchId)}
+                                                </Text>
+                                                <Text style={[styles.durationLabel, { color: colors.primary }]}>
+                                                    {item.duration}s
+                                                </Text>
                                             </View>
-                                        </Swipeable>
-                                    </ScaleDecorator>
-                                );
-                            }}
-                        />
+                                            <Slider
+                                                style={styles.durationSlider}
+                                                minimumValue={10}
+                                                maximumValue={90}
+                                                step={5}
+                                                value={item.duration}
+                                                onValueChange={(v) => setDuration(index, v)}
+                                                minimumTrackTintColor={colors.primary}
+                                                maximumTrackTintColor={colors.lightGrey}
+                                                thumbTintColor={colors.primary}
+                                            />
+                                        </View>
+                                    </View>
+                                </Swipeable>
+                            ))}
+                        </View>
                     </View>
                 )}
 
@@ -260,7 +247,7 @@ export const StretchBuilderScreen: FC<Props> = () => {
                 )}
 
                 <View style={{ height: 48 }} />
-            </NestableScrollContainer>
+            </ScrollView>
         </View>
     );
 };
@@ -294,6 +281,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
         marginBottom: 2,
     },
+    itemList: { gap: 8 },
     itemCard: {
         borderRadius: 12,
         padding: 12,
@@ -301,7 +289,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 8,
     },
-    dragHandle: { paddingHorizontal: 2 },
     itemInfo: { flex: 1, gap: 4 },
     itemNameRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
     itemName: { fontSize: 15, fontWeight: "500", flex: 1 },

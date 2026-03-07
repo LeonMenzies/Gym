@@ -369,7 +369,7 @@ export const NotesScreen: FC<Props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
+    container: { flex: 1, paddingTop: 60 },
     header: {
         flexDirection: "row",
         alignItems: "center",

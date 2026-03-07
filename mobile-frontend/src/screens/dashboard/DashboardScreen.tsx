@@ -5,7 +5,6 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-nati
 import { useTheme } from "~store/settingsStore";
 import { ActivityType, todayStr, useActivityStore } from "~store/activityStore";
 import { useStreakStore } from "~store/streakStore";
-import { useComponentStore } from "~store/componentStore";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -40,7 +39,6 @@ export const DashboardScreen: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
     const { log } = useActivityStore();
     const { currentStreak, longestStreak } = useStreakStore();
-    const { activeComponents } = useComponentStore();
 
     const now = new Date();
     const [year, setYear] = useState(now.getFullYear());
@@ -67,36 +65,22 @@ export const DashboardScreen: FC<Props> = ({ navigation }) => {
     const todoCount    = activeDays.filter(([, v]) => v.includes("todo")).length;
     const gymCount     = activeDays.filter(([, v]) => v.includes("gym")).length;
 
-    // Build summary stats based on which components are active
-    const summaryStats: { label: string; value: number; color: string }[] = [];
-    if (activeComponents.includes("timer")) {
-        summaryStats.push({ label: "Stretch days", value: stretchCount, color: ACTIVITY_COLORS.stretch });
-        summaryStats.push({ label: "Gym days",     value: gymCount,     color: ACTIVITY_COLORS.gym });
-    }
-    if (activeComponents.includes("todo")) {
-        summaryStats.push({ label: "To-Do days",   value: todoCount,    color: ACTIVITY_COLORS.todo });
-    }
-
-    const goToLibrary = () => navigation.navigate("Library");
+    const summaryStats: { label: string; value: number; color: string }[] = [
+        { label: "Stretch days", value: stretchCount, color: ACTIVITY_COLORS.stretch },
+        { label: "Gym days",     value: gymCount,     color: ACTIVITY_COLORS.gym },
+        { label: "To-Do days",   value: todoCount,    color: ACTIVITY_COLORS.todo },
+    ];
 
     return (
         <View style={[styles.screen, { backgroundColor: colors.background }]}>
             <View style={styles.headerRow}>
                 <Text style={[styles.header, { color: colors.textPrimary }]}>Dashboard</Text>
-                <View style={styles.headerActions}>
-                    <TouchableOpacity
-                        onPress={goToLibrary}
-                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    >
-                        <Icon name="layers" size={22} color={colors.textSecondary} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate("Settings")}
-                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    >
-                        <Icon name="settings" size={22} color={colors.textSecondary} />
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("Settings")}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                    <Icon name="settings" size={22} color={colors.textSecondary} />
+                </TouchableOpacity>
             </View>
 
             <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
@@ -225,11 +209,6 @@ const styles = StyleSheet.create({
     header: {
         fontSize: 28,
         fontWeight: "700",
-    },
-    headerActions: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 18,
     },
     scroll: {
         padding: 16,

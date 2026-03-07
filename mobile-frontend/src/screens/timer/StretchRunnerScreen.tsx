@@ -9,6 +9,7 @@ import { CircularTimer } from "~components/CircularTimer";
 import { StretchIllustration } from "~components/StretchIllustration";
 import { useTheme } from "~store/settingsStore";
 import { useActivityStore } from "~store/activityStore";
+import { useStreakStore } from "~store/streakStore";
 import { BODY_PART_LABELS, STRETCHES, useStretchStore } from "~store/stretchStore";
 import { TimerStackParamList } from "~types/Types";
 
@@ -27,6 +28,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
     const colors = useTheme();
     const { routines } = useStretchStore();
     const { logActivity } = useActivityStore();
+    const { logActivity: logStreak } = useStreakStore();
 
     const routine = routines.find((r) => r.id === route.params.routineId);
 

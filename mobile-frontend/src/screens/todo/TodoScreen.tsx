@@ -1,26 +1,28 @@
 import { FC, useRef, useState } from "react";
 import {
     Alert,
+    FlatList,
     Keyboard,
-    ScrollView,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
     View,
+    ScrollView,
 } from "react-native";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import DraggableFlatList, { ScaleDecorator, RenderItemParams } from "react-native-draggable-flatlist";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "~store/settingsStore";
 import { Task, useTodoStore } from "~store/todoStore";
 import { useActivityStore } from "~store/activityStore";
+import { useStreakStore } from "~store/streakStore";
 
 export const TodoScreen: FC = () => {
     const colors = useTheme();
-    const { sections, tasks, addSection, deleteSection, addTask, toggleTask, deleteTask, reorderTasks } = useTodoStore();
+    const { sections, tasks, addSection, deleteSection, addTask, toggleTask, deleteTask } = useTodoStore();
     const { logActivity } = useActivityStore();
+    const { logActivity: logStreak } = useStreakStore();
 
     const [activeSectionId, setActiveSectionId] = useState<string>(sections[0]?.id ?? "default");
     const [inputText, setInputText] = useState("");
@@ -48,7 +50,7 @@ export const TodoScreen: FC = () => {
 
     const handleToggle = (id: string) => {
         const task = tasks.find((t) => t.id === id);
-        if (task && !task.completed) logActivity("todo");
+        if (task && !task.completed) { logActivity("todo"); logStreak(); }
         toggleTask(id);
     };
 
@@ -77,55 +79,46 @@ export const TodoScreen: FC = () => {
         ]);
     };
 
-    const renderItem = ({ item, drag, isActive }: RenderItemParams<Task>) => (
-        <ScaleDecorator>
-            <Swipeable
-                renderRightActions={() => (
-                    <TouchableOpacity
-                        style={[styles.deleteAction, { backgroundColor: colors.error }]}
-                        onPress={() => deleteTask(item.id)}
-                    >
-                        <Icon name="trash" size={15} color="#fff" />
-                        <Text style={styles.deleteActionText}>Delete</Text>
-                    </TouchableOpacity>
-                )}
-            >
-                <View style={[styles.taskCard, { backgroundColor: colors.backgroundSecondary, opacity: isActive ? 0.9 : 1 }]}>
-                    {/* Drag handle */}
-                    <TouchableOpacity onLongPress={drag} style={styles.dragHandle}>
-                        <Ionicons name="reorder-three" size={22} color={colors.lightGrey} />
-                    </TouchableOpacity>
-
-                    {/* Checkbox */}
-                    <TouchableOpacity onPress={() => handleToggle(item.id)} style={styles.checkbox}>
-                        <View
-                            style={[
-                                styles.checkCircle,
-                                {
-                                    borderColor: item.completed ? colors.primary : colors.grey,
-                                    backgroundColor: item.completed ? colors.primary : "transparent",
-                                },
-                            ]}
-                        >
-                            {item.completed && <Icon name="check" size={11} color={colors.white} />}
-                        </View>
-                    </TouchableOpacity>
-
-                    {/* Text */}
-                    <Text
+    const renderItem = ({ item }: { item: Task }) => (
+        <Swipeable
+            renderRightActions={() => (
+                <TouchableOpacity
+                    style={[styles.deleteAction, { backgroundColor: colors.error }]}
+                    onPress={() => deleteTask(item.id)}
+                >
+                    <Icon name="trash" size={15} color="#fff" />
+                    <Text style={styles.deleteActionText}>Delete</Text>
+                </TouchableOpacity>
+            )}
+        >
+            <View style={[styles.taskCard, { backgroundColor: colors.backgroundSecondary }]}>
+                <TouchableOpacity onPress={() => handleToggle(item.id)} style={styles.checkbox}>
+                    <View
                         style={[
-                            styles.taskText,
+                            styles.checkCircle,
                             {
-                                color: item.completed ? colors.grey : colors.textPrimary,
-                                textDecorationLine: item.completed ? "line-through" : "none",
+                                borderColor: item.completed ? colors.primary : colors.grey,
+                                backgroundColor: item.completed ? colors.primary : "transparent",
                             },
                         ]}
                     >
-                        {item.text}
-                    </Text>
-                </View>
-            </Swipeable>
-        </ScaleDecorator>
+                        {item.completed && <Icon name="check" size={11} color={colors.white} />}
+                    </View>
+                </TouchableOpacity>
+
+                <Text
+                    style={[
+                        styles.taskText,
+                        {
+                            color: item.completed ? colors.grey : colors.textPrimary,
+                            textDecorationLine: item.completed ? "line-through" : "none",
+                        },
+                    ]}
+                >
+                    {item.text}
+                </Text>
+            </View>
+        </Swipeable>
     );
 
     return (
@@ -204,11 +197,10 @@ export const TodoScreen: FC = () => {
                     <Text style={[styles.emptyText, { color: colors.grey }]}>Nothing here yet</Text>
                 </View>
             ) : (
-                <DraggableFlatList
+                <FlatList
                     data={displayTasks}
                     keyExtractor={(item) => item.id}
                     renderItem={renderItem}
-                    onDragEnd={({ data }) => reorderTasks(effectiveId, data)}
                     contentContainerStyle={styles.list}
                     keyboardShouldPersistTaps="handled"
                     onScrollBeginDrag={Keyboard.dismiss}
@@ -288,9 +280,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         gap: 10,
-    },
-    dragHandle: {
-        paddingHorizontal: 2,
     },
     checkbox: {},
     checkCircle: {
