@@ -8,13 +8,81 @@ import { useSettingsStore, useTheme } from "~store/settingsStore";
 import { useTimerStore } from "~store/timerStore";
 import { SettingsSelectItem } from "~screens/settings/SettingsSelectItem";
 import { exportData, importData, clearAllData } from "~utils/dataService";
+import {
+    requestNotificationPermission,
+    scheduleReminder,
+    cancelReminder,
+    STRETCH_REMINDER_ID,
+    TODO_REMINDER_ID,
+} from "~utils/notifications";
 
 type Props = { navigation: any };
 
 export const Settings: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
-    const { theme, metricType, setTheme, setMetricType } = useSettingsStore();
+    const { theme, metricType, stretchReminder, todoReminder, setTheme, setMetricType, setStretchReminder, setTodoReminder } = useSettingsStore();
     const { gymRestSeconds, setGymRestSeconds } = useTimerStore();
+
+    const formatHour = (h: number) => {
+        const period = h >= 12 ? "PM" : "AM";
+        const display = h % 12 === 0 ? 12 : h % 12;
+        return `${display}:00 ${period}`;
+    };
+
+    const promptReminderHour = (
+        current: number,
+        onConfirm: (hour: number) => void
+    ) => {
+        Alert.prompt(
+            "Set reminder time",
+            "Enter hour (0–23)",
+            (input) => {
+                const h = parseInt(input ?? "");
+                if (isNaN(h) || h < 0 || h > 23) {
+                    Alert.alert("Invalid", "Please enter a number between 0 and 23.");
+                    return;
+                }
+                onConfirm(h);
+            },
+            "plain-text",
+            String(current),
+            "number-pad"
+        );
+    };
+
+    const handleStretchToggle = async (enabled: boolean) => {
+        if (enabled) {
+            const granted = await requestNotificationPermission();
+            if (!granted) {
+                Alert.alert("Permission denied", "Enable notifications in Settings to use reminders.");
+                return;
+            }
+            promptReminderHour(stretchReminder.hour, async (hour) => {
+                await scheduleReminder(STRETCH_REMINDER_ID, "Time to stretch! 🧘", "Your daily stretch routine is waiting.", hour);
+                setStretchReminder({ enabled: true, hour });
+            });
+        } else {
+            await cancelReminder(STRETCH_REMINDER_ID);
+            setStretchReminder({ enabled: false, hour: stretchReminder.hour });
+        }
+    };
+
+    const handleTodoToggle = async (enabled: boolean) => {
+        if (enabled) {
+            const granted = await requestNotificationPermission();
+            if (!granted) {
+                Alert.alert("Permission denied", "Enable notifications in Settings to use reminders.");
+                return;
+            }
+            promptReminderHour(todoReminder.hour, async (hour) => {
+                await scheduleReminder(TODO_REMINDER_ID, "Check your to-do list ✅", "See what's on your list today.", hour);
+                setTodoReminder({ enabled: true, hour });
+            });
+        } else {
+            await cancelReminder(TODO_REMINDER_ID);
+            setTodoReminder({ enabled: false, hour: todoReminder.hour });
+        }
+    };
 
     const handleImport = async () => {
         try {
@@ -112,6 +180,53 @@ export const Settings: FC<Props> = ({ navigation }) => {
                             thumbTintColor={colors.primary}
                         />
                     </View>
+                </View>
+
+                <Text style={s.sectionLabel}>Reminders</Text>
+                <View style={s.section}>
+                    <SettingsSelectItem
+                        title="Daily stretch reminder"
+                        value={stretchReminder.enabled}
+                        callBack={handleStretchToggle}
+                    />
+                    {stretchReminder.enabled && (
+                        <>
+                            <View style={[s.divider, { backgroundColor: colors.background }]} />
+                            <TouchableOpacity
+                                style={s.row}
+                                onPress={() => promptReminderHour(stretchReminder.hour, async (hour) => {
+                                    await scheduleReminder(STRETCH_REMINDER_ID, "Time to stretch! 🧘", "Your daily stretch routine is waiting.", hour);
+                                    setStretchReminder({ enabled: true, hour });
+                                })}
+                            >
+                                <Icon name="clock" size={18} color={colors.primary} style={s.rowIcon} />
+                                <Text style={s.rowText}>Time</Text>
+                                <Text style={[s.rowText, { color: colors.primary, flex: 0 }]}>{formatHour(stretchReminder.hour)}</Text>
+                            </TouchableOpacity>
+                        </>
+                    )}
+                    <View style={[s.divider, { backgroundColor: colors.background }]} />
+                    <SettingsSelectItem
+                        title="Daily to-do reminder"
+                        value={todoReminder.enabled}
+                        callBack={handleTodoToggle}
+                    />
+                    {todoReminder.enabled && (
+                        <>
+                            <View style={[s.divider, { backgroundColor: colors.background }]} />
+                            <TouchableOpacity
+                                style={s.row}
+                                onPress={() => promptReminderHour(todoReminder.hour, async (hour) => {
+                                    await scheduleReminder(TODO_REMINDER_ID, "Check your to-do list ✅", "See what's on your list today.", hour);
+                                    setTodoReminder({ enabled: true, hour });
+                                })}
+                            >
+                                <Icon name="clock" size={18} color={colors.primary} style={s.rowIcon} />
+                                <Text style={s.rowText}>Time</Text>
+                                <Text style={[s.rowText, { color: colors.primary, flex: 0 }]}>{formatHour(todoReminder.hour)}</Text>
+                            </TouchableOpacity>
+                        </>
+                    )}
                 </View>
 
                 <Text style={s.sectionLabel}>Data</Text>

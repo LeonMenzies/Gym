@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { useTheme } from "~store/settingsStore";
 import { Ingredient, Recipe, useRecipeStore } from "~store/recipeStore";
+import { useTodoStore } from "~store/todoStore";
 
 type Props = {
     navigation: any;
@@ -23,6 +24,7 @@ type Props = {
 export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
     const colors = useTheme();
     const { recipes, updateRecipe, deleteRecipe } = useRecipeStore();
+    const { addToGrocery } = useTodoStore();
     const recipeId = route.params.recipeId;
 
     const original = recipes.find((r) => r.id === recipeId);
@@ -59,6 +61,21 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
     const handleBack = () => {
         save();
         navigation.goBack();
+    };
+
+    const handleAddToGrocery = () => {
+        if (ingredients.length === 0) {
+            Alert.alert("No ingredients", "Add ingredients to this recipe first.");
+            return;
+        }
+        save();
+        const added = addToGrocery(ingredients);
+        Alert.alert(
+            "Added to Grocery",
+            added === 0
+                ? "All ingredients are already in your grocery list."
+                : `${added} item${added !== 1 ? "s" : ""} added to your Grocery list.`
+        );
     };
 
     const handleDelete = () => {
@@ -121,9 +138,14 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
                 <TouchableOpacity onPress={handleBack} style={s.headerBtn}>
                     <Icon name="arrow-left" size={18} color={colors.textPrimary} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleDelete} style={s.headerBtn}>
-                    <Icon name="trash" size={16} color={colors.error} />
-                </TouchableOpacity>
+                <View style={s.headerRight}>
+                    <TouchableOpacity onPress={handleAddToGrocery} style={s.headerBtn}>
+                        <Icon name="basket" size={18} color={colors.primary} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleDelete} style={s.headerBtn}>
+                        <Icon name="trash" size={16} color={colors.error} />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <ScrollView
@@ -275,6 +297,10 @@ const styles = (colors: any) =>
             paddingTop: 60,
             paddingHorizontal: 20,
             paddingBottom: 12,
+        },
+        headerRight: {
+            flexDirection: "row",
+            alignItems: "center",
         },
         headerBtn: {
             padding: 8,

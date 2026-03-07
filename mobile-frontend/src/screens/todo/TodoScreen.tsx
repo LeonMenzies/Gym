@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import {
     Alert,
     FlatList,
@@ -14,13 +14,25 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "~store/settingsStore";
-import { Task, useTodoStore } from "~store/todoStore";
+import { GROCERY_SECTION_ID, Recurrence, Task, useTodoStore } from "~store/todoStore";
 import { useActivityStore } from "~store/activityStore";
 import { useStreakStore } from "~store/streakStore";
 
+const RECURRENCE_ICON: Record<Recurrence, string | null> = {
+    none: null,
+    daily: "refresh",
+    weekly: "reload",
+};
+
+const RECURRENCE_LABEL: Record<Recurrence, string> = {
+    none: "No repeat",
+    daily: "Daily",
+    weekly: "Weekly",
+};
+
 export const TodoScreen: FC = () => {
     const colors = useTheme();
-    const { sections, tasks, addSection, deleteSection, addTask, toggleTask, deleteTask } = useTodoStore();
+    const { sections, tasks, addSection, deleteSection, addTask, toggleTask, deleteTask, setRecurrence, resetRecurring } = useTodoStore();
     const { logActivity } = useActivityStore();
     const { logActivity: logStreak } = useStreakStore();
 
@@ -29,9 +41,14 @@ export const TodoScreen: FC = () => {
     const [showDone, setShowDone] = useState(true);
     const inputRef = useRef<TextInput>(null);
 
+    useEffect(() => {
+        resetRecurring();
+    }, []);
+
     const activeSection = sections.find((s) => s.id === activeSectionId) ?? sections[0];
     const effectiveId = activeSection?.id ?? sections[0]?.id ?? "default";
     const isFirstSection = effectiveId === sections[0]?.id;
+    const isGrocery = effectiveId === GROCERY_SECTION_ID;
 
     const sectionTasks = tasks.filter(
         (t) => t.sectionId === effectiveId || (!t.sectionId && isFirstSection)
@@ -61,7 +78,8 @@ export const TodoScreen: FC = () => {
     };
 
     const handleSectionLongPress = (id: string, name: string) => {
-        if (sections.length <= 1) {
+        if (id === GROCERY_SECTION_ID) return; // grocery is permanent
+        if (sections.filter((s) => s.id !== GROCERY_SECTION_ID).length <= 1) {
             Alert.alert("Can't delete", "You need at least one list.");
             return;
         }
@@ -79,6 +97,20 @@ export const TodoScreen: FC = () => {
         ]);
     };
 
+    const handleTaskLongPress = (task: Task) => {
+        if (isGrocery) return; // grocery items don't need recurrence
+        const cycles: Recurrence[] = ["none", "daily", "weekly"];
+        const currentIdx = cycles.indexOf(task.recurrence);
+        const options = cycles.map((r) => ({
+            text: r === task.recurrence ? `✓ ${RECURRENCE_LABEL[r]}` : RECURRENCE_LABEL[r],
+            onPress: () => setRecurrence(task.id, r),
+        }));
+        Alert.alert(task.text, "Set repeat", [
+            ...options,
+            { text: "Cancel", style: "cancel" },
+        ]);
+    };
+
     const renderItem = ({ item }: { item: Task }) => (
         <Swipeable
             renderRightActions={() => (
@@ -91,7 +123,12 @@ export const TodoScreen: FC = () => {
                 </TouchableOpacity>
             )}
         >
-            <View style={[styles.taskCard, { backgroundColor: colors.backgroundSecondary }]}>
+            <TouchableOpacity
+                activeOpacity={0.7}
+                onLongPress={() => handleTaskLongPress(item)}
+                delayLongPress={400}
+                style={[styles.taskCard, { backgroundColor: colors.backgroundSecondary }]}
+            >
                 <TouchableOpacity onPress={() => handleToggle(item.id)} style={styles.checkbox}>
                     <View
                         style={[
@@ -117,7 +154,16 @@ export const TodoScreen: FC = () => {
                 >
                     {item.text}
                 </Text>
-            </View>
+
+                {item.recurrence !== "none" && (
+                    <Icon
+                        name={RECURRENCE_ICON[item.recurrence] as any}
+                        size={13}
+                        color={colors.primary}
+                        style={styles.recurrenceIcon}
+                    />
+                )}
+            </TouchableOpacity>
         </Swipeable>
     );
 
@@ -145,6 +191,7 @@ export const TodoScreen: FC = () => {
             >
                 {sections.map((section) => {
                     const active = section.id === effectiveId;
+                    const grocery = section.id === GROCERY_SECTION_ID;
                     return (
                         <TouchableOpacity
                             key={section.id}
@@ -156,6 +203,14 @@ export const TodoScreen: FC = () => {
                             onLongPress={() => handleSectionLongPress(section.id, section.name)}
                             delayLongPress={500}
                         >
+                            {grocery && (
+                                <Icon
+                                    name="basket"
+                                    size={13}
+                                    color={active ? colors.white : colors.textSecondary}
+                                    style={styles.tabIcon}
+                                />
+                            )}
                             <Text style={[styles.tabText, { color: active ? colors.white : colors.textSecondary }]}>
                                 {section.name}
                             </Text>
@@ -175,7 +230,7 @@ export const TodoScreen: FC = () => {
                 <TextInput
                     ref={inputRef}
                     style={[styles.input, { color: colors.textPrimary }]}
-                    placeholder={`Add to ${activeSection?.name ?? "list"}…`}
+                    placeholder={isGrocery ? "Add item…" : `Add to ${activeSection?.name ?? "list"}…`}
                     placeholderTextColor={colors.grey}
                     value={inputText}
                     onChangeText={setInputText}
@@ -194,7 +249,9 @@ export const TodoScreen: FC = () => {
             {/* Task list */}
             {displayTasks.length === 0 ? (
                 <View style={styles.empty}>
-                    <Text style={[styles.emptyText, { color: colors.grey }]}>Nothing here yet</Text>
+                    <Text style={[styles.emptyText, { color: colors.grey }]}>
+                        {isGrocery ? "Tap + or use 🛒 in a recipe" : "Nothing here yet"}
+                    </Text>
                 </View>
             ) : (
                 <FlatList
@@ -243,7 +300,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: "row",
         alignItems: "center",
+        gap: 5,
     },
+    tabIcon: {},
     tabText: {
         fontSize: 14,
         fontWeight: "600",
@@ -293,6 +352,9 @@ const styles = StyleSheet.create({
     taskText: {
         flex: 1,
         fontSize: 15,
+    },
+    recurrenceIcon: {
+        opacity: 0.8,
     },
     deleteAction: {
         justifyContent: "center",

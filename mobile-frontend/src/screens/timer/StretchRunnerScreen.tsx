@@ -18,8 +18,17 @@ type Nav = NativeStackNavigationProp<TimerStackParamList, "StretchRunner">;
 
 const SWAP_SECONDS = 5;
 
-type Phase = "stretch" | "swap";
+// "stretch" = active hold (first side or non-bilateral)
+// "bilateral" = second side of a bilateral stretch
+// "swap" = rest before next stretch
+type Phase = "stretch" | "bilateral" | "swap";
 type Status = "running" | "paused" | "done";
+
+type TimerRef = {
+    countdown: number;
+    phase: Phase;
+    index: number;
+};
 
 export const StretchRunnerScreen: FC<Props> = () => {
     useKeepAwake();
@@ -32,8 +41,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
 
     const routine = routines.find((r) => r.id === route.params.routineId);
 
-    // Ref-based timer state (no stale closures)
-    const T = useRef({ countdown: 0, phase: "stretch" as Phase, index: 0 });
+    const T = useRef<TimerRef>({ countdown: 0, phase: "stretch", index: 0 });
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     const [status, setStatus] = useState<Status>("running");
@@ -61,11 +69,18 @@ export const StretchRunnerScreen: FC<Props> = () => {
 
     const items = routine.items;
 
+    const getStretch = (idx: number) => STRETCHES.find((s) => s.id === items[idx]?.stretchId);
+
     const startTicking = () => {
         clearTimer();
         intervalRef.current = setInterval(() => {
             const t = T.current;
             t.countdown -= 1;
+
+            // Haptic countdown at 3, 2, 1 seconds during hold phases
+            if ((t.phase === "stretch" || t.phase === "bilateral") && t.countdown <= 3 && t.countdown > 0) {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+            }
 
             if (t.countdown > 0) {
                 setDisplayCountdown(t.countdown);
@@ -74,25 +89,22 @@ export const StretchRunnerScreen: FC<Props> = () => {
 
             // Phase ended
             if (t.phase === "stretch") {
-                const nextIndex = t.index + 1;
-                if (nextIndex >= items.length) {
-                    // Done!
-                    clearTimer();
-                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-                    logActivity("stretch");
-                    setStatus("done");
+                const stretch = getStretch(t.index);
+                if (stretch?.bilateral) {
+                    // Move to second side
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    t.phase = "bilateral";
+                    t.countdown = items[t.index].duration;
+                    setDisplayPhase("bilateral");
+                    setDisplayCountdown(items[t.index].duration);
                 } else {
-                    // Start swap phase
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-                    t.phase = "swap";
-                    t.index = nextIndex;
-                    t.countdown = SWAP_SECONDS;
-                    setDisplayPhase("swap");
-                    setDisplayIndex(nextIndex);
-                    setDisplayCountdown(SWAP_SECONDS);
+                    // No bilateral — advance to next
+                    advanceToNext(t);
                 }
+            } else if (t.phase === "bilateral") {
+                advanceToNext(t);
             } else {
-                // Swap ended → start next stretch
+                // swap ended → start next stretch
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                 t.phase = "stretch";
                 t.countdown = items[t.index].duration;
@@ -100,6 +112,25 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 setDisplayCountdown(items[t.index].duration);
             }
         }, 1000);
+    };
+
+    const advanceToNext = (t: TimerRef) => {
+        const nextIndex = t.index + 1;
+        if (nextIndex >= items.length) {
+            clearTimer();
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            logActivity("stretch");
+            logStreak();
+            setStatus("done");
+        } else {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+            t.phase = "swap";
+            t.index = nextIndex;
+            t.countdown = SWAP_SECONDS;
+            setDisplayPhase("swap");
+            setDisplayIndex(nextIndex);
+            setDisplayCountdown(SWAP_SECONDS);
+        }
     };
 
     // Auto-start on mount
@@ -113,15 +144,8 @@ export const StretchRunnerScreen: FC<Props> = () => {
         return clearTimer;
     }, []);
 
-    const handlePause = () => {
-        clearTimer();
-        setStatus("paused");
-    };
-
-    const handleResume = () => {
-        setStatus("running");
-        startTicking();
-    };
+    const handlePause = () => { clearTimer(); setStatus("paused"); };
+    const handleResume = () => { setStatus("running"); startTicking(); };
 
     const handleReset = () => {
         clearTimer();
@@ -150,6 +174,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
         if (nextIndex >= items.length) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             logActivity("stretch");
+            logStreak();
             setStatus("done");
             return;
         }
@@ -164,8 +189,11 @@ export const StretchRunnerScreen: FC<Props> = () => {
     // Derived
     const currentItem = items[displayIndex];
     const currentStretch = STRETCHES.find((s) => s.id === currentItem?.stretchId);
-    const phaseDuration = displayPhase === "stretch" ? currentItem?.duration ?? 0 : SWAP_SECONDS;
+    const phaseDuration =
+        displayPhase === "swap" ? SWAP_SECONDS : currentItem?.duration ?? 0;
     const progressPct = phaseDuration > 0 ? displayCountdown / phaseDuration : 0;
+
+    const sideLabel = displayPhase === "bilateral" ? "OTHER SIDE" : (currentStretch?.bilateral ? "FIRST SIDE" : null);
 
     // ─── Done screen ──────────────────────────────────────────────────────────
     if (status === "done") {
@@ -239,6 +267,11 @@ export const StretchRunnerScreen: FC<Props> = () => {
                     <Text style={[styles.stretchName, { color: colors.textPrimary }]}>
                         {currentStretch?.name ?? ""}
                     </Text>
+                    {sideLabel && (
+                        <Text style={[styles.sideLabel, { color: colors.primary }]}>
+                            {sideLabel}
+                        </Text>
+                    )}
                     <Text style={[styles.stretchPart, { color: colors.textSecondary }]}>
                         {currentStretch ? BODY_PART_LABELS[currentStretch.bodyPart] : ""}
                     </Text>
@@ -246,11 +279,11 @@ export const StretchRunnerScreen: FC<Props> = () => {
             )}
 
             {/* Stretch illustration */}
-            {displayPhase === "stretch" && currentStretch && (
+            {displayPhase !== "swap" && currentStretch && (
                 <StretchIllustration
                     stretchId={currentStretch.id}
                     size={88}
-                    color={colors.primary}
+                    color={displayPhase === "bilateral" ? colors.secondary : colors.primary}
                 />
             )}
 
@@ -261,7 +294,11 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 timeLabel={`${displayCountdown}`}
                 subLabel="seconds"
                 size={270}
-                color={displayPhase === "swap" ? colors.secondary : colors.primary}
+                color={
+                    displayPhase === "swap" ? colors.secondary
+                    : displayPhase === "bilateral" ? colors.secondary
+                    : colors.primary
+                }
                 bgColor={colors.backgroundSecondary}
                 textColor={colors.textPrimary}
                 subTextColor={colors.textSecondary}
@@ -273,7 +310,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
                     style={[
                         styles.progressFill,
                         {
-                            backgroundColor: displayPhase === "swap" ? colors.secondary : colors.primary,
+                            backgroundColor: displayPhase === "stretch" ? colors.primary : colors.secondary,
                             width: `${Math.max(0, progressPct * 100)}%`,
                         },
                     ]}
@@ -308,6 +345,13 @@ export const StretchRunnerScreen: FC<Props> = () => {
             {displayPhase === "stretch" && displayIndex < items.length - 1 && (
                 <Text style={[styles.nextUp, { color: colors.textSecondary }]}>
                     Next: {STRETCHES.find((s) => s.id === items[displayIndex + 1]?.stretchId)?.name}
+                </Text>
+            )}
+            {displayPhase === "bilateral" && (
+                <Text style={[styles.nextUp, { color: colors.textSecondary }]}>
+                    Then: {displayIndex < items.length - 1
+                        ? STRETCHES.find((s) => s.id === items[displayIndex + 1]?.stretchId)?.name
+                        : "Done!"}
                 </Text>
             )}
         </View>
@@ -345,6 +389,12 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         textAlign: "center",
         lineHeight: 38,
+    },
+    sideLabel: {
+        fontSize: 13,
+        fontWeight: "700",
+        letterSpacing: 2,
+        textTransform: "uppercase",
     },
     stretchPart: {
         fontSize: 16,

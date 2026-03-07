@@ -35,12 +35,21 @@ export const darkTheme: ThemeT = {
     success: "#00bb00",
 };
 
+export type ReminderConfig = {
+    enabled: boolean;
+    hour: number; // 0-23
+};
+
 type SettingsStore = {
     theme: "LIGHT" | "DARK";
     metricType: "METRIC" | "IMPERIAL";
     colors: ThemeT;
+    stretchReminder: ReminderConfig;
+    todoReminder: ReminderConfig;
     setTheme: (theme: "LIGHT" | "DARK") => void;
     setMetricType: (type: "METRIC" | "IMPERIAL") => void;
+    setStretchReminder: (config: ReminderConfig) => void;
+    setTodoReminder: (config: ReminderConfig) => void;
 };
 
 export const useSettingsStore = create<SettingsStore>()(
@@ -49,9 +58,13 @@ export const useSettingsStore = create<SettingsStore>()(
             theme: "LIGHT",
             metricType: "METRIC",
             colors: lightTheme,
+            stretchReminder: { enabled: false, hour: 8 },
+            todoReminder: { enabled: false, hour: 9 },
             setTheme: (theme) =>
                 set({ theme, colors: theme === "LIGHT" ? lightTheme : darkTheme }),
             setMetricType: (metricType) => set({ metricType }),
+            setStretchReminder: (config) => set({ stretchReminder: config }),
+            setTodoReminder: (config) => set({ todoReminder: config }),
         }),
         {
             name: "settings-storage",
