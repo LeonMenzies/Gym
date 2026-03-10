@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Recipe Name",
+    "description": "A short description of the dish.",
+    "prepMins": 10,
+    "cookMins": 25,
+    "servings": 4,
+    "ingredients": [
+      { "amount": "500", "unit": "g",   "name": "chicken breast" },
+      { "amount": "2",   "unit": "tbsp","name": "olive oil" },
+      { "amount": "3",   "unit": "piece","name": "garlic cloves, minced" },
+      { "amount": "1",   "unit": "tsp", "name": "paprika" },
+      { "amount": "",    "unit": "",    "name": "salt and pepper to taste" }
+    ],
+    "steps": [
+      "Preheat oven to 200°C.",
+      "Season chicken with paprika, salt and pepper.",
+      "Heat olive oil in an oven-safe pan over medium-high heat.",
+      "Sear chicken for 3 minutes per side until golden.",
+      "Add garlic and cook for 1 minute.",
+      "Transfer pan to oven and bake for 20 minutes until cooked through."
+    ]
+  }
+]

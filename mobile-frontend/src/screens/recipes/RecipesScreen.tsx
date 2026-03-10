@@ -1,6 +1,7 @@
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
+import * as DocumentPicker from "expo-document-picker";
 import { FC, useState } from "react";
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useTheme } from "~store/settingsStore";
 import { Recipe, useRecipeStore } from "~store/recipeStore";
 
@@ -17,8 +18,37 @@ function metaLabel(r: Recipe): string {
 
 export const RecipesScreen: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
-    const { recipes, addRecipe } = useRecipeStore();
+    const { recipes, addRecipe, importRecipes } = useRecipeStore();
     const [query, setQuery] = useState("");
+
+    const handleImport = async () => {
+        try {
+            const result = await DocumentPicker.getDocumentAsync({
+                type: ["application/json", "text/plain", "*/*"],
+                copyToCacheDirectory: true,
+            });
+            if (result.canceled || !result.assets?.[0]) return;
+
+            const uri = result.assets[0].uri;
+            const text = await fetch(uri).then((r) => r.text());
+            let parsed: unknown;
+            try {
+                parsed = JSON.parse(text);
+            } catch {
+                Alert.alert("Invalid file", "The file is not valid JSON.");
+                return;
+            }
+
+            const items = Array.isArray(parsed) ? parsed : [parsed];
+            const { imported, skipped } = importRecipes(items);
+            const msg = imported > 0
+                ? `Imported ${imported} recipe${imported !== 1 ? "s" : ""}${skipped > 0 ? ` (${skipped} skipped)` : ""}.`
+                : "No valid recipes found in the file.";
+            Alert.alert("Import complete", msg);
+        } catch {
+            Alert.alert("Error", "Could not read the file.");
+        }
+    };
 
     const filtered = query.trim()
         ? recipes.filter((r) => r.name.toLowerCase().includes(query.toLowerCase()))
@@ -76,6 +106,9 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <View style={styles.header}>
                 <Text style={[styles.title, { color: colors.textPrimary }]}>Recipes</Text>
+                <TouchableOpacity onPress={handleImport} style={styles.importBtn} hitSlop={8}>
+                    <Icon name="cloud-upload" size={20} color={colors.textSecondary} />
+                </TouchableOpacity>
             </View>
 
             <View style={[styles.searchRow, { backgroundColor: colors.backgroundSecondary }]}>
@@ -130,10 +163,16 @@ const styles = StyleSheet.create({
     header: {
         paddingHorizontal: 20,
         marginBottom: 16,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
     },
     title: {
         fontSize: 32,
         fontWeight: "700",
+    },
+    importBtn: {
+        padding: 4,
     },
     searchRow: {
         flexDirection: "row",

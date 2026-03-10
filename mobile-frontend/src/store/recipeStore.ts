@@ -31,6 +31,7 @@ type RecipeStore = {
     addRecipe: () => string;
     updateRecipe: (recipe: Recipe) => void;
     deleteRecipe: (id: string) => void;
+    importRecipes: (data: unknown[]) => { imported: number; skipped: number };
 };
 
 // ─── Unit helpers ─────────────────────────────────────────────────────────────
@@ -109,6 +110,57 @@ export const useRecipeStore = create<RecipeStore>()(
 
             deleteRecipe: (id) =>
                 set((s) => ({ recipes: s.recipes.filter((r) => r.id !== id) })),
+
+            importRecipes: (data) => {
+                const VALID_UNITS: IngredientUnit[] = ["", "g", "kg", "ml", "L", "tsp", "tbsp", "cup", "oz", "lb", "fl oz", "piece"];
+                let imported = 0;
+                let skipped = 0;
+                const toAdd: Recipe[] = [];
+
+                for (const item of data) {
+                    if (!item || typeof item !== "object") { skipped++; continue; }
+                    const r = item as Record<string, unknown>;
+                    if (typeof r.name !== "string") { skipped++; continue; }
+
+                    const ingredients: Ingredient[] = [];
+                    if (Array.isArray(r.ingredients)) {
+                        for (const ing of r.ingredients) {
+                            if (!ing || typeof ing !== "object") continue;
+                            const i = ing as Record<string, unknown>;
+                            const unit = typeof i.unit === "string" && VALID_UNITS.includes(i.unit as IngredientUnit)
+                                ? (i.unit as IngredientUnit) : "";
+                            ingredients.push({
+                                id: `ing_${Date.now()}_${Math.random()}`,
+                                amount: typeof i.amount === "string" ? i.amount : String(i.amount ?? ""),
+                                unit,
+                                name: typeof i.name === "string" ? i.name : "",
+                            });
+                        }
+                    }
+
+                    const steps: string[] = Array.isArray(r.steps)
+                        ? r.steps.filter((s) => typeof s === "string")
+                        : [];
+
+                    toAdd.push({
+                        id: `recipe_${Date.now()}_${Math.random()}`,
+                        name: r.name,
+                        description: typeof r.description === "string" ? r.description : "",
+                        ingredients,
+                        steps,
+                        prepMins: typeof r.prepMins === "number" ? r.prepMins : 0,
+                        cookMins: typeof r.cookMins === "number" ? r.cookMins : 0,
+                        servings: typeof r.servings === "number" ? r.servings : 2,
+                        createdAt: Date.now(),
+                    });
+                    imported++;
+                }
+
+                if (toAdd.length > 0) {
+                    set((s) => ({ recipes: [...toAdd, ...s.recipes] }));
+                }
+                return { imported, skipped };
+            },
         }),
         {
             name: "recipe-storage",
