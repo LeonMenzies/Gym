@@ -1,7 +1,6 @@
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
-import * as DocumentPicker from "expo-document-picker";
 import { FC, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, KeyboardAvoidingView, Modal, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useTheme } from "~store/settingsStore";
 import { Recipe, useRecipeStore } from "~store/recipeStore";
 
@@ -20,34 +19,26 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
     const { recipes, addRecipe, importRecipes } = useRecipeStore();
     const [query, setQuery] = useState("");
+    const [showImport, setShowImport] = useState(false);
+    const [jsonText, setJsonText] = useState("");
 
-    const handleImport = async () => {
+    const handleImport = () => {
+        let parsed: unknown;
         try {
-            const result = await DocumentPicker.getDocumentAsync({
-                type: ["application/json", "text/plain", "*/*"],
-                copyToCacheDirectory: true,
-            });
-            if (result.canceled || !result.assets?.[0]) return;
-
-            const uri = result.assets[0].uri;
-            const text = await fetch(uri).then((r) => r.text());
-            let parsed: unknown;
-            try {
-                parsed = JSON.parse(text);
-            } catch {
-                Alert.alert("Invalid file", "The file is not valid JSON.");
-                return;
-            }
-
-            const items = Array.isArray(parsed) ? parsed : [parsed];
-            const { imported, skipped } = importRecipes(items);
-            const msg = imported > 0
-                ? `Imported ${imported} recipe${imported !== 1 ? "s" : ""}${skipped > 0 ? ` (${skipped} skipped)` : ""}.`
-                : "No valid recipes found in the file.";
-            Alert.alert("Import complete", msg);
+            parsed = JSON.parse(jsonText.trim());
         } catch {
-            Alert.alert("Error", "Could not read the file.");
+            Alert.alert("Invalid JSON", "The text is not valid JSON.");
+            return;
         }
+
+        const items = Array.isArray(parsed) ? parsed : [parsed];
+        const { imported, skipped } = importRecipes(items);
+        const msg = imported > 0
+            ? `Imported ${imported} recipe${imported !== 1 ? "s" : ""}${skipped > 0 ? ` (${skipped} skipped)` : ""}.`
+            : "No valid recipes found.";
+        Alert.alert("Import complete", msg);
+        setShowImport(false);
+        setJsonText("");
     };
 
     const filtered = query.trim()
@@ -106,7 +97,7 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <View style={styles.header}>
                 <Text style={[styles.title, { color: colors.textPrimary }]}>Recipes</Text>
-                <TouchableOpacity onPress={handleImport} style={styles.importBtn} hitSlop={8}>
+                <TouchableOpacity onPress={() => setShowImport(true)} style={styles.importBtn} hitSlop={8}>
                     <Icon name="cloud-upload" size={20} color={colors.textSecondary} />
                 </TouchableOpacity>
             </View>
@@ -154,6 +145,40 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
             >
                 <Icon name="plus" size={22} color={colors.white} />
             </TouchableOpacity>
+
+            <Modal visible={showImport} animationType="slide" transparent>
+                <KeyboardAvoidingView
+                    style={styles.modalOverlay}
+                    behavior={Platform.OS === "ios" ? "padding" : undefined}
+                >
+                    <View style={[styles.modalSheet, { backgroundColor: colors.backgroundSecondary }]}>
+                        <View style={styles.modalHeader}>
+                            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Paste Recipe JSON</Text>
+                            <TouchableOpacity onPress={() => { setShowImport(false); setJsonText(""); }} hitSlop={8}>
+                                <Icon name="close" size={18} color={colors.textSecondary} />
+                            </TouchableOpacity>
+                        </View>
+                        <TextInput
+                            style={[styles.jsonInput, { backgroundColor: colors.background, color: colors.textPrimary }]}
+                            placeholder={'[\n  { "name": "My Recipe", ... }\n]'}
+                            placeholderTextColor={colors.grey}
+                            value={jsonText}
+                            onChangeText={setJsonText}
+                            multiline
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                            textAlignVertical="top"
+                        />
+                        <TouchableOpacity
+                            style={[styles.importConfirmBtn, { backgroundColor: colors.primary, opacity: jsonText.trim() ? 1 : 0.4 }]}
+                            onPress={handleImport}
+                            disabled={!jsonText.trim()}
+                        >
+                            <Text style={[styles.importConfirmText, { color: colors.white }]}>Import</Text>
+                        </TouchableOpacity>
+                    </View>
+                </KeyboardAvoidingView>
+            </Modal>
         </View>
     );
 };
@@ -234,4 +259,36 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
         elevation: 6,
     },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: "flex-end",
+        backgroundColor: "rgba(0,0,0,0.4)",
+    },
+    modalSheet: {
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        padding: 20,
+        paddingBottom: 40,
+        gap: 16,
+    },
+    modalHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    modalTitle: { fontSize: 18, fontWeight: "700" },
+    jsonInput: {
+        borderRadius: 12,
+        padding: 12,
+        fontSize: 13,
+        fontFamily: Platform.OS === "ios" ? "Menlo" : "monospace",
+        minHeight: 200,
+        maxHeight: 300,
+    },
+    importConfirmBtn: {
+        borderRadius: 12,
+        paddingVertical: 14,
+        alignItems: "center",
+    },
+    importConfirmText: { fontSize: 16, fontWeight: "600" },
 });

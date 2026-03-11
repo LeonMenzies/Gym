@@ -20,5 +20,56 @@
       "Add garlic and cook for 1 minute.",
       "Transfer pan to oven and bake for 20 minutes until cooked through."
     ]
+  },
+  {
+    "name": "Beef & Bell Pepper Pasta",
+    "description": "A quick and hearty pasta with ground beef, bell peppers, and spinach in a rich tomato sauce. Great for meal prep.",
+    "prepMins": 5,
+    "cookMins": 20,
+    "servings": 4,
+    "ingredients": [
+      { "amount": "500", "unit": "g",     "name": "ground beef" },
+      { "amount": "400", "unit": "g",     "name": "pasta" },
+      { "amount": "2",   "unit": "piece", "name": "bell peppers, diced" },
+      { "amount": "2",   "unit": "piece", "name": "large handfuls spinach" },
+      { "amount": "1",   "unit": "jar",   "name": "pasta sauce" },
+      { "amount": "3",   "unit": "piece", "name": "garlic cloves, minced" },
+      { "amount": "",    "unit": "",      "name": "salt and pepper to taste" },
+      { "amount": "",    "unit": "",      "name": "parmesan to serve" }
+    ],
+    "steps": [
+      "Cook pasta according to package instructions, then set aside.",
+      "Brown ground beef in a pan over medium-high heat, drain excess fat.",
+      "Add garlic and bell peppers, cook for 3-4 minutes.",
+      "Pour in pasta sauce and simmer for 5 minutes.",
+      "Stir in spinach and cook for 1 minute until wilted.",
+      "Toss with pasta and top with parmesan."
+    ]
+  },
+  {
+    "name": "Ground Beef Chili",
+    "description": "A high-protein, filling chili that batch cooks easily and keeps all week. Serve with rice or on its own.",
+    "prepMins": 10,
+    "cookMins": 40,
+    "servings": 6,
+    "ingredients": [
+      { "amount": "1000", "unit": "g",     "name": "ground beef" },
+      { "amount": "2",    "unit": "can",   "name": "kidney beans, drained" },
+      { "amount": "2",    "unit": "can",   "name": "diced tomatoes" },
+      { "amount": "1",    "unit": "can",   "name": "tomato paste" },
+      { "amount": "2",    "unit": "piece", "name": "bell peppers, diced" },
+      { "amount": "3",    "unit": "piece", "name": "garlic cloves, minced" },
+      { "amount": "2",    "unit": "tsp",   "name": "chili powder" },
+      { "amount": "1",    "unit": "tsp",   "name": "cumin" },
+      { "amount": "",     "unit": "",      "name": "salt and pepper to taste" }
+    ],
+    "steps": [
+      "Brown ground beef in a large pot, drain excess fat.",
+      "Add garlic and bell peppers, cook for 2-3 minutes.",
+      "Add kidney beans, diced tomatoes, tomato paste, and all spices.",
+      "Stir well and bring to a boil.",
+      "Reduce heat and simmer for 30-40 minutes. Alternatively, transfer to a slow cooker and cook on low for 6 hours.",
+      "Serve with rice or on its own."
+    ]
   }
 ]
