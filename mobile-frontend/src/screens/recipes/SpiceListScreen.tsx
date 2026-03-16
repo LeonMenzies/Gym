@@ -10,6 +10,7 @@ export const SpiceListScreen: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
     const { spices, addSpice, removeSpice } = useRecipeStore();
     const [newSpice, setNewSpice] = useState("");
+    const [search, setSearch] = useState("");
 
     const handleAdd = () => {
         const trimmed = newSpice.trim();
@@ -28,6 +29,10 @@ export const SpiceListScreen: FC<Props> = ({ navigation }) => {
             { text: "Remove", style: "destructive", onPress: () => removeSpice(name) },
         ]);
     };
+
+    const filtered = search.trim()
+        ? spices.filter((sp) => sp.toLowerCase().includes(search.toLowerCase()))
+        : spices;
 
     const s = styles(colors);
 
@@ -61,12 +66,33 @@ export const SpiceListScreen: FC<Props> = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            <Text style={[s.count, { color: colors.textSecondary }]}>{spices.length} spices</Text>
+            <View style={[s.searchRow, { backgroundColor: colors.backgroundSecondary }]}>
+                <Icon name="magnifier" size={13} color={colors.grey} style={{ marginRight: 6 }} />
+                <TextInput
+                    style={[s.searchInput, { color: colors.textPrimary }]}
+                    placeholder="Search spices..."
+                    placeholderTextColor={colors.grey}
+                    value={search}
+                    onChangeText={setSearch}
+                    autoCorrect={false}
+                    returnKeyType="search"
+                />
+                {search.length > 0 && (
+                    <TouchableOpacity onPress={() => setSearch("")} hitSlop={8}>
+                        <Icon name="close" size={12} color={colors.grey} />
+                    </TouchableOpacity>
+                )}
+            </View>
+
+            <Text style={[s.count, { color: colors.textSecondary }]}>
+                {search.trim() ? `${filtered.length} of ${spices.length}` : `${spices.length}`} spices
+            </Text>
 
             <FlatList
-                data={spices}
+                data={filtered}
                 keyExtractor={(sp) => sp}
                 contentContainerStyle={s.list}
+                keyboardShouldPersistTaps="handled"
                 renderItem={({ item }) => (
                     <View style={[s.row, { backgroundColor: colors.backgroundSecondary }]}>
                         <Text style={[s.spiceName, { color: colors.textPrimary }]}>{item}</Text>
@@ -110,6 +136,16 @@ const styles = (colors: any) => StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
+    searchRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginHorizontal: 20,
+        borderRadius: 12,
+        paddingHorizontal: 12,
+        paddingVertical: 4,
+        marginBottom: 8,
+    },
+    searchInput: { flex: 1, fontSize: 14, paddingVertical: 9 },
     count: { fontSize: 13, paddingHorizontal: 20, marginBottom: 8 },
     list: { paddingHorizontal: 20, gap: 8, paddingBottom: 40 },
     row: {

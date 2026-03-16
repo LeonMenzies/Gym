@@ -65,6 +65,7 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
     );
     const [steps, setSteps] = useState<string[]>(original?.steps ?? []);
     const [spiceSearch, setSpiceSearch] = useState("");
+    const [showSpiceList, setShowSpiceList] = useState(false);
 
     const isDirty = useRef(false);
     useEffect(() => { isDirty.current = true; }, [name, description, prepMins, cookMins, servings, ingredients, steps]);
@@ -218,13 +219,9 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
                     </View>
                 )}
 
-                {/* ── Seasoning: inline spice browser ─────────────────────── */}
-                {isSeasoning && (
+                {/* ── Seasoning: spice picker (collapsed by default) ───────── */}
+                {isSeasoning && showSpiceList && (
                     <View style={s.section}>
-                        <View style={s.sectionHeader}>
-                            <Text style={[s.sectionTitle, { color: colors.textPrimary }]}>Add Spices</Text>
-                        </View>
-
                         <View style={[s.spiceSearchRow, { backgroundColor: colors.backgroundSecondary }]}>
                             <Icon name="magnifier" size={13} color={colors.grey} style={{ marginRight: 6 }} />
                             <TextInput
@@ -235,6 +232,7 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
                                 onChangeText={setSpiceSearch}
                                 autoCorrect={false}
                                 returnKeyType="search"
+                                autoFocus
                             />
                             {spiceSearch.length > 0 && (
                                 <TouchableOpacity onPress={() => setSpiceSearch("")} hitSlop={8}>
@@ -243,43 +241,39 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
                             )}
                         </View>
 
-                        <View style={[s.spiceGrid, { backgroundColor: colors.backgroundSecondary }]}>
-                            {filteredSpices.length === 0 && (
-                                <Text style={[s.emptyHint, { color: colors.grey }]}>No spices match</Text>
-                            )}
-                            {filteredSpices.map((spice) => {
-                                const added = ingredients.some(
-                                    (ing) => ing.name.toLowerCase() === spice.toLowerCase()
-                                );
-                                return (
-                                    <TouchableOpacity
-                                        key={spice}
-                                        style={[
-                                            s.spiceChip,
-                                            added
-                                                ? { backgroundColor: colors.primary }
-                                                : { backgroundColor: colors.background },
-                                        ]}
-                                        onPress={() => {
-                                            if (added) {
-                                                const ing = ingredients.find(
-                                                    (i) => i.name.toLowerCase() === spice.toLowerCase()
-                                                );
-                                                if (ing) removeIngredient(ing.id);
-                                            } else {
-                                                addSpiceToMix(spice);
-                                            }
-                                        }}
-                                        activeOpacity={0.7}
-                                    >
-                                        <Text style={[s.spiceChipText, { color: added ? colors.white : colors.textPrimary }]}>
-                                            {spice}
-                                        </Text>
-                                        {added && <Icon name="check" size={11} color={colors.white} style={{ marginLeft: 4 }} />}
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
+                        {filteredSpices.length === 0 && (
+                            <Text style={[s.emptyHint, { color: colors.grey }]}>No spices match</Text>
+                        )}
+                        {filteredSpices.map((spice) => {
+                            const added = ingredients.some(
+                                (ing) => ing.name.toLowerCase() === spice.toLowerCase()
+                            );
+                            return (
+                                <TouchableOpacity
+                                    key={spice}
+                                    style={[s.spiceRow, { backgroundColor: colors.backgroundSecondary }]}
+                                    onPress={() => {
+                                        if (added) {
+                                            const ing = ingredients.find(
+                                                (i) => i.name.toLowerCase() === spice.toLowerCase()
+                                            );
+                                            if (ing) removeIngredient(ing.id);
+                                        } else {
+                                            addSpiceToMix(spice);
+                                        }
+                                    }}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={[s.spiceRowText, { color: added ? colors.grey : colors.textPrimary }]}>
+                                        {spice}
+                                    </Text>
+                                    {added
+                                        ? <Icon name="check" size={14} color={colors.primary} />
+                                        : <Icon name="plus" size={14} color={colors.primary} />
+                                    }
+                                </TouchableOpacity>
+                            );
+                        })}
                     </View>
                 )}
 
@@ -298,7 +292,17 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
                                     </Text>
                                 </TouchableOpacity>
                             )}
-                            {!isSeasoning && (
+                            {isSeasoning ? (
+                                <TouchableOpacity
+                                    onPress={() => { setShowSpiceList((v) => !v); setSpiceSearch(""); }}
+                                    style={[s.actionBtn, { backgroundColor: showSpiceList ? colors.primary : colors.backgroundSecondary }]}
+                                >
+                                    <Icon name="plus" size={13} color={showSpiceList ? colors.white : colors.primary} />
+                                    <Text style={[s.actionBtnText, { color: showSpiceList ? colors.white : colors.primary }]}>
+                                        Add Spice
+                                    </Text>
+                                </TouchableOpacity>
+                            ) : (
                                 <TouchableOpacity onPress={addIngredient} style={[s.addBtn, { backgroundColor: colors.backgroundSecondary }]}>
                                     <Icon name="plus" size={14} color={colors.primary} />
                                 </TouchableOpacity>
@@ -471,21 +475,15 @@ const styles = (colors: any) =>
             fontSize: 14,
             paddingVertical: 9,
         },
-        spiceGrid: {
-            flexDirection: "row",
-            flexWrap: "wrap",
-            gap: 8,
-            borderRadius: 14,
-            padding: 12,
-        },
-        spiceChip: {
+        spiceRow: {
             flexDirection: "row",
             alignItems: "center",
-            paddingHorizontal: 12,
-            paddingVertical: 7,
-            borderRadius: 20,
+            justifyContent: "space-between",
+            borderRadius: 12,
+            paddingHorizontal: 14,
+            paddingVertical: 13,
         },
-        spiceChipText: { fontSize: 14 },
+        spiceRowText: { fontSize: 15 },
         // ── Ingredient rows ───────────────────────────────────────────────────────
         ingredientRow: {
             flexDirection: "row",
