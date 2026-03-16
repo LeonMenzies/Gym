@@ -99,9 +99,16 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <View style={styles.header}>
                 <Text style={[styles.title, { color: colors.textPrimary }]}>Recipes</Text>
-                <TouchableOpacity onPress={() => setShowImport(true)} style={styles.importBtn} hitSlop={8}>
-                    <Icon name="cloud-upload" size={20} color={colors.textSecondary} />
-                </TouchableOpacity>
+                <View style={styles.headerRight}>
+                    {tab === "seasoning" && (
+                        <TouchableOpacity onPress={() => navigation.navigate("SpiceList")} style={styles.importBtn} hitSlop={8}>
+                            <Icon name="settings" size={18} color={colors.textSecondary} />
+                        </TouchableOpacity>
+                    )}
+                    <TouchableOpacity onPress={() => setShowImport(true)} style={styles.importBtn} hitSlop={8}>
+                        <Icon name="cloud-upload" size={20} color={colors.textSecondary} />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <View style={[styles.segmentRow, { backgroundColor: colors.backgroundSecondary }]}>
@@ -216,6 +223,7 @@ const styles = StyleSheet.create({
         fontSize: 32,
         fontWeight: "700",
     },
+    headerRight: { flexDirection: "row", alignItems: "center", gap: 4 },
     importBtn: {
         padding: 4,
     },

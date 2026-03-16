@@ -31,10 +31,13 @@ export type Recipe = {
 
 type RecipeStore = {
     recipes: Recipe[];
+    spices: string[];
     addRecipe: (type?: RecipeType) => string;
     updateRecipe: (recipe: Recipe) => void;
     deleteRecipe: (id: string) => void;
     importRecipes: (data: unknown[]) => { imported: number; skipped: number };
+    addSpice: (name: string) => void;
+    removeSpice: (name: string) => void;
 };
 
 // ─── Common spices list ───────────────────────────────────────────────────────
@@ -143,6 +146,7 @@ export const useRecipeStore = create<RecipeStore>()(
     persist(
         (set) => ({
             recipes: [],
+            spices: [...COMMON_SPICES],
 
             addRecipe: (type = "recipe") => {
                 const id = `recipe_${Date.now()}`;
@@ -209,20 +213,34 @@ export const useRecipeStore = create<RecipeStore>()(
                 }
                 return { imported, skipped };
             },
+
+            addSpice: (name) =>
+                set((s) => {
+                    const trimmed = name.trim();
+                    if (!trimmed || s.spices.includes(trimmed)) return s;
+                    return { spices: [...s.spices, trimmed].sort((a, b) => a.localeCompare(b)) };
+                }),
+
+            removeSpice: (name) =>
+                set((s) => ({ spices: s.spices.filter((sp) => sp !== name) })),
         }),
         {
             name: "recipe-storage",
             storage: createJSONStorage(() => AsyncStorage),
-            version: 1,
+            version: 2,
             migrate: (state: unknown, version: number) => {
-                const s = (state ?? {}) as { recipes?: Recipe[] };
+                const s = (state ?? {}) as { recipes?: Recipe[]; spices?: string[] };
                 if (version === 0) {
-                    // Seed built-in seasonings for first-time / existing users
                     const already = (s.recipes ?? []).some((r) => r.id === CLUBHOUSE_BBQ_CHICKEN.id);
                     return {
                         ...s,
                         recipes: already ? s.recipes : [CLUBHOUSE_BBQ_CHICKEN, ...(s.recipes ?? [])],
+                        spices: [...COMMON_SPICES],
                     };
+                }
+                if (version === 1) {
+                    // Add spices list to existing installs
+                    return { ...s, spices: [...COMMON_SPICES] };
                 }
                 return s;
             },
