@@ -2,7 +2,9 @@ import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { FC, useEffect, useRef, useState } from "react";
 import {
     Alert,
+    FlatList,
     KeyboardAvoidingView,
+    Modal,
     Platform,
     ScrollView,
     StyleSheet,
@@ -12,7 +14,7 @@ import {
     View,
 } from "react-native";
 import { useTheme } from "~store/settingsStore";
-import { Ingredient, IngredientUnit, Recipe, convertIngredients, detectSystem, useRecipeStore } from "~store/recipeStore";
+import { COMMON_SPICES, Ingredient, IngredientUnit, Recipe, convertIngredients, detectSystem, useRecipeStore } from "~store/recipeStore";
 import { useTodoStore } from "~store/todoStore";
 
 type Props = {
@@ -63,6 +65,9 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
         (original?.ingredients ?? []).map((ing) => ({ unit: "" as IngredientUnit, ...ing }))
     );
     const [steps, setSteps] = useState<string[]>(original?.steps ?? []);
+
+    const [showSpicePicker, setShowSpicePicker] = useState(false);
+    const [spiceSearch, setSpiceSearch] = useState("");
 
     const isDirty = useRef(false);
     useEffect(() => { isDirty.current = true; }, [name, description, prepMins, cookMins, servings, ingredients, steps]);
@@ -228,6 +233,12 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
                                     </Text>
                                 </TouchableOpacity>
                             )}
+                            {isSeasoning && (
+                                <TouchableOpacity onPress={() => { setSpiceSearch(""); setShowSpicePicker(true); }} style={[s.actionBtn, { backgroundColor: colors.backgroundSecondary }]}>
+                                    <Icon name="list" size={13} color={colors.primary} />
+                                    <Text style={[s.actionBtnText, { color: colors.primary }]}>spices</Text>
+                                </TouchableOpacity>
+                            )}
                             <TouchableOpacity onPress={addIngredient} style={[s.addBtn, { backgroundColor: colors.backgroundSecondary }]}>
                                 <Icon name="plus" size={14} color={colors.primary} />
                             </TouchableOpacity>
@@ -308,6 +319,70 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
 
                 <View style={{ height: 60 }} />
             </ScrollView>
+            {/* Spice picker modal */}
+            <Modal visible={showSpicePicker} animationType="slide" transparent>
+                <View style={s.spiceOverlay}>
+                    <View style={[s.spiceSheet, { backgroundColor: colors.backgroundSecondary }]}>
+                        <View style={s.spiceHeader}>
+                            <Text style={[s.spiceTitle, { color: colors.textPrimary }]}>Pick a Spice</Text>
+                            <TouchableOpacity onPress={() => setShowSpicePicker(false)} hitSlop={8}>
+                                <Icon name="close" size={18} color={colors.textSecondary} />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={[s.spiceSearchRow, { backgroundColor: colors.background }]}>
+                            <Icon name="magnifier" size={13} color={colors.grey} style={{ marginRight: 6 }} />
+                            <TextInput
+                                style={[s.spiceSearchInput, { color: colors.textPrimary }]}
+                                placeholder="Search spices..."
+                                placeholderTextColor={colors.grey}
+                                value={spiceSearch}
+                                onChangeText={setSpiceSearch}
+                                autoCorrect={false}
+                            />
+                            {spiceSearch.length > 0 && (
+                                <TouchableOpacity onPress={() => setSpiceSearch("")}>
+                                    <Icon name="close" size={12} color={colors.grey} />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                        <FlatList
+                            data={COMMON_SPICES.filter((sp) =>
+                                sp.toLowerCase().includes(spiceSearch.toLowerCase())
+                            )}
+                            keyExtractor={(sp) => sp}
+                            keyboardShouldPersistTaps="handled"
+                            style={s.spiceList}
+                            renderItem={({ item: spice }) => {
+                                const already = ingredients.some(
+                                    (ing) => ing.name.toLowerCase() === spice.toLowerCase()
+                                );
+                                return (
+                                    <TouchableOpacity
+                                        style={[s.spiceRow, { borderBottomColor: colors.background }]}
+                                        onPress={() => {
+                                            if (!already) {
+                                                setIngredients((prev) => [
+                                                    ...prev,
+                                                    { id: `ing_${Date.now()}`, amount: "", unit: "", name: spice },
+                                                ]);
+                                            }
+                                        }}
+                                        activeOpacity={already ? 1 : 0.6}
+                                    >
+                                        <Text style={[s.spiceName, { color: already ? colors.grey : colors.textPrimary }]}>
+                                            {spice}
+                                        </Text>
+                                        {already
+                                            ? <Icon name="check" size={14} color={colors.primary} />
+                                            : <Icon name="plus" size={14} color={colors.primary} />
+                                        }
+                                    </TouchableOpacity>
+                                );
+                            }}
+                        />
+                    </View>
+                </View>
+            </Modal>
         </KeyboardAvoidingView>
     );
 };
@@ -425,4 +500,46 @@ const styles = (colors: any) =>
         },
         stepNumberText: { fontSize: 12, fontWeight: "700" },
         stepInput: { flex: 1, fontSize: 14, lineHeight: 20 },
+        spiceOverlay: {
+            flex: 1,
+            justifyContent: "flex-end",
+            backgroundColor: "rgba(0,0,0,0.4)",
+        },
+        spiceSheet: {
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            paddingTop: 20,
+            paddingHorizontal: 20,
+            paddingBottom: 40,
+            maxHeight: "75%",
+        },
+        spiceHeader: {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 14,
+        },
+        spiceTitle: { fontSize: 18, fontWeight: "700" },
+        spiceSearchRow: {
+            flexDirection: "row",
+            alignItems: "center",
+            borderRadius: 10,
+            paddingHorizontal: 10,
+            paddingVertical: 4,
+            marginBottom: 10,
+        },
+        spiceSearchInput: {
+            flex: 1,
+            fontSize: 14,
+            paddingVertical: 8,
+        },
+        spiceList: { flex: 1 },
+        spiceRow: {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingVertical: 13,
+            borderBottomWidth: StyleSheet.hairlineWidth,
+        },
+        spiceName: { fontSize: 15 },
     });

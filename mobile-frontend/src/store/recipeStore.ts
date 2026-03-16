@@ -37,6 +37,49 @@ type RecipeStore = {
     importRecipes: (data: unknown[]) => { imported: number; skipped: number };
 };
 
+// ─── Common spices list ───────────────────────────────────────────────────────
+
+export const COMMON_SPICES = [
+    "Allspice", "Basil", "Bay leaf", "Black pepper", "Brown sugar",
+    "Cardamom", "Caraway seeds", "Cayenne", "Celery salt", "Chili flakes",
+    "Chili powder", "Cinnamon", "Citric acid", "Cloves", "Coriander",
+    "Cornstarch", "Cream of tartar", "Cumin", "Curry powder", "Dill",
+    "Fennel seeds", "Five spice", "Garam masala", "Garlic powder", "Ginger",
+    "Kosher salt", "Lemon pepper", "Marjoram", "MSG", "Mustard powder",
+    "Nutmeg", "Onion powder", "Oregano", "Paprika", "Parsley",
+    "Rosemary", "Sage", "Salt", "Sea salt", "Smoked paprika",
+    "Star anise", "Sugar", "Sumac", "Thyme", "Turmeric",
+    "Vanilla", "White pepper", "Za'atar",
+];
+
+// ─── Seeded data ──────────────────────────────────────────────────────────────
+
+const CLUBHOUSE_BBQ_CHICKEN: Recipe = {
+    id: "seasoning_clubhouse_bbq_chicken_v1",
+    type: "seasoning",
+    name: "Club House La Grille BBQ Chicken Seasoning",
+    description: "Makes ~200g. Mix together and store in an airtight jar.",
+    ingredients: [
+        { id: "cs_1",  amount: "6",   unit: "tbsp", name: "Salt" },
+        { id: "cs_2",  amount: "3",   unit: "tbsp", name: "Paprika" },
+        { id: "cs_3",  amount: "1",   unit: "tbsp", name: "Smoked paprika" },
+        { id: "cs_4",  amount: "2",   unit: "tbsp", name: "Garlic powder" },
+        { id: "cs_5",  amount: "2",   unit: "tbsp", name: "Onion powder" },
+        { id: "cs_6",  amount: "1.5", unit: "tbsp", name: "Sugar" },
+        { id: "cs_7",  amount: "1",   unit: "tsp",  name: "Black pepper" },
+        { id: "cs_8",  amount: "1",   unit: "tsp",  name: "Cumin" },
+        { id: "cs_9",  amount: "0.5", unit: "tsp",  name: "Cayenne" },
+        { id: "cs_10", amount: "1",   unit: "tsp",  name: "Cornstarch" },
+        { id: "cs_11", amount: "0.5", unit: "tsp",  name: "Citric acid" },
+        { id: "cs_12", amount: "0.5", unit: "tsp",  name: "MSG" },
+    ],
+    steps: [],
+    prepMins: 0,
+    cookMins: 0,
+    servings: 1,
+    createdAt: 1710000000000,
+};
+
 // ─── Unit helpers ─────────────────────────────────────────────────────────────
 
 const METRIC_UNITS: IngredientUnit[] = ["g", "kg", "ml", "L"];
@@ -170,6 +213,19 @@ export const useRecipeStore = create<RecipeStore>()(
         {
             name: "recipe-storage",
             storage: createJSONStorage(() => AsyncStorage),
+            version: 1,
+            migrate: (state: unknown, version: number) => {
+                const s = (state ?? {}) as { recipes?: Recipe[] };
+                if (version === 0) {
+                    // Seed built-in seasonings for first-time / existing users
+                    const already = (s.recipes ?? []).some((r) => r.id === CLUBHOUSE_BBQ_CHICKEN.id);
+                    return {
+                        ...s,
+                        recipes: already ? s.recipes : [CLUBHOUSE_BBQ_CHICKEN, ...(s.recipes ?? [])],
+                    };
+                }
+                return s;
+            },
         }
     )
 );
