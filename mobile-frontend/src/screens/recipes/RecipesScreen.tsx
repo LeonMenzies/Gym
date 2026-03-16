@@ -2,7 +2,7 @@ import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { FC, useState } from "react";
 import { Alert, FlatList, KeyboardAvoidingView, Modal, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useTheme } from "~store/settingsStore";
-import { Recipe, useRecipeStore } from "~store/recipeStore";
+import { Recipe, RecipeType, useRecipeStore } from "~store/recipeStore";
 
 type Props = {
     navigation: any;
@@ -19,6 +19,7 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
     const colors = useTheme();
     const { recipes, addRecipe, importRecipes } = useRecipeStore();
     const [query, setQuery] = useState("");
+    const [tab, setTab] = useState<RecipeType>("recipe");
     const [showImport, setShowImport] = useState(false);
     const [jsonText, setJsonText] = useState("");
 
@@ -41,12 +42,13 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
         setJsonText("");
     };
 
+    const tabRecipes = recipes.filter((r) => (r.type ?? "recipe") === tab);
     const filtered = query.trim()
-        ? recipes.filter((r) => r.name.toLowerCase().includes(query.toLowerCase()))
-        : recipes;
+        ? tabRecipes.filter((r) => r.name.toLowerCase().includes(query.toLowerCase()))
+        : tabRecipes;
 
     const handleNew = () => {
-        const id = addRecipe();
+        const id = addRecipe(tab);
         navigation.navigate("RecipeEditor", { recipeId: id });
     };
 
@@ -58,7 +60,7 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
         >
             <View style={styles.cardBody}>
                 <Text style={[styles.cardName, { color: colors.textPrimary }]} numberOfLines={1}>
-                    {item.name || "Untitled recipe"}
+                    {item.name || (item.type === "seasoning" ? "Untitled seasoning" : "Untitled recipe")}
                 </Text>
                 {item.description.length > 0 && (
                     <Text style={[styles.cardDesc, { color: colors.textSecondary }]} numberOfLines={2}>
@@ -102,11 +104,25 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
 
+            <View style={[styles.segmentRow, { backgroundColor: colors.backgroundSecondary }]}>
+                {(["recipe", "seasoning"] as RecipeType[]).map((t) => (
+                    <TouchableOpacity
+                        key={t}
+                        style={[styles.segmentBtn, tab === t && { backgroundColor: colors.primary }]}
+                        onPress={() => { setTab(t); setQuery(""); }}
+                    >
+                        <Text style={[styles.segmentText, { color: tab === t ? colors.white : colors.textSecondary }]}>
+                            {t === "recipe" ? "Recipes" : "Seasonings"}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+
             <View style={[styles.searchRow, { backgroundColor: colors.backgroundSecondary }]}>
                 <Icon name="magnifier" size={14} color={colors.grey} style={styles.searchIcon} />
                 <TextInput
                     style={[styles.searchInput, { color: colors.textPrimary }]}
-                    placeholder="Search recipes..."
+                    placeholder={tab === "seasoning" ? "Search seasonings..." : "Search recipes..."}
                     placeholderTextColor={colors.grey}
                     value={query}
                     onChangeText={setQuery}
@@ -121,11 +137,15 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
             {filtered.length === 0 ? (
                 <View style={styles.empty}>
                     <Text style={[styles.emptyTitle, { color: colors.textPrimary }]}>
-                        {query ? "No matching recipes" : "No recipes yet"}
+                        {query
+                            ? `No matching ${tab === "seasoning" ? "seasonings" : "recipes"}`
+                            : `No ${tab === "seasoning" ? "seasonings" : "recipes"} yet`}
                     </Text>
                     {!query && (
                         <Text style={[styles.emptyHint, { color: colors.textSecondary }]}>
-                            Tap + to add your first recipe
+                            {tab === "seasoning"
+                                ? "Tap + to save your first seasoning mix"
+                                : "Tap + to add your first recipe"}
                         </Text>
                     )}
                 </View>
@@ -198,6 +218,23 @@ const styles = StyleSheet.create({
     },
     importBtn: {
         padding: 4,
+    },
+    segmentRow: {
+        flexDirection: "row",
+        marginHorizontal: 20,
+        marginBottom: 12,
+        borderRadius: 12,
+        padding: 4,
+    },
+    segmentBtn: {
+        flex: 1,
+        paddingVertical: 8,
+        borderRadius: 9,
+        alignItems: "center",
+    },
+    segmentText: {
+        fontSize: 14,
+        fontWeight: "600",
     },
     searchRow: {
         flexDirection: "row",

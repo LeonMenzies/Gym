@@ -99,8 +99,10 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
         );
     };
 
+    const isSeasoning = original?.type === "seasoning";
+
     const handleDelete = () => {
-        Alert.alert("Delete Recipe", "Are you sure?", [
+        Alert.alert(`Delete ${isSeasoning ? "Seasoning" : "Recipe"}`, "Are you sure?", [
             { text: "Cancel", style: "cancel" },
             { text: "Delete", style: "destructive", onPress: () => { deleteRecipe(recipeId); navigation.goBack(); } },
         ]);
@@ -171,7 +173,7 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
                 {/* Name */}
                 <TextInput
                     style={[s.titleInput, { color: colors.textPrimary }]}
-                    placeholder="Recipe name"
+                    placeholder={isSeasoning ? "Seasoning name" : "Recipe name"}
                     placeholderTextColor={colors.grey}
                     value={name}
                     onChangeText={setName}
@@ -190,26 +192,28 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
                     returnKeyType="default"
                 />
 
-                {/* Meta row */}
-                <View style={s.metaRow}>
-                    {[
-                        { label: "Prep (min)", value: prepMins, set: setPrepMins },
-                        { label: "Cook (min)", value: cookMins, set: setCookMins },
-                        { label: "Serves",     value: servings,  set: setServings },
-                    ].map(({ label, value, set }) => (
-                        <View key={label} style={s.metaField}>
-                            <Text style={[s.metaLabel, { color: colors.textSecondary }]}>{label}</Text>
-                            <TextInput
-                                style={[s.metaInput, { color: colors.textPrimary, backgroundColor: colors.backgroundSecondary }]}
-                                value={value}
-                                onChangeText={set}
-                                keyboardType="number-pad"
-                                placeholder="0"
-                                placeholderTextColor={colors.grey}
-                            />
-                        </View>
-                    ))}
-                </View>
+                {/* Meta row — hidden for seasonings */}
+                {!isSeasoning && (
+                    <View style={s.metaRow}>
+                        {[
+                            { label: "Prep (min)", value: prepMins, set: setPrepMins },
+                            { label: "Cook (min)", value: cookMins, set: setCookMins },
+                            { label: "Serves",     value: servings,  set: setServings },
+                        ].map(({ label, value, set }) => (
+                            <View key={label} style={s.metaField}>
+                                <Text style={[s.metaLabel, { color: colors.textSecondary }]}>{label}</Text>
+                                <TextInput
+                                    style={[s.metaInput, { color: colors.textPrimary, backgroundColor: colors.backgroundSecondary }]}
+                                    value={value}
+                                    onChangeText={set}
+                                    keyboardType="number-pad"
+                                    placeholder="0"
+                                    placeholderTextColor={colors.grey}
+                                />
+                            </View>
+                        ))}
+                    </View>
+                )}
 
                 {/* Ingredients */}
                 <View style={s.section}>
@@ -267,38 +271,40 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
                     ))}
                 </View>
 
-                {/* Steps */}
-                <View style={s.section}>
-                    <View style={s.sectionHeader}>
-                        <Text style={[s.sectionTitle, { color: colors.textPrimary }]}>Steps</Text>
-                        <TouchableOpacity onPress={addStep} style={[s.addBtn, { backgroundColor: colors.backgroundSecondary }]}>
-                            <Icon name="plus" size={14} color={colors.primary} />
-                        </TouchableOpacity>
-                    </View>
-
-                    {steps.length === 0 && (
-                        <Text style={[s.emptyHint, { color: colors.grey }]}>No steps yet</Text>
-                    )}
-
-                    {steps.map((step, index) => (
-                        <View key={index} style={[s.stepRow, { backgroundColor: colors.backgroundSecondary }]}>
-                            <View style={[s.stepNumber, { backgroundColor: colors.primary }]}>
-                                <Text style={[s.stepNumberText, { color: colors.white }]}>{index + 1}</Text>
-                            </View>
-                            <TextInput
-                                style={[s.stepInput, { color: colors.textPrimary }]}
-                                placeholder={`Step ${index + 1}`}
-                                placeholderTextColor={colors.grey}
-                                value={step}
-                                onChangeText={(v) => updateStep(index, v)}
-                                multiline
-                            />
-                            <TouchableOpacity onPress={() => removeStep(index)} style={s.removeBtn}>
-                                <Icon name="close" size={12} color={colors.grey} />
+                {/* Steps — hidden for seasonings */}
+                {!isSeasoning && (
+                    <View style={s.section}>
+                        <View style={s.sectionHeader}>
+                            <Text style={[s.sectionTitle, { color: colors.textPrimary }]}>Steps</Text>
+                            <TouchableOpacity onPress={addStep} style={[s.addBtn, { backgroundColor: colors.backgroundSecondary }]}>
+                                <Icon name="plus" size={14} color={colors.primary} />
                             </TouchableOpacity>
                         </View>
-                    ))}
-                </View>
+
+                        {steps.length === 0 && (
+                            <Text style={[s.emptyHint, { color: colors.grey }]}>No steps yet</Text>
+                        )}
+
+                        {steps.map((step, index) => (
+                            <View key={index} style={[s.stepRow, { backgroundColor: colors.backgroundSecondary }]}>
+                                <View style={[s.stepNumber, { backgroundColor: colors.primary }]}>
+                                    <Text style={[s.stepNumberText, { color: colors.white }]}>{index + 1}</Text>
+                                </View>
+                                <TextInput
+                                    style={[s.stepInput, { color: colors.textPrimary }]}
+                                    placeholder={`Step ${index + 1}`}
+                                    placeholderTextColor={colors.grey}
+                                    value={step}
+                                    onChangeText={(v) => updateStep(index, v)}
+                                    multiline
+                                />
+                                <TouchableOpacity onPress={() => removeStep(index)} style={s.removeBtn}>
+                                    <Icon name="close" size={12} color={colors.grey} />
+                                </TouchableOpacity>
+                            </View>
+                        ))}
+                    </View>
+                )}
 
                 <View style={{ height: 60 }} />
             </ScrollView>

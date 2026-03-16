@@ -14,8 +14,11 @@ export type Ingredient = {
     name: string;
 };
 
+export type RecipeType = "recipe" | "seasoning";
+
 export type Recipe = {
     id: string;
+    type: RecipeType;
     name: string;
     description: string;
     ingredients: Ingredient[];
@@ -28,7 +31,7 @@ export type Recipe = {
 
 type RecipeStore = {
     recipes: Recipe[];
-    addRecipe: () => string;
+    addRecipe: (type?: RecipeType) => string;
     updateRecipe: (recipe: Recipe) => void;
     deleteRecipe: (id: string) => void;
     importRecipes: (data: unknown[]) => { imported: number; skipped: number };
@@ -80,8 +83,9 @@ export function detectSystem(ingredients: Ingredient[]): "metric" | "imperial" |
     return "none";
 }
 
-const blankRecipe = (id: string): Recipe => ({
+const blankRecipe = (id: string, type: RecipeType = "recipe"): Recipe => ({
     id,
+    type,
     name: "",
     description: "",
     ingredients: [],
@@ -97,9 +101,9 @@ export const useRecipeStore = create<RecipeStore>()(
         (set) => ({
             recipes: [],
 
-            addRecipe: () => {
+            addRecipe: (type = "recipe") => {
                 const id = `recipe_${Date.now()}`;
-                set((s) => ({ recipes: [blankRecipe(id), ...s.recipes] }));
+                set((s) => ({ recipes: [blankRecipe(id, type), ...s.recipes] }));
                 return id;
             },
 
@@ -144,6 +148,7 @@ export const useRecipeStore = create<RecipeStore>()(
 
                     toAdd.push({
                         id: `recipe_${Date.now()}_${Math.random()}`,
+                        type: r.type === "seasoning" ? "seasoning" : "recipe",
                         name: r.name,
                         description: typeof r.description === "string" ? r.description : "",
                         ingredients,
