@@ -12,13 +12,10 @@ import {
     View,
 } from "react-native";
 import { useTheme } from "~store/settingsStore";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ingredient, IngredientUnit, Recipe, convertIngredients, detectSystem, useRecipeStore } from "~store/recipeStore";
 import { useTodoStore } from "~store/todoStore";
 
-type Props = {
-    navigation: any;
-    route: { params: { recipeId: string } };
-};
 
 const ALL_UNITS: IngredientUnit[] = ["", "g", "kg", "ml", "L", "tsp", "tbsp", "cup", "oz", "lb", "fl oz", "piece"];
 const UNIT_LABEL: Record<IngredientUnit, string> = {
@@ -46,11 +43,12 @@ function pickUnit(current: IngredientUnit, onSelect: (u: IngredientUnit) => void
     ]);
 }
 
-export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
+export const RecipeEditorScreen: FC = () => {
+    const router = useRouter();
+    const { recipeId } = useLocalSearchParams<{ recipeId: string }>();
     const colors = useTheme();
     const { recipes, spices, updateRecipe, deleteRecipe } = useRecipeStore();
     const { addToGrocery } = useTodoStore();
-    const recipeId = route.params.recipeId;
 
     const original = recipes.find((r) => r.id === recipeId);
     const isSeasoning = original?.type === "seasoning";
@@ -84,7 +82,7 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
         });
     };
 
-    const handleBack = () => { save(); navigation.goBack(); };
+    const handleBack = () => { save(); router.back(); };
 
     const handleAddToGrocery = () => {
         if (ingredients.length === 0) {
@@ -104,7 +102,7 @@ export const RecipeEditorScreen: FC<Props> = ({ navigation, route }) => {
     const handleDelete = () => {
         Alert.alert(`Delete ${isSeasoning ? "Seasoning" : "Recipe"}`, "Are you sure?", [
             { text: "Cancel", style: "cancel" },
-            { text: "Delete", style: "destructive", onPress: () => { deleteRecipe(recipeId); navigation.goBack(); } },
+            { text: "Delete", style: "destructive", onPress: () => { deleteRecipe(recipeId); router.back(); } },
         ]);
     };
 

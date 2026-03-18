@@ -6,6 +6,7 @@ import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { useSettingsStore, useTheme } from "~store/settingsStore";
+import { useRouter } from "expo-router";
 import { useTimerStore } from "~store/timerStore";
 import { SettingsSelectItem } from "~screens/settings/SettingsSelectItem";
 import { exportData, importData, clearAllData } from "~utils/dataService";
@@ -17,7 +18,6 @@ import {
     TODO_REMINDER_ID,
 } from "~utils/notifications";
 
-type Props = { navigation: any };
 
 type PickerState = {
     visible: boolean;
@@ -25,7 +25,8 @@ type PickerState = {
     date: Date;
 };
 
-export const Settings: FC<Props> = ({ navigation }) => {
+export const Settings: FC = () => {
+    const router = useRouter();
     const colors = useTheme();
     const { theme, metricType, stretchReminder, todoReminder, setTheme, setMetricType, setStretchReminder, setTodoReminder } = useSettingsStore();
     const { gymRestSeconds, setGymRestSeconds } = useTimerStore();
@@ -122,7 +123,7 @@ export const Settings: FC<Props> = ({ navigation }) => {
     return (
         <View style={s.container}>
             <View style={s.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={s.backBtn}>
+                <TouchableOpacity onPress={() => router.back()} style={s.backBtn}>
                     <Icon name="arrow-left" size={18} color={colors.primary} />
                 </TouchableOpacity>
                 <Text style={s.title}>Settings</Text>

@@ -17,6 +17,7 @@ import {
     BlockType,
 } from "~store/notesStore";
 import { useTheme } from "~store/settingsStore";
+import { useRouter } from "expo-router";
 
 const timeAgo = (ts: number): string => {
     const diff = Date.now() - ts;
@@ -199,9 +200,16 @@ const previewStyles = StyleSheet.create({
 });
 
 type BlockDef = typeof BLOCK_DEFS[0];
-type Props = { navigation: any };
 
-export const NotesScreen: FC<Props> = ({ navigation }) => {
+const pathFor = (type: BlockType): string => {
+    if (type === "text") return "/notes/note-editor";
+    if (type === "subscriptions") return "/notes/subscriptions-block";
+    if (type === "media") return "/notes/media-block";
+    return "/notes/key-value-block";
+};
+
+export const NotesScreen: FC = () => {
+    const router = useRouter();
     const colors = useTheme();
     const { blocks, addBlock } = useNotesStore();
     const [pickerVisible, setPickerVisible] = useState(false);
@@ -219,13 +227,13 @@ export const NotesScreen: FC<Props> = ({ navigation }) => {
         if (!pendingDef) return;
         const id = addBlock(pendingDef.type, titleDraft, pendingDef.subtype);
         setPendingDef(null);
-        navigation.navigate(screenFor(pendingDef.type), { blockId: id });
+        router.push({ pathname: pathFor(pendingDef.type) as any, params: { blockId: id } });
     };
 
     const renderItem = ({ item }: { item: NoteBlock }) => (
         <TouchableOpacity
             style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}
-            onPress={() => navigation.navigate(screenFor(item.type), { blockId: item.id })}
+            onPress={() => router.push({ pathname: pathFor(item.type) as any, params: { blockId: item.id } })}
             activeOpacity={0.7}
         >
             <View style={styles.cardHeader}>

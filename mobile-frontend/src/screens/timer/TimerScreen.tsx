@@ -1,7 +1,6 @@
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useRouter } from "expo-router";
 import { FC, useEffect, useRef, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { CircularTimer } from "~components/CircularTimer";
@@ -11,9 +10,6 @@ import { STRETCHES, useStretchStore } from "~store/stretchStore";
 import { useTimerStore } from "~store/timerStore";
 import { useActivityStore } from "~store/activityStore";
 import { useStreakStore } from "~store/streakStore";
-import { TimerStackParamList } from "~types/Types";
-
-type Nav = NativeStackNavigationProp<TimerStackParamList, "TimerHome">;
 
 type TimerMode = "gym" | "stretch" | "focus";
 
@@ -255,7 +251,7 @@ const FocusTimer: FC = () => {
 
 const StretchList: FC = () => {
     const colors = useTheme();
-    const nav = useNavigation<Nav>();
+    const router = useRouter();
     const { routines, deleteRoutine } = useStretchStore();
     const { width: screenWidth } = useWindowDimensions();
     const [activeIndex, setActiveIndex] = useState(0);
@@ -278,7 +274,7 @@ const StretchList: FC = () => {
 
     const handleLongPress = (id: string, name: string) => {
         Alert.alert(name, undefined, [
-            { text: "Edit", onPress: () => nav.navigate("StretchBuilder", { routineId: id }) },
+            { text: "Edit", onPress: () => router.push({ pathname: "/timer/stretch-builder", params: { routineId: id } }) },
             { text: "Delete", style: "destructive", onPress: () => confirmDelete(id, name) },
             { text: "Cancel", style: "cancel" },
         ]);
@@ -313,7 +309,7 @@ const StretchList: FC = () => {
                                 <TouchableOpacity
                                     key={routine.id}
                                     style={[styles.carouselPage, { width: cardWidth, marginHorizontal: CARD_GAP / 2 }]}
-                                    onPress={() => canStart && nav.navigate("StretchRunner", { routineId: routine.id })}
+                                    onPress={() => canStart && router.push({ pathname: "/timer/stretch-runner", params: { routineId: routine.id } })}
                                     onLongPress={() => handleLongPress(routine.id, routine.name)}
                                     activeOpacity={0.85}
                                     delayLongPress={400}
@@ -380,7 +376,7 @@ const StretchList: FC = () => {
             {/* FAB — New Routine */}
             <TouchableOpacity
                 style={[styles.fab, { backgroundColor: colors.primary }]}
-                onPress={() => nav.navigate("StretchBuilder", undefined)}
+                onPress={() => router.push("/timer/stretch-builder")}
             >
                 <Ionicons name="add" size={30} color={colors.white} />
             </TouchableOpacity>

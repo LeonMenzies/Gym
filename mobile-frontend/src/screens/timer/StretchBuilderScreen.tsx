@@ -1,7 +1,6 @@
 import Slider from "@react-native-community/slider";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { FC, useEffect, useState } from "react";
 import {
     Alert,
@@ -23,10 +22,6 @@ import {
     STRETCHES,
     useStretchStore,
 } from "~store/stretchStore";
-import { TimerStackParamList } from "~types/Types";
-
-type Props = NativeStackScreenProps<TimerStackParamList, "StretchBuilder">;
-type Nav = NativeStackNavigationProp<TimerStackParamList, "StretchBuilder">;
 
 function totalTime(items: RoutineItem[]): string {
     const secs = items.reduce((a, i) => a + i.duration, 0) + Math.max(0, items.length - 1) * 5;
@@ -35,13 +30,13 @@ function totalTime(items: RoutineItem[]): string {
     return m > 0 ? (s > 0 ? `${m}m ${s}s` : `${m}m`) : `${s}s`;
 }
 
-export const StretchBuilderScreen: FC<Props> = () => {
-    const route = useRoute<Props["route"]>();
-    const nav = useNavigation<Nav>();
+export const StretchBuilderScreen: FC = () => {
+    const { routineId } = useLocalSearchParams<{ routineId?: string }>();
+    const router = useRouter();
     const colors = useTheme();
     const { routines, addRoutine, updateRoutine } = useStretchStore();
 
-    const editingId = route.params?.routineId;
+    const editingId = routineId;
     const existingRoutine = editingId ? routines.find((r) => r.id === editingId) : undefined;
 
     const [name, setName] = useState(existingRoutine?.name ?? "");
@@ -92,7 +87,7 @@ export const StretchBuilderScreen: FC<Props> = () => {
         } else {
             addRoutine(routine);
         }
-        nav.goBack();
+        router.back();
     };
 
     const stretchName = (stretchId: string) =>
@@ -102,7 +97,7 @@ export const StretchBuilderScreen: FC<Props> = () => {
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => nav.goBack()} style={styles.backBtn}>
+                <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
                     <Text style={[styles.backText, { color: colors.primary }]}>‹ Back</Text>
                 </TouchableOpacity>
                 <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>

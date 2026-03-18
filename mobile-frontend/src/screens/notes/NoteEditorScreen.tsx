@@ -3,14 +3,11 @@ import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { useNotesStore } from "~store/notesStore";
 import { useTheme } from "~store/settingsStore";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
-type Props = {
-    navigation: any;
-    route: { params: { blockId: string } };
-};
-
-export const NoteEditorScreen: FC<Props> = ({ navigation, route }) => {
-    const { blockId } = route.params;
+export const NoteEditorScreen: FC = () => {
+    const router = useRouter();
+    const { blockId } = useLocalSearchParams<{ blockId: string }>();
     const colors = useTheme();
     const { blocks, updateBlockTitle, updateTextBody, deleteBlock } = useNotesStore();
 
@@ -34,7 +31,7 @@ export const NoteEditorScreen: FC<Props> = ({ navigation, route }) => {
                 style: "destructive",
                 onPress: () => {
                     deleteBlock(blockId);
-                    navigation.goBack();
+                    router.back();
                 },
             },
         ]);
@@ -43,7 +40,7 @@ export const NoteEditorScreen: FC<Props> = ({ navigation, route }) => {
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerBtn}>
+                <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn}>
                     <Icon name="arrow-left" size={18} color={colors.primary} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleDelete} style={styles.headerBtn}>

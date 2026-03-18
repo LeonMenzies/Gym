@@ -3,6 +3,7 @@ import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { FC, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "~store/settingsStore";
+import { useRouter } from "expo-router";
 import { ActivityType, todayStr, useActivityStore } from "~store/activityStore";
 import { useStreakStore } from "~store/streakStore";
 
@@ -33,9 +34,8 @@ function buildCalendarCells(year: number, month: number): (number | null)[] {
     return cells;
 }
 
-type Props = { navigation: any };
-
-export const DashboardScreen: FC<Props> = ({ navigation }) => {
+export const DashboardScreen: FC = () => {
+    const router = useRouter();
     const colors = useTheme();
     const { log } = useActivityStore();
     const { currentStreak, longestStreak } = useStreakStore();
@@ -71,7 +71,7 @@ export const DashboardScreen: FC<Props> = ({ navigation }) => {
             <View style={styles.headerRow}>
                 <Text style={[styles.header, { color: colors.textPrimary }]}>Dashboard</Text>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate("Settings")}
+                    onPress={() => router.push("/dashboard/settings")}
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
                     <Icon name="settings" size={22} color={colors.textSecondary} />

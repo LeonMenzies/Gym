@@ -2,11 +2,9 @@ import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { FC, useState } from "react";
 import { Alert, FlatList, KeyboardAvoidingView, Modal, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useTheme } from "~store/settingsStore";
+import { useRouter } from "expo-router";
 import { Recipe, RecipeType, useRecipeStore } from "~store/recipeStore";
 
-type Props = {
-    navigation: any;
-};
 
 function metaLabel(r: Recipe): string {
     const parts: string[] = [];
@@ -15,8 +13,9 @@ function metaLabel(r: Recipe): string {
     return parts.join(" · ");
 }
 
-export const RecipesScreen: FC<Props> = ({ navigation }) => {
+export const RecipesScreen: FC = () => {
     const colors = useTheme();
+    const router = useRouter();
     const { recipes, addRecipe, importRecipes } = useRecipeStore();
     const [query, setQuery] = useState("");
     const [tab, setTab] = useState<RecipeType>("recipe");
@@ -49,13 +48,13 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
 
     const handleNew = () => {
         const id = addRecipe(tab);
-        navigation.navigate("RecipeEditor", { recipeId: id });
+        router.push({ pathname: "/recipes/recipe-editor", params: { recipeId: id } });
     };
 
     const renderItem = ({ item }: { item: Recipe }) => (
         <TouchableOpacity
             style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}
-            onPress={() => navigation.navigate("RecipeEditor", { recipeId: item.id })}
+            onPress={() => router.push({ pathname: "/recipes/recipe-editor", params: { recipeId: item.id } })}
             activeOpacity={0.75}
         >
             <View style={styles.cardBody}>
@@ -101,7 +100,7 @@ export const RecipesScreen: FC<Props> = ({ navigation }) => {
                 <Text style={[styles.title, { color: colors.textPrimary }]}>Recipes</Text>
                 <View style={styles.headerRight}>
                     {tab === "seasoning" && (
-                        <TouchableOpacity onPress={() => navigation.navigate("SpiceList")} style={styles.importBtn} hitSlop={8}>
+                        <TouchableOpacity onPress={() => router.push("/recipes/spice-list")} style={styles.importBtn} hitSlop={8}>
                             <Icon name="settings" size={18} color={colors.textSecondary} />
                         </TouchableOpacity>
                     )}

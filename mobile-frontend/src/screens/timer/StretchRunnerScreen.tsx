@@ -1,8 +1,7 @@
 import * as Haptics from "expo-haptics";
 import { useKeepAwake } from "expo-keep-awake";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { FC, useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CircularTimer } from "~components/CircularTimer";
@@ -11,10 +10,6 @@ import { useTheme } from "~store/settingsStore";
 import { useActivityStore } from "~store/activityStore";
 import { useStreakStore } from "~store/streakStore";
 import { BODY_PART_LABELS, STRETCHES, useStretchStore } from "~store/stretchStore";
-import { TimerStackParamList } from "~types/Types";
-
-type Props = NativeStackScreenProps<TimerStackParamList, "StretchRunner">;
-type Nav = NativeStackNavigationProp<TimerStackParamList, "StretchRunner">;
 
 const SWAP_SECONDS = 5;
 
@@ -30,16 +25,16 @@ type TimerRef = {
     index: number;
 };
 
-export const StretchRunnerScreen: FC<Props> = () => {
+export const StretchRunnerScreen: FC = () => {
     useKeepAwake();
-    const route = useRoute<Props["route"]>();
-    const nav = useNavigation<Nav>();
+    const { routineId } = useLocalSearchParams<{ routineId: string }>();
+    const router = useRouter();
     const colors = useTheme();
     const { routines } = useStretchStore();
     const { logActivity } = useActivityStore();
     const { logActivity: logStreak } = useStreakStore();
 
-    const routine = routines.find((r) => r.id === route.params.routineId);
+    const routine = routines.find((r) => r.id === routineId);
 
     const T = useRef<TimerRef>({ countdown: 0, phase: "stretch", index: 0 });
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -60,7 +55,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
         return (
             <View style={[styles.container, { backgroundColor: colors.background }]}>
                 <Text style={[styles.errorText, { color: colors.textSecondary }]}>Routine not found.</Text>
-                <TouchableOpacity onPress={() => nav.goBack()}>
+                <TouchableOpacity onPress={() => router.back()}>
                     <Text style={[styles.backLink, { color: colors.primary }]}>← Back</Text>
                 </TouchableOpacity>
             </View>
@@ -214,7 +209,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 </Text>
                 <TouchableOpacity
                     style={[styles.outlineBtn, { borderColor: colors.secondary, marginTop: 32 }]}
-                    onPress={() => nav.goBack()}
+                    onPress={() => router.back()}
                 >
                     <Text style={[styles.outlineBtnText, { color: colors.textSecondary }]}>Back</Text>
                 </TouchableOpacity>
@@ -226,7 +221,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             {/* Back button */}
-            <TouchableOpacity style={styles.closeBtn} onPress={() => nav.goBack()}>
+            <TouchableOpacity style={styles.closeBtn} onPress={() => router.back()}>
                 <Text style={[styles.closeText, { color: colors.textSecondary }]}>✕</Text>
             </TouchableOpacity>
 

@@ -2,11 +2,11 @@ import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { FC, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useTheme } from "~store/settingsStore";
+import { useRouter } from "expo-router";
 import { useRecipeStore } from "~store/recipeStore";
 
-type Props = { navigation: any };
-
-export const SpiceListScreen: FC<Props> = ({ navigation }) => {
+export const SpiceListScreen: FC = () => {
+    const router = useRouter();
     const colors = useTheme();
     const { spices, addSpice, removeSpice } = useRecipeStore();
     const [newSpice, setNewSpice] = useState("");
@@ -39,7 +39,7 @@ export const SpiceListScreen: FC<Props> = ({ navigation }) => {
     return (
         <View style={[s.container, { backgroundColor: colors.background }]}>
             <View style={s.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={s.backBtn}>
+                <TouchableOpacity onPress={() => router.back()} style={s.backBtn}>
                     <Icon name="arrow-left" size={18} color={colors.textPrimary} />
                 </TouchableOpacity>
                 <Text style={[s.title, { color: colors.textPrimary }]}>Spice List</Text>

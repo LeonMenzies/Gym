@@ -14,11 +14,7 @@ import {
 import { SimpleLineIcons as Icon } from "@expo/vector-icons";
 import { useNotesStore, MediaItem, MediaBlock } from "~store/notesStore";
 import { useTheme } from "~store/settingsStore";
-
-type Props = {
-    navigation: any;
-    route: { params: { blockId: string } };
-};
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 type MediaType = "movie" | "book" | "tv";
 type Status = "want" | "in-progress" | "done";
@@ -44,8 +40,9 @@ const statusColor = (status: Status, primary: string, grey: string) => {
 
 const EMPTY_FORM = { title: "", status: "want" as Status, rating: "" };
 
-export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
-    const { blockId } = route.params;
+export const MediaBlockScreen: FC = () => {
+    const router = useRouter();
+    const { blockId } = useLocalSearchParams<{ blockId: string }>();
     const colors = useTheme();
     const {
         blocks,
@@ -115,7 +112,7 @@ export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
                 style: "destructive",
                 onPress: () => {
                     deleteBlock(blockId);
-                    navigation.goBack();
+                    router.back();
                 },
             },
         ]);
@@ -193,7 +190,7 @@ export const MediaBlockScreen: FC<Props> = ({ navigation, route }) => {
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             {/* Header */}
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerBtn}>
+                <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn}>
                     <Icon name="arrow-left" size={18} color={colors.primary} />
                 </TouchableOpacity>
                 {editingTitle ? (
