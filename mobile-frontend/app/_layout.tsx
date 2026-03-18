@@ -1,7 +1,9 @@
-import { Component } from "react";
-import { ScrollView, Text } from "react-native";
+import { Component, useEffect } from "react";
+import { Platform, ScrollView, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Slot } from "expo-router";
+import { useStreakStore } from "~store/streakStore";
+import { StreakWidgetInstance } from "~widgets/StreakWidget";
 
 class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: Error | null }> {
     state = { error: null };
@@ -22,10 +24,24 @@ class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: Er
     }
 }
 
+function WidgetSync() {
+    const { currentStreak, longestStreak } = useStreakStore();
+    useEffect(() => {
+        if (Platform.OS !== "ios") return;
+        try {
+            StreakWidgetInstance.updateSnapshot({ currentStreak, longestStreak });
+        } catch {
+            // expo-widgets native module not available in Expo Go
+        }
+    }, [currentStreak, longestStreak]);
+    return null;
+}
+
 export default function RootLayout() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <ErrorBoundary>
+                <WidgetSync />
                 <Slot />
             </ErrorBoundary>
         </GestureHandlerRootView>

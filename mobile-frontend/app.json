@@ -34,7 +34,22 @@
     "plugins": [
       "expo-font",
       "expo-asset",
-      "expo-router"
+      "expo-router",
+      [
+        "expo-widgets",
+        {
+          "bundleIdentifier": "com.leonmenzies.gym.widgets",
+          "groupIdentifier": "group.com.leonmenzies.gym",
+          "widgets": [
+            {
+              "name": "StreakWidget",
+              "displayName": "Streak",
+              "description": "Track your activity streak",
+              "supportedFamilies": ["systemSmall", "systemMedium"]
+            }
+          ]
+        }
+      ]
     ],
     "extra": {
       "eas": {

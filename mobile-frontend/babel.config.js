@@ -27,6 +27,7 @@ module.exports = function (api) {
                         "~types": "./src/types",
                         "~utils": "./src/utils",
                         "~hooks": "./src/hooks",
+                    "~widgets": "./src/widgets",
                     },
                 },
             ],
