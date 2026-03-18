@@ -1,4 +1,4 @@
-import { Audio } from "expo-av";
+import { useAudioPlayer } from "expo-audio";
 import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 import { FC, useEffect, useRef } from "react";
 
@@ -31,18 +31,12 @@ export const CircularTimer: FC<Props> = ({
     const rotVal = useRef(new Animated.Value(0)).current;
     const prevTimeLeft = useRef(timeLeft);
     const animRef = useRef<Animated.CompositeAnimation | null>(null);
+    const beepPlayer = useAudioPlayer({ uri: `data:audio/wav;base64,${BEEP_WAV_BASE64}` });
 
     // Beep on last 3 seconds
     useEffect(() => {
         if (timeLeft > 0 && timeLeft <= 3 && timeLeft < prevTimeLeft.current) {
-            Audio.Sound.createAsync(
-                { uri: `data:audio/wav;base64,${BEEP_WAV_BASE64}` },
-                { shouldPlay: true },
-            ).then(({ sound }) => {
-                sound.setOnPlaybackStatusUpdate((s) => {
-                    if ("didJustFinish" in s && s.didJustFinish) sound.unloadAsync();
-                });
-            }).catch(() => {});
+            beepPlayer.seekTo(0).then(() => beepPlayer.play()).catch(() => {});
         }
     }, [timeLeft]);
 
