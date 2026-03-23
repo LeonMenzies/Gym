@@ -191,9 +191,12 @@ export const StretchRunnerScreen: FC<Props> = () => {
     // Derived
     const currentItem = items[displayIndex];
     const currentStretch = STRETCHES.find((s) => s.id === currentItem?.stretchId);
-    const sideLabel = displayPhase === "bilateral" ? "OTHER SIDE" : (currentStretch?.bilateral ? "FIRST SIDE" : null);
-    const currentPhoto = currentStretch ? getImageForStretchId(currentStretch.id) : null;
-    const currentBendData = currentStretch ? getBendDataForStretchId(currentStretch.id) : null;
+    const currentBendData = currentItem ? getBendDataForStretchId(currentItem.stretchId) : null;
+    // For bend-only stretches (not in STRETCHES), use bend data name as display name
+    const currentStretchName = currentStretch?.name ?? currentBendData?.name ?? currentItem?.stretchId ?? "";
+    const isBilateral = currentStretch?.bilateral ?? false;
+    const sideLabel = displayPhase === "bilateral" ? "OTHER SIDE" : (isBilateral ? "FIRST SIDE" : null);
+    const currentPhoto = currentItem ? getImageForStretchId(currentItem.stretchId) : null;
 
     // ─── Done screen ──────────────────────────────────────────────────────────
     if (status === "done") {
@@ -248,11 +251,13 @@ export const StretchRunnerScreen: FC<Props> = () => {
                     <>
                         <Text style={[styles.swapLabel, { color: colors.secondary ?? colors.primary }]}>GET READY</Text>
                         <Text style={[styles.nextStretchName, { color: colors.textPrimary }]}>
-                            {currentStretch?.name ?? ""}
+                            {currentStretchName}
                         </Text>
-                        <Text style={[styles.nextStretchPart, { color: colors.textSecondary }]}>
-                            {currentStretch ? BODY_PART_LABELS[currentStretch.bodyPart] : ""}
-                        </Text>
+                        {currentStretch && (
+                            <Text style={[styles.nextStretchPart, { color: colors.textSecondary }]}>
+                                {BODY_PART_LABELS[currentStretch.bodyPart]}
+                            </Text>
+                        )}
                         <CircularTimer
                             timeLeft={displayCountdown}
                             duration={SWAP_SECONDS}
@@ -273,7 +278,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
                             {displayIndex + 1} / {items.length}
                         </Text>
                         <Text style={[styles.stretchName, { color: colors.textPrimary }]}>
-                            {currentStretch?.name ?? ""}
+                            {currentStretchName}
                         </Text>
                         {sideLabel && (
                             <Text style={[styles.sideLabel, { color: accentColor }]}>{sideLabel}</Text>

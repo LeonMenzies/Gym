@@ -26,7 +26,7 @@ import {
     useStretchStore,
 } from "~store/stretchStore";
 import { TimerStackParamList } from "~types/Types";
-import { getBendDataForStretchId, getImageForStretchId } from "~data/stretchBendData";
+import { getBendData, getBendDataForStretchId, getAllBendStretchNames, getImageForStretchId } from "~data/stretchBendData";
 import type { BendStretch } from "~data/stretchBendData";
 
 type Props = NativeStackScreenProps<TimerStackParamList, "StretchBuilder">;
@@ -139,7 +139,13 @@ export const StretchBuilderScreen: FC<Props> = () => {
     const [items, setItems] = useState<RoutineItem[]>(existingRoutine?.items ?? []);
     const [selectedBodyPart, setSelectedBodyPart] = useState<BodyPart>("neck");
     const [showLibrary, setShowLibrary] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
     const [infoStretchId, setInfoStretchId] = useState<string | null>(null);
+
+    const ALL_BEND_NAMES = getAllBendStretchNames();
+    const searchResults = searchQuery.trim().length > 0
+        ? ALL_BEND_NAMES.filter((n) => n.toLowerCase().includes(searchQuery.toLowerCase()))
+        : [];
 
     useEffect(() => {
         if (existingRoutine) {
@@ -192,6 +198,8 @@ export const StretchBuilderScreen: FC<Props> = () => {
 
     const infoStretch = infoStretchId ? STRETCHES.find((s) => s.id === infoStretchId) : null;
     const infoBendData = infoStretchId ? getBendDataForStretchId(infoStretchId) : null;
+    // For bend-only stretches, use the bend name as the display name
+    const infoStretchName = infoStretch?.name ?? infoStretchId ?? "";
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -285,73 +293,137 @@ export const StretchBuilderScreen: FC<Props> = () => {
 
                 {showLibrary && (
                     <View style={styles.library}>
-                        {/* Body part tabs */}
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.bodyPartScroll}>
-                            <View style={styles.bodyPartRow}>
-                                {BODY_PART_ORDER.map((bp) => (
-                                    <TouchableOpacity
-                                        key={bp}
-                                        style={[
-                                            styles.bodyPartChip,
-                                            {
-                                                backgroundColor: selectedBodyPart === bp ? colors.primary : colors.backgroundSecondary,
-                                            },
-                                        ]}
-                                        onPress={() => setSelectedBodyPart(bp)}
-                                    >
-                                        <Text
-                                            style={[
-                                                styles.bodyPartText,
-                                                { color: selectedBodyPart === bp ? colors.white : colors.textSecondary },
-                                            ]}
-                                        >
-                                            {BODY_PART_LABELS[bp]}
-                                        </Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
-                        </ScrollView>
+                        {/* Search bar */}
+                        <TextInput
+                            style={[styles.searchInput, { backgroundColor: colors.backgroundSecondary, color: colors.textPrimary }]}
+                            placeholder="Search all 257 stretches…"
+                            placeholderTextColor={colors.textSecondary}
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
+                            returnKeyType="search"
+                            clearButtonMode="while-editing"
+                            autoCorrect={false}
+                        />
 
-                        {/* Stretches for selected body part */}
-                        <View style={styles.stretchGrid}>
-                            {stretchesForPart.map((stretch) => {
-                                const added = addedIds.has(stretch.id);
-                                const hasBendData = !!getBendDataForStretchId(stretch.id);
-                                return (
-                                    <TouchableOpacity
-                                        key={stretch.id}
-                                        style={[
-                                            styles.stretchChip,
-                                            {
-                                                backgroundColor: added ? colors.primary : colors.backgroundSecondary,
-                                                opacity: added ? 0.6 : 1,
-                                            },
-                                        ]}
-                                        onPress={() => addStretch(stretch.id, stretch.defaultDuration)}
-                                        onLongPress={() => setInfoStretchId(stretch.id)}
-                                        delayLongPress={400}
-                                        disabled={added}
-                                    >
-                                        <StretchIllustration
-                                            stretchId={stretch.id}
-                                            size={72}
-                                            color={added ? colors.white : colors.primary}
-                                        />
-                                        <Text style={[styles.stretchChipText, { color: added ? colors.white : colors.textPrimary }]}>
-                                            {stretch.name}
-                                        </Text>
-                                        <Text style={[styles.stretchChipDuration, { color: added ? colors.white : colors.textSecondary }]}>
-                                            {stretch.defaultDuration}s
-                                        </Text>
-                                        {hasBendData && !added && (
-                                            <Text style={[styles.infoHint, { color: colors.textSecondary }]}>
-                                                hold for info
-                                            </Text>
-                                        )}
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
+                        {searchQuery.trim().length > 0 ? (
+                            /* ── Search results (all bend stretches) ── */
+                            searchResults.length === 0 ? (
+                                <Text style={[styles.emptySearch, { color: colors.textSecondary }]}>No stretches found</Text>
+                            ) : (
+                                <View style={styles.stretchGrid}>
+                                    {searchResults.map((bendName) => {
+                                        const added = addedIds.has(bendName);
+                                        const photo = getImageForStretchId(bendName);
+                                        return (
+                                            <TouchableOpacity
+                                                key={bendName}
+                                                style={[
+                                                    styles.stretchChip,
+                                                    {
+                                                        backgroundColor: added ? colors.primary : colors.backgroundSecondary,
+                                                        opacity: added ? 0.6 : 1,
+                                                    },
+                                                ]}
+                                                onPress={() => addStretch(bendName, 30)}
+                                                onLongPress={() => setInfoStretchId(bendName)}
+                                                delayLongPress={400}
+                                                disabled={added}
+                                            >
+                                                {photo ? (
+                                                    <Image source={photo} style={styles.searchThumb} resizeMode="cover" />
+                                                ) : (
+                                                    <StretchIllustration
+                                                        stretchId={bendName}
+                                                        size={72}
+                                                        color={added ? colors.white : colors.primary}
+                                                    />
+                                                )}
+                                                <Text style={[styles.stretchChipText, { color: added ? colors.white : colors.textPrimary }]}>
+                                                    {bendName}
+                                                </Text>
+                                                <Text style={[styles.stretchChipDuration, { color: added ? colors.white : colors.textSecondary }]}>
+                                                    30s
+                                                </Text>
+                                                {!added && (
+                                                    <Text style={[styles.infoHint, { color: colors.textSecondary }]}>
+                                                        hold for info
+                                                    </Text>
+                                                )}
+                                            </TouchableOpacity>
+                                        );
+                                    })}
+                                </View>
+                            )
+                        ) : (
+                            /* ── Body part tabs (default view) ── */
+                            <>
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.bodyPartScroll}>
+                                    <View style={styles.bodyPartRow}>
+                                        {BODY_PART_ORDER.map((bp) => (
+                                            <TouchableOpacity
+                                                key={bp}
+                                                style={[
+                                                    styles.bodyPartChip,
+                                                    {
+                                                        backgroundColor: selectedBodyPart === bp ? colors.primary : colors.backgroundSecondary,
+                                                    },
+                                                ]}
+                                                onPress={() => setSelectedBodyPart(bp)}
+                                            >
+                                                <Text
+                                                    style={[
+                                                        styles.bodyPartText,
+                                                        { color: selectedBodyPart === bp ? colors.white : colors.textSecondary },
+                                                    ]}
+                                                >
+                                                    {BODY_PART_LABELS[bp]}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                </ScrollView>
+
+                                <View style={styles.stretchGrid}>
+                                    {stretchesForPart.map((stretch) => {
+                                        const added = addedIds.has(stretch.id);
+                                        const hasBendData = !!getBendDataForStretchId(stretch.id);
+                                        return (
+                                            <TouchableOpacity
+                                                key={stretch.id}
+                                                style={[
+                                                    styles.stretchChip,
+                                                    {
+                                                        backgroundColor: added ? colors.primary : colors.backgroundSecondary,
+                                                        opacity: added ? 0.6 : 1,
+                                                    },
+                                                ]}
+                                                onPress={() => addStretch(stretch.id, stretch.defaultDuration)}
+                                                onLongPress={() => setInfoStretchId(stretch.id)}
+                                                delayLongPress={400}
+                                                disabled={added}
+                                            >
+                                                <StretchIllustration
+                                                    stretchId={stretch.id}
+                                                    size={72}
+                                                    color={added ? colors.white : colors.primary}
+                                                />
+                                                <Text style={[styles.stretchChipText, { color: added ? colors.white : colors.textPrimary }]}>
+                                                    {stretch.name}
+                                                </Text>
+                                                <Text style={[styles.stretchChipDuration, { color: added ? colors.white : colors.textSecondary }]}>
+                                                    {stretch.defaultDuration}s
+                                                </Text>
+                                                {hasBendData && !added && (
+                                                    <Text style={[styles.infoHint, { color: colors.textSecondary }]}>
+                                                        hold for info
+                                                    </Text>
+                                                )}
+                                            </TouchableOpacity>
+                                        );
+                                    })}
+                                </View>
+                            </>
+                        )}
                     </View>
                 )}
 
@@ -359,10 +431,10 @@ export const StretchBuilderScreen: FC<Props> = () => {
             </ScrollView>
 
             {/* Stretch info modal */}
-            {infoStretchId && infoStretch && infoBendData && (
+            {infoStretchId && infoBendData && (
                 <StretchInfoModal
                     stretchId={infoStretchId}
-                    stretchName={infoStretch.name}
+                    stretchName={infoStretchName}
                     bendData={infoBendData}
                     onClose={() => setInfoStretchId(null)}
                 />
@@ -444,6 +516,14 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     bodyPartText: { fontSize: 14, fontWeight: "500" },
+    searchInput: {
+        borderRadius: 12,
+        paddingHorizontal: 14,
+        paddingVertical: 11,
+        fontSize: 15,
+    },
+    emptySearch: { fontSize: 14, textAlign: "center", paddingVertical: 20 },
+    searchThumb: { width: 72, height: 72, borderRadius: 8 },
     stretchGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
     stretchChip: {
         flexDirection: "column",

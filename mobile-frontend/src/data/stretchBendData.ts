@@ -607,13 +607,18 @@ export const STRETCH_ID_TO_BEND_NAME: Record<string, string> = {
 // ─── Convenience helpers using stretch IDs ────────────────────────────────────
 
 export function getBendDataForStretchId(stretchId: string): BendStretch | null {
-    const bendName = STRETCH_ID_TO_BEND_NAME[stretchId];
-    if (!bendName) return null;
-    return getBendData(bendName);
+    const bendName = STRETCH_ID_TO_BEND_NAME[stretchId] ?? stretchId;
+    return BEND_BY_NAME[bendName] ?? null;
 }
 
 export function getImageForStretchId(stretchId: string): ReturnType<typeof require> | null {
-    const bendName = STRETCH_ID_TO_BEND_NAME[stretchId];
-    if (!bendName) return null;
+    const bendName = STRETCH_ID_TO_BEND_NAME[stretchId] ?? stretchId;
+    const entry = BEND_BY_NAME[bendName];
+    if (!entry) return null;
     return getBendImage(bendName);
+}
+
+/** Returns all stretch names available in the bend data set (257 stretches). */
+export function getAllBendStretchNames(): string[] {
+    return Object.keys(BEND_BY_NAME);
 }
