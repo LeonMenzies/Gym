@@ -45,6 +45,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
     const [displayCountdown, setDisplayCountdown] = useState(0);
     const [displayPhase, setDisplayPhase] = useState<Phase>("stretch");
     const [displayIndex, setDisplayIndex] = useState(0);
+    const [showInstructions, setShowInstructions] = useState(false);
 
     const clearTimer = () => {
         if (intervalRef.current) clearInterval(intervalRef.current);
@@ -263,12 +264,14 @@ export const StretchRunnerScreen: FC<Props> = () => {
                             duration={SWAP_SECONDS}
                             timeLabel={`${displayCountdown}`}
                             subLabel="seconds"
-                            size={200}
+                            size={240}
                             color={colors.secondary ?? colors.primary}
                             bgColor={colors.backgroundSecondary}
                             textColor={colors.textPrimary}
                             subTextColor={colors.textSecondary}
                             backgroundImage={currentPhoto}
+                            showText={displayCountdown <= 5}
+                            textOpacity={0.5}
                         />
                     </>
                 ) : (
@@ -288,12 +291,15 @@ export const StretchRunnerScreen: FC<Props> = () => {
                             duration={currentItem?.duration ?? 0}
                             timeLabel={`${displayCountdown}`}
                             subLabel="seconds"
-                            size={220}
+                            size={260}
                             color={accentColor}
                             bgColor={colors.backgroundSecondary}
                             textColor={colors.textPrimary}
                             subTextColor={colors.textSecondary}
                             backgroundImage={currentPhoto}
+                            flipImage={displayPhase === "bilateral"}
+                            showText={displayCountdown <= 5}
+                            textOpacity={0.5}
                         />
                         {currentBendData && currentBendData.benefits.length > 0 && (
                             <View style={styles.benefitsRow}>
@@ -328,10 +334,18 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 >
                     <Ionicons name="play-skip-forward" size={26} color={colors.textSecondary} />
                 </TouchableOpacity>
+                {currentBendData && displayPhase !== "swap" && (
+                    <TouchableOpacity
+                        style={[styles.iconBtn, { backgroundColor: showInstructions ? accentColor : colors.backgroundSecondary }]}
+                        onPress={() => setShowInstructions((v) => !v)}
+                    >
+                        <Ionicons name="information" size={24} color={showInstructions ? colors.white : colors.textSecondary} />
+                    </TouchableOpacity>
+                )}
             </View>
 
-            {/* ── Instructions ──────────────────────────────────────────────── */}
-            {currentBendData && displayPhase !== "swap" && (
+            {/* ── Instructions (toggled) ────────────────────────────────────── */}
+            {showInstructions && currentBendData && displayPhase !== "swap" && (
                 <ScrollView
                     style={[styles.instructionsPanel, { backgroundColor: colors.backgroundSecondary }]}
                     contentContainerStyle={styles.instructionsContent}
@@ -353,20 +367,6 @@ export const StretchRunnerScreen: FC<Props> = () => {
                         </View>
                     )}
                 </ScrollView>
-            )}
-
-            {/* ── Next up ───────────────────────────────────────────────────── */}
-            {displayPhase === "stretch" && displayIndex < items.length - 1 && (
-                <Text style={[styles.nextUp, { color: colors.textSecondary }]}>
-                    Next: {STRETCHES.find((s) => s.id === items[displayIndex + 1]?.stretchId)?.name}
-                </Text>
-            )}
-            {displayPhase === "bilateral" && (
-                <Text style={[styles.nextUp, { color: colors.textSecondary }]}>
-                    Then: {displayIndex < items.length - 1
-                        ? STRETCHES.find((s) => s.id === items[displayIndex + 1]?.stretchId)?.name
-                        : "Done!"}
-                </Text>
             )}
         </View>
     );
@@ -498,9 +498,6 @@ const styles = StyleSheet.create({
     stepText: { flex: 1, fontSize: 13, lineHeight: 20 },
     tipsRow: { gap: 4, marginTop: 2 },
     tipText: { fontSize: 12, lineHeight: 18 },
-    nextUp: {
-        fontSize: 13,
-    },
     doneTitle: {
         fontSize: 48,
         fontWeight: "300",

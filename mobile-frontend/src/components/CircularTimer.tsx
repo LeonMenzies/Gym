@@ -16,6 +16,9 @@ type Props = {
     textColor: string;
     subTextColor?: string;
     backgroundImage?: ImageSourcePropType | null;
+    flipImage?: boolean;
+    showText?: boolean;
+    textOpacity?: number;
 };
 
 export const CircularTimer: FC<Props> = ({
@@ -29,6 +32,9 @@ export const CircularTimer: FC<Props> = ({
     textColor,
     subTextColor,
     backgroundImage,
+    flipImage = false,
+    showText = true,
+    textOpacity = 1,
 }) => {
     const rotVal = useRef(new Animated.Value(0)).current;
     const prevTimeLeft = useRef(timeLeft);
@@ -91,7 +97,7 @@ export const CircularTimer: FC<Props> = ({
             {backgroundImage && (
                 <Image
                     source={backgroundImage}
-                    style={[styles.bgImage, { width: size, height: size }]}
+                    style={[styles.bgImage, { width: size, height: size, transform: [{ scaleX: flipImage ? -1 : 1 }] }]}
                     resizeMode="cover"
                 />
             )}
@@ -111,16 +117,18 @@ export const CircularTimer: FC<Props> = ({
                 ]}
                 resizeMode="cover"
             />
-            <View style={styles.center}>
-                <Text style={[styles.timeText, { color: backgroundImage ? "#fff" : textColor, fontSize }]}>
-                    {timeLabel}
-                </Text>
-                {subLabel && (
-                    <Text style={[styles.subText, { color: backgroundImage ? "rgba(255,255,255,0.7)" : (subTextColor ?? textColor) }]}>
-                        {subLabel}
+            {showText && (
+                <View style={[styles.center, { opacity: textOpacity }]}>
+                    <Text style={[styles.timeText, { color: backgroundImage ? "#fff" : textColor, fontSize }]}>
+                        {timeLabel}
                     </Text>
-                )}
-            </View>
+                    {subLabel && (
+                        <Text style={[styles.subText, { color: backgroundImage ? "rgba(255,255,255,0.7)" : (subTextColor ?? textColor) }]}>
+                            {subLabel}
+                        </Text>
+                    )}
+                </View>
+            )}
         </View>
     );
 };
