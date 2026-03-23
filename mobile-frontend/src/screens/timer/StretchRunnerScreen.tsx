@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { FC, useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CircularTimer } from "~components/CircularTimer";
 import { StretchIllustration } from "~components/StretchIllustration";
 import { useTheme } from "~store/settingsStore";
@@ -12,15 +12,13 @@ import { useActivityStore } from "~store/activityStore";
 import { useStreakStore } from "~store/streakStore";
 import { BODY_PART_LABELS, STRETCHES, useStretchStore } from "~store/stretchStore";
 import { TimerStackParamList } from "~types/Types";
+import { getBendDataForStretchId, getImageForStretchId } from "~data/stretchBendData";
 
 type Props = NativeStackScreenProps<TimerStackParamList, "StretchRunner">;
 type Nav = NativeStackNavigationProp<TimerStackParamList, "StretchRunner">;
 
 const SWAP_SECONDS = 5;
 
-// "stretch" = active hold (first side or non-bilateral)
-// "bilateral" = second side of a bilateral stretch
-// "swap" = rest before next stretch
 type Phase = "stretch" | "bilateral" | "swap";
 type Status = "running" | "paused" | "done";
 
@@ -48,6 +46,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
     const [displayCountdown, setDisplayCountdown] = useState(0);
     const [displayPhase, setDisplayPhase] = useState<Phase>("stretch");
     const [displayIndex, setDisplayIndex] = useState(0);
+    const [showInstructions, setShowInstructions] = useState(false);
 
     const clearTimer = () => {
         if (intervalRef.current) clearInterval(intervalRef.current);
@@ -77,7 +76,6 @@ export const StretchRunnerScreen: FC<Props> = () => {
             const t = T.current;
             t.countdown -= 1;
 
-            // Haptic countdown at 3, 2, 1 seconds during hold phases
             if ((t.phase === "stretch" || t.phase === "bilateral") && t.countdown <= 3 && t.countdown > 0) {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
             }
@@ -87,24 +85,20 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 return;
             }
 
-            // Phase ended
             if (t.phase === "stretch") {
                 const stretch = getStretch(t.index);
                 if (stretch?.bilateral) {
-                    // Move to second side
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                     t.phase = "bilateral";
                     t.countdown = items[t.index].duration;
                     setDisplayPhase("bilateral");
                     setDisplayCountdown(items[t.index].duration);
                 } else {
-                    // No bilateral — advance to next
                     advanceToNext(t);
                 }
             } else if (t.phase === "bilateral") {
                 advanceToNext(t);
             } else {
-                // swap ended → start next stretch
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                 t.phase = "stretch";
                 t.countdown = items[t.index].duration;
@@ -130,10 +124,10 @@ export const StretchRunnerScreen: FC<Props> = () => {
             setDisplayPhase("swap");
             setDisplayIndex(nextIndex);
             setDisplayCountdown(SWAP_SECONDS);
+            setShowInstructions(false);
         }
     };
 
-    // Auto-start on mount
     useEffect(() => {
         T.current = { countdown: items[0].duration, phase: "stretch", index: 0 };
         setDisplayCountdown(items[0].duration);
@@ -153,6 +147,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
         setDisplayCountdown(items[0].duration);
         setDisplayPhase("stretch");
         setDisplayIndex(0);
+        setShowInstructions(false);
         setStatus("running");
         startTicking();
     };
@@ -164,6 +159,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
         setDisplayCountdown(items[prevIndex].duration);
         setDisplayPhase("stretch");
         setDisplayIndex(prevIndex);
+        setShowInstructions(false);
         setStatus("running");
         startTicking();
     };
@@ -172,7 +168,6 @@ export const StretchRunnerScreen: FC<Props> = () => {
         clearTimer();
         const currentStretchDef = getStretch(T.current.index);
 
-        // If on first side of a bilateral stretch, go to second side
         if (T.current.phase === "stretch" && currentStretchDef?.bilateral) {
             T.current = { ...T.current, phase: "bilateral", countdown: items[T.current.index].duration };
             setDisplayPhase("bilateral");
@@ -182,7 +177,6 @@ export const StretchRunnerScreen: FC<Props> = () => {
             return;
         }
 
-        // Otherwise advance to next exercise
         const nextIndex = T.current.index + 1;
         if (nextIndex >= items.length) {
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -195,6 +189,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
         setDisplayCountdown(items[nextIndex].duration);
         setDisplayPhase("stretch");
         setDisplayIndex(nextIndex);
+        setShowInstructions(false);
         setStatus("running");
         startTicking();
     };
@@ -203,6 +198,8 @@ export const StretchRunnerScreen: FC<Props> = () => {
     const currentItem = items[displayIndex];
     const currentStretch = STRETCHES.find((s) => s.id === currentItem?.stretchId);
     const sideLabel = displayPhase === "bilateral" ? "OTHER SIDE" : (currentStretch?.bilateral ? "FIRST SIDE" : null);
+    const currentPhoto = currentStretch ? getImageForStretchId(currentStretch.id) : null;
+    const currentBendData = currentStretch ? getBendDataForStretchId(currentStretch.id) : null;
 
     // ─── Done screen ──────────────────────────────────────────────────────────
     if (status === "done") {
@@ -223,6 +220,8 @@ export const StretchRunnerScreen: FC<Props> = () => {
     }
 
     // ─── Running / Paused ─────────────────────────────────────────────────────
+    const accentColor = displayPhase === "bilateral" ? colors.secondary : colors.primary;
+
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             {/* Back button */}
@@ -248,19 +247,27 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 ))}
             </View>
 
-            {/* Phase label */}
+            {/* ── SWAP PHASE ───────────────────────────────────────────────── */}
             {displayPhase === "swap" ? (
                 <>
-                    <Text style={[styles.swapLabel, { color: colors.secondary }]}>GET READY</Text>
+                    <Text style={[styles.swapLabel, { color: colors.secondary ?? colors.primary }]}>GET READY</Text>
                     <Text style={[styles.nextStretchName, { color: colors.textPrimary }]}>
                         {STRETCHES.find((s) => s.id === items[displayIndex]?.stretchId)?.name}
                     </Text>
                     <Text style={[styles.nextStretchPart, { color: colors.textSecondary }]}>
                         {currentStretch ? BODY_PART_LABELS[currentStretch.bodyPart] : ""}
                     </Text>
+
+                    {/* Preview photo during swap */}
+                    {currentPhoto && (
+                        <View style={styles.swapPhotoContainer}>
+                            <Image source={currentPhoto} style={styles.swapPhoto} resizeMode="cover" />
+                        </View>
+                    )}
                 </>
             ) : (
                 <>
+                    {/* ── STRETCH / BILATERAL PHASE ──────────────────────── */}
                     <Text style={[styles.stretchNumber, { color: colors.textSecondary }]}>
                         {displayIndex + 1} / {items.length}
                     </Text>
@@ -268,41 +275,107 @@ export const StretchRunnerScreen: FC<Props> = () => {
                         {currentStretch?.name ?? ""}
                     </Text>
                     {sideLabel && (
-                        <Text style={[styles.sideLabel, { color: colors.primary }]}>
+                        <Text style={[styles.sideLabel, { color: accentColor }]}>
                             {sideLabel}
                         </Text>
                     )}
-                    <Text style={[styles.stretchPart, { color: colors.textSecondary }]}>
-                        {currentStretch ? BODY_PART_LABELS[currentStretch.bodyPart] : ""}
-                    </Text>
+                    {currentBendData && (
+                        <View style={styles.benefitsRow}>
+                            {currentBendData.benefits.slice(0, 3).map((b) => (
+                                <View key={b} style={[styles.benefitChip, { backgroundColor: colors.backgroundSecondary }]}>
+                                    <Text style={[styles.benefitText, { color: colors.textSecondary }]}>{b}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
                 </>
             )}
 
-            {/* Stretch illustration */}
-            {displayPhase !== "swap" && currentStretch && (
-                <StretchIllustration
-                    stretchId={currentStretch.id}
-                    size={88}
-                    color={displayPhase === "bilateral" ? colors.secondary : colors.primary}
+            {/* Photo or SVG illustration */}
+            {displayPhase !== "swap" && (
+                <TouchableOpacity
+                    onPress={() => currentBendData && setShowInstructions((v) => !v)}
+                    activeOpacity={currentBendData ? 0.8 : 1}
+                >
+                    {currentPhoto ? (
+                        <View style={[styles.photoCard, { borderColor: accentColor + "40" }]}>
+                            <Image source={currentPhoto} style={styles.photo} resizeMode="cover" />
+                            {currentBendData && (
+                                <View style={[styles.photoHint, { backgroundColor: colors.background + "CC" }]}>
+                                    <Text style={[styles.photoHintText, { color: colors.textSecondary }]}>
+                                        {showInstructions ? "▲ hide" : "▼ how to"}
+                                    </Text>
+                                </View>
+                            )}
+                        </View>
+                    ) : (
+                        currentStretch && (
+                            <StretchIllustration
+                                stretchId={currentStretch.id}
+                                size={88}
+                                color={accentColor}
+                            />
+                        )
+                    )}
+                </TouchableOpacity>
+            )}
+
+            {/* Expandable instructions panel */}
+            {showInstructions && currentBendData && displayPhase !== "swap" && (
+                <ScrollView
+                    style={[styles.instructionsPanel, { backgroundColor: colors.backgroundSecondary }]}
+                    contentContainerStyle={styles.instructionsPanelContent}
+                    showsVerticalScrollIndicator={false}
+                >
+                    {currentBendData.instructions.map((step, i) => (
+                        <View key={i} style={styles.instrRow}>
+                            <View style={[styles.instrNum, { backgroundColor: accentColor }]}>
+                                <Text style={styles.instrNumText}>{i + 1}</Text>
+                            </View>
+                            <Text style={[styles.instrText, { color: colors.textPrimary }]}>{step}</Text>
+                        </View>
+                    ))}
+                    {currentBendData.tips.length > 0 && (
+                        <>
+                            <Text style={[styles.instrSectionLabel, { color: accentColor }]}>Tips</Text>
+                            {currentBendData.tips.map((tip, i) => (
+                                <Text key={i} style={[styles.instrTip, { color: colors.textSecondary }]}>
+                                    · {tip}
+                                </Text>
+                            ))}
+                        </>
+                    )}
+                </ScrollView>
+            )}
+
+            {/* Countdown timer */}
+            {!showInstructions && (
+                <CircularTimer
+                    timeLeft={displayCountdown}
+                    duration={displayPhase === "swap" ? SWAP_SECONDS : currentItem?.duration ?? 0}
+                    timeLabel={`${displayCountdown}`}
+                    subLabel="seconds"
+                    size={240}
+                    color={
+                        displayPhase === "swap" ? colors.secondary ?? colors.primary
+                        : displayPhase === "bilateral" ? colors.secondary ?? colors.primary
+                        : colors.primary
+                    }
+                    bgColor={colors.backgroundSecondary}
+                    textColor={colors.textPrimary}
+                    subTextColor={colors.textSecondary}
                 />
             )}
 
-            {/* Countdown */}
-            <CircularTimer
-                timeLeft={displayCountdown}
-                duration={displayPhase === "swap" ? SWAP_SECONDS : currentItem?.duration ?? 0}
-                timeLabel={`${displayCountdown}`}
-                subLabel="seconds"
-                size={270}
-                color={
-                    displayPhase === "swap" ? colors.secondary
-                    : displayPhase === "bilateral" ? colors.secondary
-                    : colors.primary
-                }
-                bgColor={colors.backgroundSecondary}
-                textColor={colors.textPrimary}
-                subTextColor={colors.textSecondary}
-            />
+            {/* Paused overlay countdown */}
+            {showInstructions && (
+                <View style={[styles.miniTimer, { backgroundColor: colors.backgroundSecondary }]}>
+                    <Text style={[styles.miniTimerText, { color: accentColor }]}>{displayCountdown}s</Text>
+                    <Text style={[styles.miniTimerSub, { color: colors.textSecondary }]}>
+                        {status === "paused" ? "paused" : "remaining"}
+                    </Text>
+                </View>
+            )}
 
             {/* Controls */}
             <View style={styles.controls}>
@@ -314,7 +387,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={[styles.iconBtnCenter, { backgroundColor: colors.primary }]}
+                    style={[styles.iconBtnCenter, { backgroundColor: accentColor }]}
                     onPress={status === "running" ? handlePause : handleResume}
                 >
                     <Ionicons name={status === "running" ? "pause" : "play"} size={32} color={colors.white} />
@@ -329,12 +402,12 @@ export const StretchRunnerScreen: FC<Props> = () => {
             </View>
 
             {/* Next up */}
-            {displayPhase === "stretch" && displayIndex < items.length - 1 && (
+            {!showInstructions && displayPhase === "stretch" && displayIndex < items.length - 1 && (
                 <Text style={[styles.nextUp, { color: colors.textSecondary }]}>
                     Next: {STRETCHES.find((s) => s.id === items[displayIndex + 1]?.stretchId)?.name}
                 </Text>
             )}
-            {displayPhase === "bilateral" && (
+            {!showInstructions && displayPhase === "bilateral" && (
                 <Text style={[styles.nextUp, { color: colors.textSecondary }]}>
                     Then: {displayIndex < items.length - 1
                         ? STRETCHES.find((s) => s.id === items[displayIndex + 1]?.stretchId)?.name
@@ -350,8 +423,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        paddingHorizontal: 28,
-        gap: 12,
+        paddingHorizontal: 24,
+        gap: 10,
     },
     closeBtn: {
         position: "absolute",
@@ -367,15 +440,15 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
         justifyContent: "center",
         maxWidth: "100%",
-        marginBottom: 8,
+        marginBottom: 4,
     },
     dot: { borderRadius: 8 },
     stretchNumber: { fontSize: 14, letterSpacing: 0.5 },
     stretchName: {
-        fontSize: 32,
+        fontSize: 28,
         fontWeight: "600",
         textAlign: "center",
-        lineHeight: 38,
+        lineHeight: 34,
     },
     sideLabel: {
         fontSize: 13,
@@ -383,18 +456,25 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
         textTransform: "uppercase",
     },
-    stretchPart: {
-        fontSize: 16,
-        textTransform: "uppercase",
-        letterSpacing: 2,
+    benefitsRow: {
+        flexDirection: "row",
+        gap: 6,
+        flexWrap: "wrap",
+        justifyContent: "center",
     },
+    benefitChip: {
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 12,
+    },
+    benefitText: { fontSize: 12, fontWeight: "500" },
     swapLabel: {
         fontSize: 18,
         fontWeight: "700",
         letterSpacing: 4,
     },
     nextStretchName: {
-        fontSize: 28,
+        fontSize: 26,
         fontWeight: "600",
         textAlign: "center",
     },
@@ -403,11 +483,75 @@ const styles = StyleSheet.create({
         textTransform: "uppercase",
         letterSpacing: 2,
     },
+    swapPhotoContainer: {
+        width: 120,
+        height: 120,
+        borderRadius: 16,
+        overflow: "hidden",
+    },
+    swapPhoto: { width: "100%", height: "100%" },
+    photoCard: {
+        borderRadius: 20,
+        overflow: "hidden",
+        width: 200,
+        height: 200,
+        borderWidth: 2,
+    },
+    photo: { width: "100%", height: "100%" },
+    photoHint: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        paddingVertical: 6,
+        alignItems: "center",
+    },
+    photoHintText: { fontSize: 12, fontWeight: "500" },
+    instructionsPanel: {
+        maxHeight: 200,
+        borderRadius: 14,
+        width: "100%",
+    },
+    instructionsPanelContent: {
+        padding: 14,
+        gap: 10,
+    },
+    instrRow: {
+        flexDirection: "row",
+        alignItems: "flex-start",
+        gap: 10,
+    },
+    instrNum: {
+        width: 22,
+        height: 22,
+        borderRadius: 11,
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+    },
+    instrNumText: { color: "#fff", fontSize: 11, fontWeight: "700" },
+    instrText: { flex: 1, fontSize: 14, lineHeight: 20 },
+    instrSectionLabel: {
+        fontSize: 11,
+        fontWeight: "700",
+        letterSpacing: 1,
+        textTransform: "uppercase",
+        marginTop: 4,
+    },
+    instrTip: { fontSize: 13, lineHeight: 19 },
+    miniTimer: {
+        paddingHorizontal: 24,
+        paddingVertical: 10,
+        borderRadius: 50,
+        alignItems: "center",
+    },
+    miniTimerText: { fontSize: 28, fontWeight: "300" },
+    miniTimerSub: { fontSize: 12, letterSpacing: 0.5 },
     controls: {
         flexDirection: "row",
         alignItems: "center",
         gap: 28,
-        marginTop: 8,
+        marginTop: 4,
     },
     iconBtn: {
         width: 54,
@@ -425,9 +569,8 @@ const styles = StyleSheet.create({
     },
     nextUp: {
         fontSize: 14,
-        marginTop: 8,
+        marginTop: 4,
     },
-    // Done
     doneTitle: {
         fontSize: 48,
         fontWeight: "300",

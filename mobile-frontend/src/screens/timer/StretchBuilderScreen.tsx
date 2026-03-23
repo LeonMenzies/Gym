@@ -5,6 +5,8 @@ import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-naviga
 import { FC, useEffect, useState } from "react";
 import {
     Alert,
+    Image,
+    Modal,
     ScrollView,
     StyleSheet,
     Text,
@@ -24,6 +26,8 @@ import {
     useStretchStore,
 } from "~store/stretchStore";
 import { TimerStackParamList } from "~types/Types";
+import { getBendDataForStretchId, getImageForStretchId } from "~data/stretchBendData";
+import type { BendStretch } from "~data/stretchBendData";
 
 type Props = NativeStackScreenProps<TimerStackParamList, "StretchBuilder">;
 type Nav = NativeStackNavigationProp<TimerStackParamList, "StretchBuilder">;
@@ -34,6 +38,93 @@ function totalTime(items: RoutineItem[]): string {
     const s = secs % 60;
     return m > 0 ? (s > 0 ? `${m}m ${s}s` : `${m}m`) : `${s}s`;
 }
+
+// ─── Stretch Info Modal ────────────────────────────────────────────────────────
+
+type InfoModalProps = {
+    stretchId: string;
+    stretchName: string;
+    bendData: BendStretch;
+    onClose: () => void;
+};
+
+const StretchInfoModal: FC<InfoModalProps> = ({ stretchId, stretchName, bendData, onClose }) => {
+    const colors = useTheme();
+    const photo = getImageForStretchId(stretchId);
+
+    return (
+        <Modal animationType="slide" transparent presentationStyle="pageSheet">
+            <View style={[infoStyles.sheet, { backgroundColor: colors.background }]}>
+                {/* Header */}
+                <View style={infoStyles.header}>
+                    <View style={infoStyles.headerText}>
+                        <Text style={[infoStyles.title, { color: colors.textPrimary }]}>{stretchName}</Text>
+                        {bendData.benefits.length > 0 && (
+                            <Text style={[infoStyles.benefits, { color: colors.primary }]}>
+                                {bendData.benefits.join(" · ")}
+                            </Text>
+                        )}
+                    </View>
+                    <TouchableOpacity onPress={onClose} style={infoStyles.closeBtn}>
+                        <Text style={[infoStyles.closeText, { color: colors.textSecondary }]}>✕</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <ScrollView contentContainerStyle={infoStyles.scrollContent} showsVerticalScrollIndicator={false}>
+                    {/* Photo */}
+                    {photo && (
+                        <View style={[infoStyles.photoContainer, { backgroundColor: colors.backgroundSecondary }]}>
+                            <Image source={photo} style={infoStyles.photo} resizeMode="cover" />
+                        </View>
+                    )}
+
+                    {/* Instructions */}
+                    <View style={[infoStyles.section, { backgroundColor: colors.backgroundSecondary }]}>
+                        <Text style={[infoStyles.sectionTitle, { color: colors.primary }]}>How To</Text>
+                        {bendData.instructions.map((step, i) => (
+                            <View key={i} style={infoStyles.stepRow}>
+                                <View style={[infoStyles.stepNum, { backgroundColor: colors.primary }]}>
+                                    <Text style={infoStyles.stepNumText}>{i + 1}</Text>
+                                </View>
+                                <Text style={[infoStyles.stepText, { color: colors.textPrimary }]}>{step}</Text>
+                            </View>
+                        ))}
+                    </View>
+
+                    {/* Tips */}
+                    {bendData.tips.length > 0 && (
+                        <View style={[infoStyles.section, { backgroundColor: colors.backgroundSecondary }]}>
+                            <Text style={[infoStyles.sectionTitle, { color: colors.primary }]}>Tips</Text>
+                            {bendData.tips.map((tip, i) => (
+                                <View key={i} style={infoStyles.bulletRow}>
+                                    <Text style={[infoStyles.bullet, { color: colors.primary }]}>•</Text>
+                                    <Text style={[infoStyles.bulletText, { color: colors.textPrimary }]}>{tip}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
+
+                    {/* Modifications */}
+                    {bendData.modifications.length > 0 && (
+                        <View style={[infoStyles.section, { backgroundColor: colors.backgroundSecondary }]}>
+                            <Text style={[infoStyles.sectionTitle, { color: colors.primary }]}>Modifications</Text>
+                            {bendData.modifications.map((mod, i) => (
+                                <View key={i} style={infoStyles.bulletRow}>
+                                    <Text style={[infoStyles.bullet, { color: colors.secondary ?? colors.primary }]}>→</Text>
+                                    <Text style={[infoStyles.bulletText, { color: colors.textPrimary }]}>{mod}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
+
+                    <View style={{ height: 40 }} />
+                </ScrollView>
+            </View>
+        </Modal>
+    );
+};
+
+// ─── Main Screen ──────────────────────────────────────────────────────────────
 
 export const StretchBuilderScreen: FC<Props> = () => {
     const route = useRoute<Props["route"]>();
@@ -48,6 +139,7 @@ export const StretchBuilderScreen: FC<Props> = () => {
     const [items, setItems] = useState<RoutineItem[]>(existingRoutine?.items ?? []);
     const [selectedBodyPart, setSelectedBodyPart] = useState<BodyPart>("neck");
     const [showLibrary, setShowLibrary] = useState(false);
+    const [infoStretchId, setInfoStretchId] = useState<string | null>(null);
 
     useEffect(() => {
         if (existingRoutine) {
@@ -98,6 +190,9 @@ export const StretchBuilderScreen: FC<Props> = () => {
     const stretchName = (stretchId: string) =>
         STRETCHES.find((s) => s.id === stretchId)?.name ?? stretchId;
 
+    const infoStretch = infoStretchId ? STRETCHES.find((s) => s.id === infoStretchId) : null;
+    const infoBendData = infoStretchId ? getBendDataForStretchId(infoStretchId) : null;
+
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             {/* Header */}
@@ -131,43 +226,49 @@ export const StretchBuilderScreen: FC<Props> = () => {
                             Routine · {items.length} stretch{items.length !== 1 ? "es" : ""} · {totalTime(items)}
                         </Text>
                         <View style={styles.itemList}>
-                            {items.map((item, index) => (
-                                <Swipeable
-                                    key={`${item.stretchId}_${index}`}
-                                    renderRightActions={() => (
-                                        <TouchableOpacity
-                                            style={[styles.deleteAction, { backgroundColor: colors.error }]}
-                                            onPress={() => removeItem(index)}
-                                        >
-                                            <Text style={styles.deleteActionText}>Delete</Text>
-                                        </TouchableOpacity>
-                                    )}
-                                >
-                                    <View style={[styles.itemCard, { backgroundColor: colors.backgroundSecondary }]}>
-                                        <View style={styles.itemInfo}>
-                                            <View style={styles.itemNameRow}>
-                                                <Text style={[styles.itemName, { color: colors.textPrimary }]}>
-                                                    {stretchName(item.stretchId)}
-                                                </Text>
-                                                <Text style={[styles.durationLabel, { color: colors.primary }]}>
-                                                    {item.duration}s
-                                                </Text>
+                            {items.map((item, index) => {
+                                const photo = getImageForStretchId(item.stretchId);
+                                return (
+                                    <Swipeable
+                                        key={`${item.stretchId}_${index}`}
+                                        renderRightActions={() => (
+                                            <TouchableOpacity
+                                                style={[styles.deleteAction, { backgroundColor: colors.error }]}
+                                                onPress={() => removeItem(index)}
+                                            >
+                                                <Text style={styles.deleteActionText}>Delete</Text>
+                                            </TouchableOpacity>
+                                        )}
+                                    >
+                                        <View style={[styles.itemCard, { backgroundColor: colors.backgroundSecondary }]}>
+                                            {photo && (
+                                                <Image source={photo} style={styles.itemThumb} resizeMode="cover" />
+                                            )}
+                                            <View style={styles.itemInfo}>
+                                                <View style={styles.itemNameRow}>
+                                                    <Text style={[styles.itemName, { color: colors.textPrimary }]}>
+                                                        {stretchName(item.stretchId)}
+                                                    </Text>
+                                                    <Text style={[styles.durationLabel, { color: colors.primary }]}>
+                                                        {item.duration}s
+                                                    </Text>
+                                                </View>
+                                                <Slider
+                                                    style={styles.durationSlider}
+                                                    minimumValue={10}
+                                                    maximumValue={90}
+                                                    step={5}
+                                                    value={item.duration}
+                                                    onValueChange={(v) => setDuration(index, v)}
+                                                    minimumTrackTintColor={colors.primary}
+                                                    maximumTrackTintColor={colors.lightGrey}
+                                                    thumbTintColor={colors.primary}
+                                                />
                                             </View>
-                                            <Slider
-                                                style={styles.durationSlider}
-                                                minimumValue={10}
-                                                maximumValue={90}
-                                                step={5}
-                                                value={item.duration}
-                                                onValueChange={(v) => setDuration(index, v)}
-                                                minimumTrackTintColor={colors.primary}
-                                                maximumTrackTintColor={colors.lightGrey}
-                                                thumbTintColor={colors.primary}
-                                            />
                                         </View>
-                                    </View>
-                                </Swipeable>
-                            ))}
+                                    </Swipeable>
+                                );
+                            })}
                         </View>
                     </View>
                 )}
@@ -215,6 +316,7 @@ export const StretchBuilderScreen: FC<Props> = () => {
                         <View style={styles.stretchGrid}>
                             {stretchesForPart.map((stretch) => {
                                 const added = addedIds.has(stretch.id);
+                                const hasBendData = !!getBendDataForStretchId(stretch.id);
                                 return (
                                     <TouchableOpacity
                                         key={stretch.id}
@@ -226,11 +328,13 @@ export const StretchBuilderScreen: FC<Props> = () => {
                                             },
                                         ]}
                                         onPress={() => addStretch(stretch.id, stretch.defaultDuration)}
+                                        onLongPress={() => setInfoStretchId(stretch.id)}
+                                        delayLongPress={400}
                                         disabled={added}
                                     >
                                         <StretchIllustration
                                             stretchId={stretch.id}
-                                            size={64}
+                                            size={72}
                                             color={added ? colors.white : colors.primary}
                                         />
                                         <Text style={[styles.stretchChipText, { color: added ? colors.white : colors.textPrimary }]}>
@@ -239,6 +343,11 @@ export const StretchBuilderScreen: FC<Props> = () => {
                                         <Text style={[styles.stretchChipDuration, { color: added ? colors.white : colors.textSecondary }]}>
                                             {stretch.defaultDuration}s
                                         </Text>
+                                        {hasBendData && !added && (
+                                            <Text style={[styles.infoHint, { color: colors.textSecondary }]}>
+                                                hold for info
+                                            </Text>
+                                        )}
                                     </TouchableOpacity>
                                 );
                             })}
@@ -248,9 +357,21 @@ export const StretchBuilderScreen: FC<Props> = () => {
 
                 <View style={{ height: 48 }} />
             </ScrollView>
+
+            {/* Stretch info modal */}
+            {infoStretchId && infoStretch && infoBendData && (
+                <StretchInfoModal
+                    stretchId={infoStretchId}
+                    stretchName={infoStretch.name}
+                    bendData={infoBendData}
+                    onClose={() => setInfoStretchId(null)}
+                />
+            )}
         </View>
     );
 };
+
+// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
@@ -287,7 +408,12 @@ const styles = StyleSheet.create({
         padding: 12,
         flexDirection: "row",
         alignItems: "center",
-        gap: 8,
+        gap: 10,
+    },
+    itemThumb: {
+        width: 52,
+        height: 52,
+        borderRadius: 8,
     },
     itemInfo: { flex: 1, gap: 4 },
     itemNameRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
@@ -328,6 +454,69 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         width: "47%",
     },
-    stretchChipText: { fontSize: 14, fontWeight: "500" },
+    stretchChipText: { fontSize: 14, fontWeight: "500", textAlign: "center" },
     stretchChipDuration: { fontSize: 12 },
+    infoHint: { fontSize: 10, opacity: 0.6 },
+});
+
+const infoStyles = StyleSheet.create({
+    sheet: {
+        flex: 1,
+        marginTop: 60,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+    },
+    header: {
+        flexDirection: "row",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        padding: 20,
+        paddingBottom: 12,
+    },
+    headerText: { flex: 1, gap: 4 },
+    title: { fontSize: 22, fontWeight: "700", lineHeight: 28 },
+    benefits: { fontSize: 13, fontWeight: "500", letterSpacing: 0.3 },
+    closeBtn: { padding: 4, marginLeft: 16 },
+    closeText: { fontSize: 20 },
+    scrollContent: { paddingHorizontal: 16, gap: 12 },
+    photoContainer: {
+        borderRadius: 16,
+        overflow: "hidden",
+        height: 220,
+    },
+    photo: { width: "100%", height: "100%" },
+    section: {
+        borderRadius: 14,
+        padding: 16,
+        gap: 12,
+    },
+    sectionTitle: {
+        fontSize: 12,
+        fontWeight: "700",
+        letterSpacing: 1,
+        textTransform: "uppercase",
+        marginBottom: 2,
+    },
+    stepRow: {
+        flexDirection: "row",
+        alignItems: "flex-start",
+        gap: 12,
+    },
+    stepNum: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+    },
+    stepNumText: { color: "#fff", fontSize: 12, fontWeight: "700" },
+    stepText: { flex: 1, fontSize: 15, lineHeight: 22 },
+    bulletRow: {
+        flexDirection: "row",
+        alignItems: "flex-start",
+        gap: 10,
+    },
+    bullet: { fontSize: 16, lineHeight: 22, flexShrink: 0 },
+    bulletText: { flex: 1, fontSize: 15, lineHeight: 22 },
 });
