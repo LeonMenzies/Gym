@@ -1,5 +1,6 @@
 import Slider from "@react-native-community/slider";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { FC, useEffect, useState } from "react";
@@ -137,7 +138,7 @@ export const StretchBuilderScreen: FC<Props> = () => {
 
     const [name, setName] = useState(existingRoutine?.name ?? "");
     const [items, setItems] = useState<RoutineItem[]>(existingRoutine?.items ?? []);
-    const [selectedBodyPart, setSelectedBodyPart] = useState<BodyPart>("neck");
+    const [selectedBodyPart, setSelectedBodyPart] = useState<BodyPart | "all">("all");
     const [showLibrary, setShowLibrary] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [infoStretchId, setInfoStretchId] = useState<string | null>(null);
@@ -154,7 +155,7 @@ export const StretchBuilderScreen: FC<Props> = () => {
         }
     }, [editingId]);
 
-    const stretchesForPart = STRETCHES.filter((s) => s.bodyPart === selectedBodyPart);
+    const stretchesForPart = selectedBodyPart === "all" ? [] : STRETCHES.filter((s) => s.bodyPart === selectedBodyPart);
     const addedIds = new Set(items.map((i) => i.stretchId));
 
     const addStretch = (stretchId: string, defaultDuration: number) => {
@@ -164,6 +165,16 @@ export const StretchBuilderScreen: FC<Props> = () => {
 
     const removeItem = (index: number) => {
         setItems((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    const moveItem = (index: number, direction: 1 | -1) => {
+        const target = index + direction;
+        if (target < 0 || target >= items.length) return;
+        setItems((prev) => {
+            const next = [...prev];
+            [next[index], next[target]] = [next[target], next[index]];
+            return next;
+        });
     };
 
     const setDuration = (index: number, duration: number) => {
@@ -273,6 +284,30 @@ export const StretchBuilderScreen: FC<Props> = () => {
                                                     thumbTintColor={colors.primary}
                                                 />
                                             </View>
+                                            <View style={styles.reorderBtns}>
+                                                <TouchableOpacity
+                                                    onPress={() => moveItem(index, -1)}
+                                                    disabled={index === 0}
+                                                    hitSlop={6}
+                                                >
+                                                    <Ionicons
+                                                        name="chevron-up"
+                                                        size={20}
+                                                        color={index === 0 ? colors.lightGrey : colors.textSecondary}
+                                                    />
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    onPress={() => moveItem(index, 1)}
+                                                    disabled={index === items.length - 1}
+                                                    hitSlop={6}
+                                                >
+                                                    <Ionicons
+                                                        name="chevron-down"
+                                                        size={20}
+                                                        color={index === items.length - 1 ? colors.lightGrey : colors.textSecondary}
+                                                    />
+                                                </TouchableOpacity>
+                                            </View>
                                         </View>
                                     </Swipeable>
                                 );
@@ -359,23 +394,24 @@ export const StretchBuilderScreen: FC<Props> = () => {
                             <>
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.bodyPartScroll}>
                                     <View style={styles.bodyPartRow}>
+                                        <TouchableOpacity
+                                            style={[styles.bodyPartChip, { backgroundColor: selectedBodyPart === "all" ? colors.primary : colors.backgroundSecondary }]}
+                                            onPress={() => setSelectedBodyPart("all")}
+                                        >
+                                            <Text style={[styles.bodyPartText, { color: selectedBodyPart === "all" ? colors.white : colors.textSecondary }]}>
+                                                All
+                                            </Text>
+                                        </TouchableOpacity>
                                         {BODY_PART_ORDER.map((bp) => (
                                             <TouchableOpacity
                                                 key={bp}
                                                 style={[
                                                     styles.bodyPartChip,
-                                                    {
-                                                        backgroundColor: selectedBodyPart === bp ? colors.primary : colors.backgroundSecondary,
-                                                    },
+                                                    { backgroundColor: selectedBodyPart === bp ? colors.primary : colors.backgroundSecondary },
                                                 ]}
                                                 onPress={() => setSelectedBodyPart(bp)}
                                             >
-                                                <Text
-                                                    style={[
-                                                        styles.bodyPartText,
-                                                        { color: selectedBodyPart === bp ? colors.white : colors.textSecondary },
-                                                    ]}
-                                                >
+                                                <Text style={[styles.bodyPartText, { color: selectedBodyPart === bp ? colors.white : colors.textSecondary }]}>
                                                     {BODY_PART_LABELS[bp]}
                                                 </Text>
                                             </TouchableOpacity>
@@ -384,12 +420,14 @@ export const StretchBuilderScreen: FC<Props> = () => {
                                 </ScrollView>
 
                                 <View style={styles.stretchGrid}>
-                                    {stretchesForPart.map((stretch) => {
-                                        const added = addedIds.has(stretch.id);
-                                        const hasBendData = !!getBendDataForStretchId(stretch.id);
+                                    {(selectedBodyPart === "all" ? ALL_BEND_NAMES : stretchesForPart.map((s) => s.name)).map((name) => {
+                                        const stretchId = selectedBodyPart === "all" ? name : (stretchesForPart.find((s) => s.name === name)?.id ?? name);
+                                        const duration = selectedBodyPart === "all" ? 30 : (stretchesForPart.find((s) => s.name === name)?.defaultDuration ?? 30);
+                                        const added = addedIds.has(stretchId);
+                                        const photo = getImageForStretchId(stretchId);
                                         return (
                                             <TouchableOpacity
-                                                key={stretch.id}
+                                                key={stretchId}
                                                 style={[
                                                     styles.stretchChip,
                                                     {
@@ -397,26 +435,24 @@ export const StretchBuilderScreen: FC<Props> = () => {
                                                         opacity: added ? 0.6 : 1,
                                                     },
                                                 ]}
-                                                onPress={() => addStretch(stretch.id, stretch.defaultDuration)}
-                                                onLongPress={() => setInfoStretchId(stretch.id)}
+                                                onPress={() => addStretch(stretchId, duration)}
+                                                onLongPress={() => setInfoStretchId(stretchId)}
                                                 delayLongPress={400}
                                                 disabled={added}
                                             >
-                                                <StretchIllustration
-                                                    stretchId={stretch.id}
-                                                    size={72}
-                                                    color={added ? colors.white : colors.primary}
-                                                />
+                                                {photo ? (
+                                                    <Image source={photo} style={styles.searchThumb} resizeMode="cover" />
+                                                ) : (
+                                                    <StretchIllustration stretchId={stretchId} size={72} color={added ? colors.white : colors.primary} />
+                                                )}
                                                 <Text style={[styles.stretchChipText, { color: added ? colors.white : colors.textPrimary }]}>
-                                                    {stretch.name}
+                                                    {name}
                                                 </Text>
                                                 <Text style={[styles.stretchChipDuration, { color: added ? colors.white : colors.textSecondary }]}>
-                                                    {stretch.defaultDuration}s
+                                                    {duration}s
                                                 </Text>
-                                                {hasBendData && !added && (
-                                                    <Text style={[styles.infoHint, { color: colors.textSecondary }]}>
-                                                        hold for info
-                                                    </Text>
+                                                {!added && (
+                                                    <Text style={[styles.infoHint, { color: colors.textSecondary }]}>hold for info</Text>
                                                 )}
                                             </TouchableOpacity>
                                         );
@@ -492,6 +528,12 @@ const styles = StyleSheet.create({
     itemName: { fontSize: 15, fontWeight: "500", flex: 1 },
     durationLabel: { fontSize: 14, fontWeight: "600" },
     durationSlider: { width: "100%", height: 36 },
+    reorderBtns: {
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 4,
+        paddingLeft: 4,
+    },
     deleteAction: {
         justifyContent: "center",
         alignItems: "center",

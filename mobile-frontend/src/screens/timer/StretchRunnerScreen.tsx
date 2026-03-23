@@ -280,9 +280,20 @@ export const StretchRunnerScreen: FC<Props> = () => {
                         <Text style={[styles.stretchNumber, { color: colors.textSecondary }]}>
                             {displayIndex + 1} / {items.length}
                         </Text>
-                        <Text style={[styles.stretchName, { color: colors.textPrimary }]}>
-                            {currentStretchName}
-                        </Text>
+                        <View style={styles.stretchNameRow}>
+                            <Text style={[styles.stretchName, { color: colors.textPrimary }]}>
+                                {currentStretchName}
+                            </Text>
+                            {currentBendData && (
+                                <TouchableOpacity onPress={() => setShowInstructions((v) => !v)} hitSlop={12}>
+                                    <Ionicons
+                                        name={showInstructions ? "information-circle" : "information-circle-outline"}
+                                        size={22}
+                                        color={showInstructions ? accentColor : colors.textSecondary}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                        </View>
                         {sideLabel && (
                             <Text style={[styles.sideLabel, { color: accentColor }]}>{sideLabel}</Text>
                         )}
@@ -334,14 +345,6 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 >
                     <Ionicons name="play-skip-forward" size={26} color={colors.textSecondary} />
                 </TouchableOpacity>
-                {currentBendData && displayPhase !== "swap" && (
-                    <TouchableOpacity
-                        style={[styles.iconBtn, { backgroundColor: showInstructions ? accentColor : colors.backgroundSecondary }]}
-                        onPress={() => setShowInstructions((v) => !v)}
-                    >
-                        <Ionicons name="information" size={24} color={showInstructions ? colors.white : colors.textSecondary} />
-                    </TouchableOpacity>
-                )}
             </View>
 
             {/* ── Instructions (toggled) ────────────────────────────────────── */}
@@ -413,6 +416,11 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     stretchNumber: { fontSize: 14, letterSpacing: 0.5 },
+    stretchNameRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+    },
     stretchName: {
         fontSize: 26,
         fontWeight: "600",
