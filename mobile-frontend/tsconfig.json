@@ -29,6 +29,9 @@
       ],
       "~widgets/*": [
         "widgets/*"
+      ],
+      "~data/*": [
+        "data/*"
       ]
     }
   },

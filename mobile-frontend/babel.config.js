@@ -28,6 +28,7 @@ module.exports = function (api) {
                         "~utils": "./src/utils",
                         "~hooks": "./src/hooks",
                     "~widgets": "./src/widgets",
+                    "~data": "./src/data",
                     },
                 },
             ],
