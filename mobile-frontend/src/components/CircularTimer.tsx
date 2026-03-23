@@ -1,5 +1,5 @@
 import { Audio } from "expo-av";
-import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, Image, ImageSourcePropType, StyleSheet, Text, View } from "react-native";
 import { FC, useEffect, useRef } from "react";
 
 const BEEP_WAV_BASE64 =
@@ -15,6 +15,7 @@ type Props = {
     bgColor: string;
     textColor: string;
     subTextColor?: string;
+    backgroundImage?: ImageSourcePropType | null;
 };
 
 export const CircularTimer: FC<Props> = ({
@@ -27,6 +28,7 @@ export const CircularTimer: FC<Props> = ({
     bgColor,
     textColor,
     subTextColor,
+    backgroundImage,
 }) => {
     const rotVal = useRef(new Animated.Value(0)).current;
     const prevTimeLeft = useRef(timeLeft);
@@ -74,8 +76,6 @@ export const CircularTimer: FC<Props> = ({
 
     const fontSize = size * 0.26;
 
-    const showCountdown = timeLeft <= 5;
-
     return (
         <View
             style={[
@@ -88,6 +88,16 @@ export const CircularTimer: FC<Props> = ({
                 },
             ]}
         >
+            {backgroundImage && (
+                <Image
+                    source={backgroundImage}
+                    style={[styles.bgImage, { width: size, height: size }]}
+                    resizeMode="cover"
+                />
+            )}
+            {backgroundImage && (
+                <View style={[styles.bgDim, { width: size, height: size }]} />
+            )}
             <Animated.Image
                 // eslint-disable-next-line @typescript-eslint/no-require-imports
                 source={require("../../assets/mask.png")}
@@ -102,13 +112,11 @@ export const CircularTimer: FC<Props> = ({
                 resizeMode="cover"
             />
             <View style={styles.center}>
-                {showCountdown && (
-                    <Text style={[styles.timeText, { color: textColor, fontSize }]}>
-                        {timeLabel}
-                    </Text>
-                )}
-                {showCountdown && subLabel && (
-                    <Text style={[styles.subText, { color: subTextColor ?? textColor }]}>
+                <Text style={[styles.timeText, { color: backgroundImage ? "#fff" : textColor, fontSize }]}>
+                    {timeLabel}
+                </Text>
+                {subLabel && (
+                    <Text style={[styles.subText, { color: backgroundImage ? "rgba(255,255,255,0.7)" : (subTextColor ?? textColor) }]}>
                         {subLabel}
                     </Text>
                 )}
@@ -122,6 +130,13 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         alignItems: "center",
         justifyContent: "center",
+    },
+    bgImage: {
+        position: "absolute",
+    },
+    bgDim: {
+        position: "absolute",
+        backgroundColor: "rgba(0,0,0,0.38)",
     },
     mask: {
         position: "absolute",

@@ -87,17 +87,15 @@ export const STRETCHES: Stretch[] = [
     { id: "hip_90_90",          name: "90/90 Hip Stretch",      bodyPart: "hip_flexors", defaultDuration: 60, bilateral: true },
 
     // Hamstrings
-    { id: "ham_standing_forward_fold", name: "Standing Forward Fold",    bodyPart: "hamstrings", defaultDuration: 45, bilateral: false },
-    { id: "ham_seated_forward_fold",   name: "Seated Forward Fold",      bodyPart: "hamstrings", defaultDuration: 45, bilateral: false },
-    { id: "ham_lying_leg_raise",       name: "Lying Leg Raise",          bodyPart: "hamstrings", defaultDuration: 30, bilateral: true },
-    { id: "ham_doorway_hamstring",     name: "Doorway Hamstring Stretch", bodyPart: "hamstrings", defaultDuration: 45, bilateral: false },
-    { id: "ham_supine_single_leg",     name: "Supine Single-Leg Pull",   bodyPart: "hamstrings", defaultDuration: 30, bilateral: true },
+    { id: "ham_standing_forward_fold", name: "Standing Forward Fold",  bodyPart: "hamstrings", defaultDuration: 45, bilateral: false },
+    { id: "ham_seated_forward_fold",   name: "Seated Forward Fold",    bodyPart: "hamstrings", defaultDuration: 45, bilateral: false },
+    { id: "ham_lying_leg_raise",       name: "Lying Leg Raise",        bodyPart: "hamstrings", defaultDuration: 30, bilateral: true },
+    { id: "ham_supine_single_leg",     name: "Supine Single-Leg Pull", bodyPart: "hamstrings", defaultDuration: 30, bilateral: true },
 
     // Quads
     { id: "quad_standing_pull",   name: "Standing Quad Pull",         bodyPart: "quads", defaultDuration: 30, bilateral: true },
     { id: "quad_prone_pull",      name: "Prone Quad Pull",            bodyPart: "quads", defaultDuration: 30, bilateral: true },
     { id: "quad_kneeling_lunge",  name: "Kneeling Lunge Quad Focus",  bodyPart: "quads", defaultDuration: 45, bilateral: true },
-    { id: "quad_heros_pose",      name: "Hero's Pose",                bodyPart: "quads", defaultDuration: 45, bilateral: false },
 
     // Glutes
     { id: "glute_figure_four",    name: "Figure-Four (Piriformis)",  bodyPart: "glutes", defaultDuration: 45, bilateral: true },
@@ -113,7 +111,6 @@ export const STRETCHES: Stretch[] = [
 
     // IT Band
     { id: "it_standing_cross",   name: "Standing Cross-Leg Lean",  bodyPart: "it_band", defaultDuration: 30, bilateral: true },
-    { id: "it_foam_roller",      name: "Foam Roller (IT Band)",    bodyPart: "it_band", defaultDuration: 60, bilateral: true },
     { id: "it_lying_cross_over", name: "Lying Cross-Over Stretch", bodyPart: "it_band", defaultDuration: 30, bilateral: true },
     { id: "it_figure_four_side", name: "Figure-Four Side Bend",   bodyPart: "it_band", defaultDuration: 30, bilateral: true },
 ];
