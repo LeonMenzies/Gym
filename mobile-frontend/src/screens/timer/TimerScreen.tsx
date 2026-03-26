@@ -46,8 +46,10 @@ const GymTimer: FC = () => {
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(() => {
-        if (!running) setTimeLeft(gymRestSeconds);
-    }, [gymRestSeconds, running]);
+        setTimeLeft(gymRestSeconds);
+        setRunning(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [gymRestSeconds]);
 
     useEffect(() => {
         if (running) {
@@ -82,7 +84,7 @@ const GymTimer: FC = () => {
 
     const handleReset = () => {
         setTimeLeft(gymRestSeconds);
-        setRunning(true);
+        setRunning(false);
     };
 
     const progress = gymRestSeconds > 0 ? timeLeft / gymRestSeconds : 0;
