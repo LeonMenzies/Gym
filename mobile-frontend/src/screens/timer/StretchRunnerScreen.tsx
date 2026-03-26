@@ -264,7 +264,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
                             duration={SWAP_SECONDS}
                             timeLabel={`${displayCountdown}`}
                             subLabel="seconds"
-                            size={240}
+                            size={312}
                             color={colors.secondary ?? colors.primary}
                             bgColor={colors.backgroundSecondary}
                             textColor={colors.textPrimary}
@@ -302,7 +302,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
                             duration={currentItem?.duration ?? 0}
                             timeLabel={`${displayCountdown}`}
                             subLabel="seconds"
-                            size={260}
+                            size={338}
                             color={accentColor}
                             bgColor={colors.backgroundSecondary}
                             textColor={colors.textPrimary}

@@ -15,13 +15,10 @@ import { TimerStackParamList } from "~types/Types";
 
 type Nav = NativeStackNavigationProp<TimerStackParamList, "TimerHome">;
 
-type TimerMode = "gym" | "stretch" | "focus";
+type TimerMode = "gym" | "stretch";
 
 const MIN_SECONDS = 15;
 const MAX_SECONDS = 120;
-
-const FOCUS_MIN_MINUTES = 1;
-const FOCUS_MAX_MINUTES = 120;
 
 function formatTime(seconds: number): string {
     const m = Math.floor(seconds / 60);
@@ -99,7 +96,7 @@ const GymTimer: FC = () => {
                     duration={gymRestSeconds}
                     timeLabel={formatTime(timeLeft)}
                     subLabel="rest"
-                    size={260}
+                    size={338}
                     color={running ? progressColor : colors.primary}
                     bgColor={colors.backgroundSecondary}
                     textColor={colors.textPrimary}
@@ -128,119 +125,6 @@ const GymTimer: FC = () => {
                     step={15}
                     value={gymRestSeconds}
                     onValueChange={(v) => { if (!running) setGymRestSeconds(v); }}
-                    minimumTrackTintColor={colors.primary}
-                    maximumTrackTintColor={colors.lightGrey ?? colors.backgroundSecondary}
-                    thumbTintColor={colors.primary}
-                    disabled={running}
-                />
-            </View>
-        </View>
-    );
-};
-
-// ─── Focus Timer ──────────────────────────────────────────────────────────────
-
-const FOCUS_STEP = 5;
-
-function formatFocusTime(seconds: number): string {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    if (m === 0) return `${s}s`;
-    if (s === 0) return `${m}m`;
-    return `${m}:${s.toString().padStart(2, "0")}`;
-}
-
-const FocusTimer: FC = () => {
-    const colors = useTheme();
-    const [focusMinutes, setFocusMinutes] = useState(25);
-    const focusSeconds = focusMinutes * 60;
-
-    const [timeLeft, setTimeLeft] = useState(focusSeconds);
-    const [running, setRunning] = useState(false);
-    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-    useEffect(() => {
-        if (!running) setTimeLeft(focusMinutes * 60);
-    }, [focusMinutes, running]);
-
-    useEffect(() => {
-        if (running) {
-            const tick = () => {
-                setTimeLeft((prev) => {
-                    if (prev <= 1) {
-                        setRunning(false);
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            };
-            tick();
-            intervalRef.current = setInterval(tick, 1000);
-        } else {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-        }
-        return () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-        };
-    }, [running]);
-
-    const handleStartStop = () => {
-        if (timeLeft === 0) {
-            setTimeLeft(focusMinutes * 60);
-            setRunning(true);
-        } else {
-            setRunning((r) => !r);
-        }
-    };
-
-    const handleReset = () => {
-        setTimeLeft(focusMinutes * 60);
-        setRunning(true);
-    };
-
-    const totalSeconds = focusMinutes * 60;
-    const progress = totalSeconds > 0 ? timeLeft / totalSeconds : 0;
-    const progressColor = progress > 0.5 ? colors.primary : progress > 0.25 ? colors.secondary : colors.error;
-
-    const focusLabel = focusMinutes >= 60
-        ? `${Math.floor(focusMinutes / 60)}h${focusMinutes % 60 > 0 ? ` ${focusMinutes % 60}m` : ""}`
-        : `${focusMinutes}m`;
-
-    return (
-        <View style={styles.gymContainer}>
-            <TouchableOpacity onPress={handleReset} activeOpacity={0.7}>
-                <CircularTimer
-                    timeLeft={timeLeft}
-                    duration={totalSeconds}
-                    timeLabel={formatFocusTime(timeLeft)}
-                    subLabel="focus"
-                    size={260}
-                    color={running ? progressColor : colors.primary}
-                    bgColor={colors.backgroundSecondary}
-                    textColor={colors.textPrimary}
-                    subTextColor={colors.textSecondary}
-                />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-                style={[styles.startBtn, { backgroundColor: colors.primary }]}
-                onPress={handleStartStop}
-            >
-                <Text style={[styles.startBtnText, { color: colors.white }]}>
-                    {running ? "Pause" : timeLeft === 0 ? "Restart" : "Start"}
-                </Text>
-            </TouchableOpacity>
-
-            <View style={[styles.sliderSection, { opacity: running ? 0.4 : 1 }]}>
-                <Text style={[styles.sliderLabel, { color: colors.textSecondary }]}>Focus duration</Text>
-                <Text style={[styles.sliderValue, { color: colors.textPrimary }]}>{focusLabel}</Text>
-                <Slider
-                    style={styles.slider}
-                    minimumValue={FOCUS_MIN_MINUTES}
-                    maximumValue={FOCUS_MAX_MINUTES}
-                    step={FOCUS_STEP}
-                    value={focusMinutes}
-                    onValueChange={(v) => { if (!running) setFocusMinutes(v); }}
                     minimumTrackTintColor={colors.primary}
                     maximumTrackTintColor={colors.lightGrey ?? colors.backgroundSecondary}
                     thumbTintColor={colors.primary}
@@ -392,7 +276,6 @@ const StretchList: FC = () => {
 
 const MODES: { key: TimerMode; label: string }[] = [
     { key: "gym", label: "Gym" },
-    { key: "focus", label: "Focus" },
     { key: "stretch", label: "Stretch" },
 ];
 
@@ -420,7 +303,6 @@ export const TimerScreen: FC = () => {
 
             <View style={styles.content}>
                 {mode === "gym" && <GymTimer />}
-                {mode === "focus" && <FocusTimer />}
                 {mode === "stretch" && <StretchList />}
             </View>
         </View>
