@@ -16,6 +16,7 @@ type Props = {
     textColor: string;
     subTextColor?: string;
     backgroundImage?: ImageSourcePropType | null;
+    backgroundText?: string;
     flipImage?: boolean;
     showText?: boolean;
     textOpacity?: number;
@@ -32,6 +33,7 @@ export const CircularTimer: FC<Props> = ({
     textColor,
     subTextColor,
     backgroundImage,
+    backgroundText,
     flipImage = false,
     showText = true,
     textOpacity = 1,
@@ -104,6 +106,15 @@ export const CircularTimer: FC<Props> = ({
             {backgroundImage && (
                 <View style={[styles.bgDim, { width: size, height: size }]} />
             )}
+            {backgroundText && (
+                <Text
+                    style={[styles.bgText, { color: textColor, width: size * 0.85, fontSize: size * 0.38 }]}
+                    adjustsFontSizeToFit
+                    numberOfLines={1}
+                >
+                    {backgroundText}
+                </Text>
+            )}
             <Animated.Image
                 // eslint-disable-next-line @typescript-eslint/no-require-imports
                 source={require("../../assets/mask.png")}
@@ -145,6 +156,13 @@ const styles = StyleSheet.create({
     bgDim: {
         position: "absolute",
         backgroundColor: "rgba(0,0,0,0.38)",
+    },
+    bgText: {
+        position: "absolute",
+        fontWeight: "800",
+        textAlign: "center",
+        opacity: 0.18,
+        letterSpacing: -2,
     },
     mask: {
         position: "absolute",
