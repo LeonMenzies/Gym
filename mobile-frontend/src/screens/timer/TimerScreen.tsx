@@ -102,6 +102,7 @@ const GymTimer: FC = () => {
                     textColor={colors.textPrimary}
                     subTextColor={colors.textSecondary}
                     backgroundText={formatTime(timeLeft)}
+                    showText={false}
                 />
             </TouchableOpacity>
 
