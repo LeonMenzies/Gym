@@ -11,7 +11,7 @@ import { useActivityStore } from "~store/activityStore";
 import { useStreakStore } from "~store/streakStore";
 import { BODY_PART_LABELS, STRETCHES, useStretchStore } from "~store/stretchStore";
 import { TimerStackParamList } from "~types/Types";
-import { getBendDataForStretchId, getImageForStretchId } from "~data/stretchBendData";
+import { getBendDataForStretchId, getImageForStretchId, isBilateralStretch } from "~data/stretchBendData";
 
 type Props = NativeStackScreenProps<TimerStackParamList, "StretchRunner">;
 type Nav = NativeStackNavigationProp<TimerStackParamList, "StretchRunner">;
@@ -67,7 +67,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
 
     const items = routine.items;
 
-    const getStretch = (idx: number) => STRETCHES.find((s) => s.id === items[idx]?.stretchId);
+    const isStrechBilateral = (idx: number) => isBilateralStretch(items[idx]?.stretchId ?? "");
 
     const startTicking = () => {
         clearTimer();
@@ -85,8 +85,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
             }
 
             if (t.phase === "stretch") {
-                const stretch = getStretch(t.index);
-                if (stretch?.bilateral) {
+                if (isStrechBilateral(t.index)) {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                     t.phase = "bilateral";
                     t.countdown = items[t.index].duration;
@@ -162,9 +161,8 @@ export const StretchRunnerScreen: FC<Props> = () => {
 
     const handleNext = () => {
         clearTimer();
-        const currentStretchDef = getStretch(T.current.index);
 
-        if (T.current.phase === "stretch" && currentStretchDef?.bilateral) {
+        if (T.current.phase === "stretch" && isStrechBilateral(T.current.index)) {
             T.current = { ...T.current, phase: "bilateral", countdown: items[T.current.index].duration };
             setDisplayPhase("bilateral");
             setDisplayCountdown(items[T.current.index].duration);
@@ -195,7 +193,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
     const currentBendData = currentItem ? getBendDataForStretchId(currentItem.stretchId) : null;
     // For bend-only stretches (not in STRETCHES), use bend data name as display name
     const currentStretchName = currentStretch?.name ?? currentBendData?.name ?? currentItem?.stretchId ?? "";
-    const isBilateral = currentStretch?.bilateral ?? false;
+    const isBilateral = currentItem ? isBilateralStretch(currentItem.stretchId) : false;
     const sideLabel = displayPhase === "bilateral" ? "OTHER SIDE" : (isBilateral ? "FIRST SIDE" : null);
     const currentPhoto = currentItem ? getImageForStretchId(currentItem.stretchId) : null;
 
