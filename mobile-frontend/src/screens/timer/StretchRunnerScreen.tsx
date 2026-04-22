@@ -17,8 +17,9 @@ type Props = NativeStackScreenProps<TimerStackParamList, "StretchRunner">;
 type Nav = NativeStackNavigationProp<TimerStackParamList, "StretchRunner">;
 
 const SWAP_SECONDS = 5;
+const READY_SECONDS = 5;
 
-type Phase = "stretch" | "bilateral" | "swap";
+type Phase = "ready" | "stretch" | "bilateral" | "swap";
 type Status = "running" | "paused" | "done";
 
 type TimerRef = {
@@ -75,7 +76,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
             const t = T.current;
             t.countdown -= 1;
 
-            if ((t.phase === "stretch" || t.phase === "bilateral") && t.countdown <= 3 && t.countdown > 0) {
+            if ((t.phase === "ready" || t.phase === "stretch" || t.phase === "bilateral") && t.countdown <= 3 && t.countdown > 0) {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
             }
 
@@ -84,7 +85,13 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 return;
             }
 
-            if (t.phase === "stretch") {
+            if (t.phase === "ready") {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                t.phase = "stretch";
+                t.countdown = items[0].duration;
+                setDisplayPhase("stretch");
+                setDisplayCountdown(items[0].duration);
+            } else if (t.phase === "stretch") {
                 if (isStrechBilateral(t.index)) {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                     t.phase = "bilateral";
@@ -97,6 +104,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
             } else if (t.phase === "bilateral") {
                 advanceToNext(t);
             } else {
+                // swap → stretch
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                 t.phase = "stretch";
                 t.countdown = items[t.index].duration;
@@ -115,7 +123,6 @@ export const StretchRunnerScreen: FC<Props> = () => {
             logStreak();
             setStatus("done");
         } else {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
             t.phase = "swap";
             t.index = nextIndex;
             t.countdown = SWAP_SECONDS;
@@ -126,9 +133,9 @@ export const StretchRunnerScreen: FC<Props> = () => {
     };
 
     useEffect(() => {
-        T.current = { countdown: items[0].duration, phase: "stretch", index: 0 };
-        setDisplayCountdown(items[0].duration);
-        setDisplayPhase("stretch");
+        T.current = { countdown: READY_SECONDS, phase: "ready", index: 0 };
+        setDisplayCountdown(READY_SECONDS);
+        setDisplayPhase("ready");
         setDisplayIndex(0);
         setStatus("running");
         startTicking();
@@ -140,9 +147,9 @@ export const StretchRunnerScreen: FC<Props> = () => {
 
     const handleReset = () => {
         clearTimer();
-        T.current = { countdown: items[0].duration, phase: "stretch", index: 0 };
-        setDisplayCountdown(items[0].duration);
-        setDisplayPhase("stretch");
+        T.current = { countdown: READY_SECONDS, phase: "ready", index: 0 };
+        setDisplayCountdown(READY_SECONDS);
+        setDisplayPhase("ready");
         setDisplayIndex(0);
         setStatus("running");
         startTicking();
@@ -161,6 +168,15 @@ export const StretchRunnerScreen: FC<Props> = () => {
 
     const handleNext = () => {
         clearTimer();
+
+        if (T.current.phase === "ready") {
+            T.current = { countdown: items[0].duration, phase: "stretch", index: 0 };
+            setDisplayCountdown(items[0].duration);
+            setDisplayPhase("stretch");
+            setStatus("running");
+            startTicking();
+            return;
+        }
 
         if (T.current.phase === "stretch" && isStrechBilateral(T.current.index)) {
             T.current = { ...T.current, phase: "bilateral", countdown: items[T.current.index].duration };
@@ -245,10 +261,12 @@ export const StretchRunnerScreen: FC<Props> = () => {
 
             {/* ── Timer area ────────────────────────────────────────────────── */}
             <View style={styles.timerArea}>
-                {displayPhase === "swap" ? (
-                    /* SWAP PHASE */
+                {(displayPhase === "swap" || displayPhase === "ready") ? (
+                    /* SWAP / READY PHASE */
                     <>
-                        <Text style={[styles.swapLabel, { color: colors.secondary ?? colors.primary }]}>GET READY</Text>
+                        <Text style={[styles.swapLabel, { color: colors.secondary ?? colors.primary }]}>
+                            {displayPhase === "ready" ? "STARTING IN" : "GET READY"}
+                        </Text>
                         <Text style={[styles.nextStretchName, { color: colors.textPrimary }]}>
                             {currentStretchName}
                         </Text>
@@ -259,7 +277,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
                         )}
                         <CircularTimer
                             timeLeft={displayCountdown}
-                            duration={SWAP_SECONDS}
+                            duration={displayPhase === "ready" ? READY_SECONDS : SWAP_SECONDS}
                             timeLabel={`${displayCountdown}`}
                             subLabel="seconds"
                             size={312}
@@ -346,7 +364,7 @@ export const StretchRunnerScreen: FC<Props> = () => {
             </View>
 
             {/* ── Instructions (toggled) ────────────────────────────────────── */}
-            {showInstructions && currentBendData && displayPhase !== "swap" && (
+            {showInstructions && currentBendData && displayPhase !== "swap" && displayPhase !== "ready" && (
                 <ScrollView
                     style={[styles.instructionsPanel, { backgroundColor: colors.backgroundSecondary }]}
                     contentContainerStyle={styles.instructionsContent}
