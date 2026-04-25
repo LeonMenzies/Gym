@@ -105,7 +105,6 @@ export const StretchRunnerScreen: FC<Props> = () => {
                 advanceToNext(t);
             } else {
                 // swap → stretch
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                 t.phase = "stretch";
                 t.countdown = items[t.index].duration;
                 setDisplayPhase("stretch");
